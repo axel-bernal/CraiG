@@ -1,0 +1,2 @@
+pythonbindir = $(prefix)/python/bin
+dist_pythonbin_SCRIPTS = biodiff.py biointers.py biosort.py biounion.py buildDJobPropFiles4Craig.py clusterAnnotations.py coverage2filter.py coverage_kmeans.py craigReannotate.py craigPoolSamples.py craigPostprocess.py craigPreprocess.py gatherEvalFilesFromCrossV.py gsreads2covfilter.py junctions2weightedLocs.py rnaSeq2AltTranscripts.py rnaSeqJuncSeqid2name.py signalPv32ScoreFilter.py signalPv42ScoreFilter.py 

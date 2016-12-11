@@ -1,0 +1,7 @@
+Version 1.1.0 (June 2007)
+~~~~~~~~~~~~~~~~~~~~~~~~~
+I will attempt to record all the changes made to lless (mostly) and craig in this file.
+This is the first release, version 1.1. For details check the documentation in the doc directory
+-The most important change with respect to the version used in the PLoS paper is that this now lless allows for a full semi-markov decoding, in which the variable lengths are not restricted to any label in particular. This would be useful for modeling organisms which need an intron length submodel, among other applications.
+-Bug corrected in Sigma.h which was failing an assertion if the input sequence contains characters which are not defined in the alphabet.(09/11)
+-Addition of Feature Bag class of features (11/30) to lless. This class is very usefu to use trained models as part of a larger parameter space.

@@ -1,0 +1,127 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+# Test suite for GNU M4.
+# Copyright (C) 2001, 2006 Free Software Foundation, Inc.
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
+
+# We need a recent Autotest.
+m4_version_prereq([2.52e])
+
+# AT_CHECK_M4(ARGS, [EXIT-STATUS = 0], [STDOUT = `'], [STDERR = `'],
+#             [STDIN = `/dev/null'])
+# ------------------------------------------------------------------
+# Run m4 with ARGS, and stdin redirected from STDIN, or with stdin closed
+# if STDIN is `-'.  ARGS may redirect stdout and/or stderr, but should
+# not redirect stdin.  Expect EXIT-STATUS, with output matching STDOUT and
+# STDERR as in AT_CHECK.  If STDERR is specified, normalize the observed
+# error output.
+#
+# When testing an uninstalled wrapper, tests/m4 is on the path, but invokes
+# src/m4, which may itself be a libtool wrapper.  Also, some platforms
+# choose to display argv[0] differently:
+#    path/to/lt-m4:file:line: message
+# or m4.exe:file:line: message
+# to m4:file:line
+#
+# When tracing modules, the module name is platform-dependent:
+#    m4debug: module gnu: opening file `gnu.so'
+# or m4debug: module gnu: opening file `gnu.a'
+# to m4debug: module gnu: opening file
+#
+# When testing modules, a failed module name is platform-dependent:
+#    m4:input.m4:7: cannot open module `no_such': no_such.so: cannot open shared object file: No such file or directory
+# or m4:input.m4:7: cannot open module `no_such': can't open the module
+# to m4:input.m4:7: cannot open module `no_such'
+m4_define([AT_CHECK_M4],
+[AT_CHECK([m4 -b -d $1 ]m4_if([$5], [-], [<&-],
+                        [< m4_default([$5], [/dev/null])]),
+          [$2], [$3], m4_ifval([$4], [stderr]))
+m4_if([$4], [], [],
+      [$4], [ignore], [],
+[AT_CHECK([[sed 's/^[^:]*[lt-]*m4[.ex]*:/m4:/
+      /^m4debug: module/s/opening file.*/opening file/
+      s/\(cannot open module [^:]*\):.*/\1/
+    ' stderr >&2]], [0], [], [$4])])
+])
+
+# M4_ONE_MEG_DEFN
+# ---------------
+# emit a code snippet for use in AT_DATA that will define a macro `f' to
+# consist of 1M bytes of newlines.  With that in place, it is then easy
+# to use divert and invoke `f' in the test file to force diversions to
+# spill into a temporary file.
+m4_define([M4_ONE_MEG_DEFN],
+[pushdef(`diversion', divnum)divert(-1)
+define(`f', `
+')
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+define(`f', defn(`f')defn(`f'))
+divert(diversion)popdef(`diversion')])
+
+# AT_TEST_M4(TITLE, INPUT, [STDOUT = `'], [STDERR = `'])
+# ------------------------------------------------------
+# Run m4 on INPUT, expecting a success.
+m4_define([AT_TEST_M4],
+[AT_SETUP([$1])
+AT_DATA([[input.m4]], [$2])
+AT_CHECK_M4([[input.m4]], 0, [$3], [$4])
+AT_CLEANUP
+])
+
+# We use `dnl' in zillions of places...
+m4_pattern_allow([^dnl$])
+
+# We exercise m4.
+
+AT_TESTED([m4 craigPredict craigTrain emit_sequence  genes2tags  train_cimm])
+
+# AT_CHECK_DYNAMIC_MODULE
+# -----------------------
+# Add keyword `module' to the test, and skip the test if dynamic
+# modules were disabled at configure time.
+m4_define([AT_CHECK_DYNAMIC_MODULE],
+[AT_KEYWORDS([module])
+AT_CHECK([if test "x$DYNAMIC_MODULES" = xno ; then
+  echo Dynamic module support not detected, skipping this test.
+  exit 77
+fi])])
+
+## ----------- ##
+## The suite.  ##
+## ----------- ##
+
+AT_INIT
+
+# Torturing programs.
+m4_include([programs.at])

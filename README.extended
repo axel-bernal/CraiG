@@ -1,0 +1,351 @@
+
+   In what follows, we will define in detail what each of those files 
+should contain.
+
+3.3 Resources
+    ~~~~~~~~~
+
+   The Resource class is used for managing input data in lless. Almost
+anything which should be read/gathered from either the filesystem or the
+user should be represented by a Resource. lless contains a few classes of 
+resources, which were implemented as needs arised during development, but 
+this list is by no means comprehensive.
+
+   Resources provide an elegant representation of any type of input to the
+program and could be used as black boxes by filters, features or in any 
+other environment in a transparent way.
+
+   Every Resource contains two fields which control its behaviour: the field   
+_needsPreProcessing controls whether the Resource Contents to be preProcessed 
+before they get stored or not. When a Resource  object is stored back in the 
+filesystem, Contents are always preProcessed. The field _contentsInlinde is 
+explained in detail down below.
+
+   In lless, resource definitions can be retrieved from a input resource file
+in order to create Resource objects dynamically. The ResourceEngine class 
+takes care of all this by using an instance of a customized ObjectFactory 
+which receives these definitions and creates objects of type Resource.       
+                                                                            
+   Within the resource file, a Resource object is defined in at most two    
+parts: the Header and possibly the Contents. Each line in a resource file that
+starts with the keyword Resource is a Header. The format is the  following: 
+
+Resource    resource-name     ResourceClass     space-separated-parameters   
+                                                                               
+   ResourceClass is either a Resource or any Class derived from Resource, 
+whereas resource-name is a unique identifier. 
+
+   Subsequent lines in the file possibly specify the Resource's Contents   
+unless the Resource class member _contentsInline is false.  
+
+   The reserved keyword ~ is an acronym for the model path, which is 
+equivalent to $(CRAIG_HOME)/models/model_name. This acronym is mostly used
+to access resources whose Contents are too large or cannot be provided inline.
+
+   The following list contains the most important Resources objects in 
+lless:
+
+
+Sigma.  An alphabet. 
+~~~~~
+Example of a Sigma Header in the resource file.
+
+Resource id Sigma n valid_chars  comp_valid_chars  [chars_for_s1 ..]
+
+   The Header above defines an alphabet of n symbols, named id, with a valid
+set of characters and their complement pairing given by valid_chars and 
+comp_valid_chars respectively. The field(s) char_for_si, define the set of 
+characters that represent symbol i in the input sequence.
+
+   The classes DNASigma and AA Sigma derive from Sigma and are provided as
+hardcoded implementations of a DNA and Amino-acid alphabet respectively.
+
+
+FSM. A Finite State Machine implementation
+~~~
+Example of a FSM Header in the resource file
+
+Resource    id                 FSM ~topology_file context_range which_strand
+
+   The Header above defines a FSM resource. The field descriptions are:
+~topology_file.  File containing the FSM topology, i.e., the FSM's definitions,
+                 states, transitions, lengths; the file name is internally 
+                 decoded as ${CRAIG_HOME}/models/model_name.topology_file
+
+it's states and transitions are defined in which_strand and the maximum
+range of a context (for defining context-dependent lengths of states) is 
+from 0 to 100.
+
+
+Fasta. A Fasta file
+~~~~~
+Example of a Fasta Header in the resource file
+
+Resource    id     Fasta fasta_sigma fasta_subformat file_name
+
+   The Header above defines a Fasta resource file_name, with alphabet
+fasta_sigma and subformat fasta_subformat. 
+
+
+ContextIMM. A Context Interpolated Markov Model
+~~~~~~~~~~
+
+Example of a ContextIMM Header in the resource file
+
+Resource    id        ContextIMM needs_preprocessing ~cimm 4 cimm_sigma
+
+   The Header above defines a ContextIMM resource whose Contents can be 
+preprocessed, i.e., the cimm model may need to be computed if the Contents
+are a list of input training sequences. The Contents in any case are read 
+from the file ${CRAIG_HOME}/model_name.cimm.
+The num_contexts parameter specificies the number of desired contexts to
+create for this cimm; this value maybe greater than the actual number of 
+contexts of the cimm.. 
+
+   The sequences used to build the cimm are based on alphabet cimm_sigma.
+
+
+Motif. A Motif profile with its two subclasses: TransfacMotif and 
+~~~~~  DBSoftMatchMotif, a motif formed from 'soft' matches to an input
+       database
+
+Example of a Motif Header in the resource file
+
+Resource id DBSoftMatchMotif sigma needs_preprocessing ~db column length 
+
+   The Header above defines a DBSoftMatchMotif resource whose database is 
+called ${CRAIG_HOME}/model_name.db with symbols defined in alphabetsigma. The
+Contents can be preprocessed, i.e. the motif profile needs to be computed 
+before use. The motif itself is of size length and it is found at colum 
+'colum' in the database
+
+   For more details about each class refer to the source code.
+
+
+3.4 Filters
+    ~~~~~~~
+
+   A filter is property of the input sequence. In particular it can be
+seen as a function that defines a value (integer or double) at each 
+position of the input sequence. All filters by default, only need to be
+computed prior to sequence decoding and freed afterwards, in that way
+memory usage is kept in check.
+
+   In the same way as Resource objects, Filter objects can also be defined
+in an input filter file. The general format for Filter definitions is the
+following:
+
+Filter    filter-name     FilterClass     space-separated-parameters
+                                                                               
+   FilterClass is either a Filter or any Class derived from Filter, whereas
+filter-name is a unique identifier.
+
+   The following list contains the most important Filter objects in lless:
+
+Gram: Sets the filter value at position p equal to the gram of order 
+~~~~~ gram_order that appears at p in the input sequence.
+
+Example of Gram Header in the filter file:
+
+Filter      id      Gram arrindex  gram_sigma order is_not_sparse
+
+The above Header defines a Gram filter named id of order 6 which uses
+array index arrindex to store the filter values. The input sequence for 
+he filter uses alphabet gram_sigma and the last parameter means that all 
+gram values are to be generated if set to true, i.e., values are not sparse.
+
+
+Context. The FL_Context class computes as its name says the context level 
+~~~~~~~  at each position in the sequence. A context is defined by a group 
+         of characters which may appear in the input sequence and whose 
+         relative abundance expressed in terms of levels may define some 
+         key properties of the sequence's structure.
+               
+
+Example of a Header:
+
+Filter id Context arrindex ctx_chars winsize num_ctx_levs [ctx_lev1 .. ] 
+
+The Header above defines a context filter. The parameter arrindex is as 
+defined before; winsize is the sliding window size used to compute the context
+level; num_ctx_levs is the number of levels that appear in this context and 
+
+
+Score.  Sets the filter value at position p to some implementation-dependent
+~~~~~   scoring function value evaluated at position p in the input
+        sequence. Subclasses of this Filter are: MotifScore, SpacerMotifScore
+        CountingScore, DiffCountingScore and ImmScore. The first two classes
+        have scoring functions directly related to the occurrance of motif(s)
+        in the input sequence. CountingScore has value 1 if the symbol present
+        at p matches this_symbol, given as parameter and 0 otherwise. ImmScore
+        computes the filter value at position p as given by a cimm evaluated
+        at position p in the input sequence.
+
+        Filter values in all cases accumulate over the length of the sequence.
+        This speeds up the computation of segment scores dramatically.
+
+Example of a ImmScore filter in the filter file:
+
+Filter      Coding-Score          ImmScore 3 3 0 GC-Content exon-model
+
+The Header above computes filter values in a 3-periodic sequence using the
+cimm exon-model and contexts given by the GC-Content filter.
+
+FastaxFilter.  Used as a wrapper to make any filter work with input 
+~~~~~~~~~~~~   sequences other than the default one. This is the class 
+               to use if one wants to include extrinsic properties to 
+               the sequence, such as homology, other gene annotations and so on
+               within the model
+               The filter parameter can be any filter that has been previously
+               defined. 
+
+Example of a Header:
+
+Filter      id  FastaxFilter<int> 21 fasta_file filter
+
+EdgeInst.  Used for defining edge instances, and implemented as a 
+~~~~~~~~   Signal<EdgeInst>  over the input sequence.
+
+Example of a Header:
+
+Filter      Stop-Signal           EdgeInst 9 STOP dna-alpha 3 TGA TAG TAA
+
+STOP must be defined in TypeDefs.h as TEdgeId2.
+
+3.5 Features
+    ~~~~~~~~
+
+   A Feature is a property defined at each position of the input sequence and
+for all valid taggings at that position. This means that a Feature is usually
+tied to a subset of all possible Tags. Each Feature object knows about its
+associated parameter(s) and as such, it can compute the "dot product" between
+ its value and its parameter(s) and also update its parameter(s).
+
+   The "dot product" can be precomputed for certain features which can have
+a small number of valid Tags tied at each position which are known before
+decoding. In thoses cases, there could be a significant speed up of the 
+decoding phase.
+
+   Features can also be read from an input feature file, in similar manner as 
+Filter and Resource objects. A typical input feature file can have three types
+of declarations: entries for feature precomputation, Feature object and tag 
+set definitions.
+
+   Entries for feature precomputation have the following format: 
+
+PreComputeTo	precomp_entry	num_phases	collapse_phases
+ 
+   Each entry in the array for precomputation (precomp_array) will have length 
+equal to the input sequence, so the precomputed values are defined per input
+sequence position; Above, precomp_entry is just an offset precomp_array, 
+num_phases and collapse_phases give information about how many subentries in
+precomp_array need to be created.
+The rule of thumb is one additional subentry for each phase, unless 
+collapse_phases is set to false, which is the case for features which produce
+phase-dependent values.
+
+   Each entry in the array for precomputation can have more than one feature 
+referencing to it, as long as all features share the same properties as the 
+entry with respect to how the phases influence in the feature value. 
+
+   A Feature object definition in the input feature file looks like this:
+
+Feature   feature-name    FeatureClass feature-parameters [-> num_tags tag1 [tag2 ..]] [@ precomp_entry]
+
+   The first four fields are similar to the description given above for 
+resources and filters. Optionally a feature can be tied to num_tags sequence
+tag(s), in which case the feature is called tied feature. Only tied features
+can update its parameters. Furthermore, a tied feature can precompute its 
+values to entry precomp_entry.
+
+   Tag set definitions in the input feature file have the following format (
+the example is for Node sets only):
+
+NodeSet setName = num_tags node_tag1 [node_tag2 ..] [@ precomp_entry], ..
+   
+   And similarly for EdgeSet. The objective of Tag set definitions is to
+avoid cluttering the input feature file. For example the Node set
+
+NodeSet CODING = 8 INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B
+
+would become very useful when tying features which are associated with all 
+types of coding regions.
+
+   The following is a brief description and feature file definition of the main
+Feature subclasses in lless. All features compute their values given some
+Tag object, which we will denote with tag.
+
+State Background. The value of this feature is the length of tag divided by
+~~~~~~~~~~~~~~~~  the node's mean length. Invariants: Type(tag) = NodeInst
+
+
+Definition in the feature file:
+
+Feature         feature-name  StateBackground num_phases mean_length
+
+ScoringSegment. The value of this feature is the accumulated value of its
+~~~~~~~~~~~~~~  contained filter over tag.
+                Invariants: the contained filter must accumulate and 
+                Type(tag) = NodeInst;
+
+Definition in the feature file:
+
+Feature id ScoringSegment<double> 3 cod_filter 1 3 -1.34938786 true  
+
+  The definition above specifies a 3-phase, 3-periodic ScoringSegment feature, 
+which uses cod_filter whose values are of type double with mean is -1.34938786.
+The scores are normalized, by the length of the segment.
+
+
+LengthSegment. The value of this feature is just the length of the segment.
+~~~~~~~~~~~~~  Invariants: Type(tag) = NodeInst
+
+Bin.  This feature creates a set of disjoint bins which cover the range of 
+      values of the contained filter. The value of the feature corresponds 
+      to the value of the bin which is 'on', i.e. the bin in which the 
+      current value of the filter falls in. Useful to model filters with 
+      sparse or multimodal distributions, such as lengths and scores.
+
+Definition in the feature file:
+
+Feature  Init-Exon-Length    Bin<int> Segment-Length 2000 90 200
+
+   The definition above creates a Bin whose contained filter is of type 
+integer and bins of size 90. The feature can handle filter values of up to
+2000x90, but any filter value above 200x90 is considered to fall into
+a single bin.
+
+CountingSegment. This class computes its feature value as sets of filter value
+~~~~~~~~~~~~~~~  countings over segments. It is the base class implementation
+                 for more sophisticated ways to count the filter values,
+                 such as PeriodicCountingSegment, which works with filters that
+                 are periodic. This feature works very efficiently during
+                 decoding when the provided filter has previously accumulated
+                 its values along the sequence.
+
+
+Definition in the feature file:
+
+Feature  id  PeriodicCountingSegment 3 3-gram 0 3 1 false 1
+
+   The definition above creates a PeriodicCountingSegment feature, which 
+extends CountingSegment to deal with filters whose values are periodic. This
+feature has 3 phases, the filter 3-gram has values which are 3-periodic and
+the starting phase of the feature is 1. The last two parameters indicate that
+the feature should not normalize the countings (false) and instead should use
+1 as default value for the standard deviation of the counts distribution.
+
+EdgeFeature. This is the base class for any feature which ties to an EdgeInst
+~~~~~~~~~~~  object. Its values can be precomputed at all positions along the
+             the sequence in which and EdgeInst object is defined.
+
+Definition in the feature file:
+
+
+
+EdgePhase. An EdgeFeature whose value is the phase of the current edge.
+~~~~~~~~~
+
+
+  For other classes such as WWAM, PWM, PWMxPWM, SoftMatchWordCounter, 
+FilterxFeature, FeaturexFeature and so on, see the reference manual.
