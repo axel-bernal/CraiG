@@ -1,0 +1,58 @@
+\documentclass[letterpaper]{article}
+\usepackage{makeidx}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{multicol}
+\usepackage{epsfig}
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{alltt}
+\usepackage{times}
+\ifx\pdfoutput\undefined
+\usepackage[ps2pdf,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue
+           ]{hyperref}
+\usepackage{pspicture}
+\else
+\usepackage[pdftex,
+            pagebackref=true,
+            colorlinks=true,
+            linkcolor=blue
+           ]{hyperref}
+\fi
+\usepackage{doxygen}
+\makeindex
+\setcounter{tocdepth}{1}
+\renewcommand{\footrulewidth}{0.4pt}
+\begin{document}
+%%
+%% Title Page
+%%
+\begin{titlepage}
+\begin{center}
+{\bf \LARGE CRAIG Reference Manual\\[1ex]\Large Version 1.0}
+\end{center}
+\vspace*{0.5in}
+\begin{figure}[!h]
+\centering
+\begin{minipage}{2.7in}
+\includegraphics[height=2.0in,width=2.7in]{../craig_image.pdf}
+\end{minipage}
+\end{figure}
+\vspace*{0.5in}
+\begin{center}
+Axel E Bernal\\
+Department of Computer and Information Sciences\\
+University of Pennsylvania\\
+Philadelphia, PA 19128\\
+{\tt http://www.seas.upenn.edu/$\sim$abernal}\\
+{\tt abernal@seas.upenn.edu}\\
+\vspace*{1.5in}
+Printed June 2007
+\end{center}
+\end{titlepage}
+\pagenumbering{roman}
+\tableofcontents
+\pagenumbering{arabic}
