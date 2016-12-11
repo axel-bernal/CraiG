@@ -1,0 +1,63 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter		GC-Percent               Content<double> GCgc 80
+Filter     	GC-Content            	 Context GCgc 0 1 100
+Filter      	1-gram                 	 Gram<UCHAR> 1 dna-alpha
+Filter      	2-gram                 	 Gram<UCHAR> 2 dna-alpha
+Filter      	3-gram                 	 Gram<UCHAR> 3 dna-alpha
+Filter      	5-gram                 	 Gram<UCHAR> 5 dna-alpha
+Filter      	6-gram                 	 Gram<USHORT> 6 dna-alpha
+Filter      	Mask-Counts            	 CountingScore 1 0 mask-alpha 1
+Filter      	Start-Signal           	 EdgeInst START dna-alpha 1 ATG
+Filter      	Stop-Signal            	 EdgeInst STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          	 EdgeInst DONOR dna-alpha 2 GT GC
+Filter      Acceptor-Signal       	 EdgeInst ACCEPTOR dna-alpha 1 AG
+
+#LazyFilter  	Donor-Signal           	 EdgeInst DONOR ev-signals-alpha 1 D
+#LazyFilter  	Acceptor-Signal        	 EdgeInst ACCEPTOR ev-signals-alpha 1 A
+#Filter      	Donor-Signal-input     	 FastaxFilter<char,EdgeInst> RNAseq-signals Donor-Signal
+#Filter      	Acceptor-Signal-input  	 FastaxFilter<char,EdgeInst> RNAseq-signals Acceptor-Signal
+
+Filter  	TSS-Signal             	 EdgeInst TSS ev-signals-alpha 1 X
+Filter      	TSS-Signal-input  	 FastaxFilter<char,EdgeInst> RNAseq-xsignals TSS-Signal
+Filter  	PAS-Signal             	 EdgeInst PAS ev-signals-alpha 1 Z
+Filter      	PAS-Signal-input  	 FastaxFilter<char,EdgeInst> RNAseq-xsignals PAS-Signal
+
+MultiFilter(RNAseq-xsigscores)	 	 XSig-Score-$$ ScoreFile<int*,int> RNAseq-xsigscores $$
+
+Filter 	RNAseq-Coverage	 	 	 ScoreFile<double,double> RNAseq-coverage 0
+LazyFilter	RNASeq-Edges   	 	 EdgeAligner false
+Filter		RNASeq-Edges-input 	 FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges RNASeq-Edges
+Filter		AccTotCoverage  	 Coverage<double> 1 0 RNAseq-Coverage RNASeq-Edges
+
+log(Filter) 	Log-RNAseq-Coverage	 ScoreFile<double,double> RNAseq-coverage 0
+log(Filter) 	Log-RNAseq-AccCoverage	 ScoreFile<double,double> RNAseq-coverage 1
+LazyFilter	Log-RNASeq-Edges   	 EdgeAligner false
+log(Filter)	Log-RNASeq-Edges-input 	 FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges Log-RNASeq-Edges
+Filter		Log-AccTotCoverage  	 Coverage<double> 1 0 Log-RNAseq-Coverage Log-RNASeq-Edges
+Filter		Xcript-Rates	 	 Coverage<double> 0 1000 Log-RNAseq-Coverage Log-RNASeq-Edges
+
+#pow(log(Filter),2)			 Log-AccSquaredCoverage	 ScoreFile<double,double> RNAseq-coverage 1
+
+#Filter		10P-Log-RNAseq-Coverage         MovingQuantile<double> Log-RNAseq-Coverage 500 10
+#Filter		90P-Log-RNAseq-Coverage         MovingQuantile<double> Log-RNAseq-Coverage 500 90
+
+#acc(Filter,1)	10P-Log-RNAseq-AccCoverage      	MovingQuantile<double> Log-RNAseq-Coverage 500 10
+#acc(Filter,1)	90P-Log-RNAseq-AccCoverage      	MovingQuantile<double> Log-RNAseq-Coverage 500 90
+
+# Extra stuff
+#LazyFilter  	Min-RNAseq-Coverage		OrderStatistics 1
+#Filter      	Min-RNAseq-Coverage-input	FastaxFilter<double,int*>  RNAseq-coverage Min-RNAseq-Coverage
+Filter 		RNAseq-Coverage	 	 	ScoreFile<double,double> RNAseq-coverage 0
+LazyFilter	RNASeq-Edges   	 		EdgeAligner false
+Filter		RNASeq-Edges-input 	 	FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges RNASeq-Edges
+Filter	    	Norm-RNAseq-Coverage	  	NormalizedScoreFile<double,double> RNAseq-coverage 1
+LazyFilter  	Norm-RNASeq-Edges	  	EdgeAligner true
+Filter      	Norm-RNASeq-Edges-input  	FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges Norm-RNASeq-Edges
+//

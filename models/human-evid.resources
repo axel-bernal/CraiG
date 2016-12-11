@@ -1,0 +1,42 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+
+Resource	dna-alpha	DNASigma
+Resource	mask-alpha	Sigma 2 TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource	aa-alpha  	AASigma
+Resource    complete           	FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial          	FSM ~partial.top 100 BOTH_STRANDS
+
+Resource    ev-states-alpha     Sigma 4 .-_ilnIELSCAO .-_ilnIELSCAO   . iln _- SIELCAO
+Resource    ev-xstates-alpha    Sigma 8 .-_ilnIELSCAO .-_ilnIELSCAO   . i ln _- S I L ECAO
+Resource    ev-signals-alpha    Sigma 5 -STDA -STDA - S T D A
+##PREFIX_EVIDENCE for paper testing is /home/abernal/Data/Human/Combiner/Human/Combiner/test.longest
+Resource	EnsEMBL_predictions-ev-states	File XFASTA PREFIX_EVIDENCE.EnsEMBL_predictions.state ev-states-alpha true false 1
+Resource	N-SCAN-Pairagon_mRNA_EST_v1-ev-states	File XFASTA PREFIX_EVIDENCE.N-SCAN-Pairagon_mRNA_EST_v1.state ev-states-alpha true false 1
+Resource	N-SCAN-Pairagon_multiple_v2-ev-states	File XFASTA PREFIX_EVIDENCE.N-SCAN-Pairagon_multiple_v2.state ev-states-alpha true false 1
+Resource	N-SCAN-Pairagon_novel_v2-ev-states	File XFASTA PREFIX_EVIDENCE.N-SCAN-Pairagon_novel_v2.state ev-states-alpha true false 1
+Resource	Aceview-ev-states	File XFASTA PREFIX_EVIDENCE.Aceview.state ev-states-alpha true false 1
+Resource	ExoGean-ev-states	File XFASTA PREFIX_EVIDENCE.ExoGean.state ev-states-alpha true false 1
+Resource	ExonHunter-ev-states	File XFASTA PREFIX_EVIDENCE.ExonHunter.state ev-states-alpha true false 1
+Resource	TwinScan-MARS-ev-states	File XFASTA PREFIX_EVIDENCE.TwinScan-MARS.state ev-states-alpha true false 1
+Resource	annotation_twinscan-ev-states	File XFASTA PREFIX_EVIDENCE.annotation_twinscan.state ev-states-alpha true false 1
+Resource	Craig_encode-ev-states	File XFASTA PREFIX_EVIDENCE.Craig_encode.state ev-states-alpha true false 1
+Resource	1mer-ev-colstates	SparseFastaFileCollapser<UCHAR> null false 1 10 EnsEMBL_predictions-ev-states N-SCAN-Pairagon_mRNA_EST_v1-ev-states N-SCAN-Pairagon_multiple_v2-ev-states N-SCAN-Pairagon_novel_v2-ev-states Aceview-ev-states ExoGean-ev-states ExonHunter-ev-states TwinScan-MARS-ev-states annotation_twinscan-ev-states Craig_encode-ev-states
+Resource	1mer-ev-colxstates	SparseFastaFileCollapser<UCHAR> ev-xstates-alpha false 1 10 EnsEMBL_predictions-ev-states N-SCAN-Pairagon_mRNA_EST_v1-ev-states N-SCAN-Pairagon_multiple_v2-ev-states N-SCAN-Pairagon_novel_v2-ev-states Aceview-ev-states ExoGean-ev-states ExonHunter-ev-states TwinScan-MARS-ev-states annotation_twinscan-ev-states Craig_encode-ev-states
+Resource	2mer-ev-colstates	SparseFastaFileCollapser<UCHAR> null false 2 10 EnsEMBL_predictions-ev-states N-SCAN-Pairagon_mRNA_EST_v1-ev-states N-SCAN-Pairagon_multiple_v2-ev-states N-SCAN-Pairagon_novel_v2-ev-states Aceview-ev-states ExoGean-ev-states ExonHunter-ev-states TwinScan-MARS-ev-states annotation_twinscan-ev-states Craig_encode-ev-states
+Resource	2mer-ev-colxstates	SparseFastaFileCollapser<UCHAR> ev-xstates-alpha false 2 10 EnsEMBL_predictions-ev-states N-SCAN-Pairagon_mRNA_EST_v1-ev-states N-SCAN-Pairagon_multiple_v2-ev-states N-SCAN-Pairagon_novel_v2-ev-states Aceview-ev-states ExoGean-ev-states ExonHunter-ev-states TwinScan-MARS-ev-states annotation_twinscan-ev-states Craig_encode-ev-states
+Resource	EnsEMBL_predictions-ev-signals	File XFASTA PREFIX_EVIDENCE.EnsEMBL_predictions.signal ev-signals-alpha true false 1
+Resource	N-SCAN-Pairagon_mRNA_EST_v1-ev-signals	File XFASTA PREFIX_EVIDENCE.N-SCAN-Pairagon_mRNA_EST_v1.signal ev-signals-alpha true false 1
+Resource	N-SCAN-Pairagon_multiple_v2-ev-signals	File XFASTA PREFIX_EVIDENCE.N-SCAN-Pairagon_multiple_v2.signal ev-signals-alpha true false 1
+Resource	N-SCAN-Pairagon_novel_v2-ev-signals	File XFASTA PREFIX_EVIDENCE.N-SCAN-Pairagon_novel_v2.signal ev-signals-alpha true false 1
+Resource	Aceview-ev-signals	File XFASTA PREFIX_EVIDENCE.Aceview.signal ev-signals-alpha true false 1
+Resource	ExoGean-ev-signals	File XFASTA PREFIX_EVIDENCE.ExoGean.signal ev-signals-alpha true false 1
+Resource	ExonHunter-ev-signals	File XFASTA PREFIX_EVIDENCE.ExonHunter.signal ev-signals-alpha true false 1
+Resource	TwinScan-MARS-ev-signals	File XFASTA PREFIX_EVIDENCE.TwinScan-MARS.signal ev-signals-alpha true false 1
+Resource	annotation_twinscan-ev-signals	File XFASTA PREFIX_EVIDENCE.annotation_twinscan.signal ev-signals-alpha true false 1
+Resource	Craig_encode-ev-signals	File XFASTA PREFIX_EVIDENCE.Craig_encode.signal ev-signals-alpha true false 1
+Resource	ev-signals-all	FileMerger null false - 10 EnsEMBL_predictions-ev-signals N-SCAN-Pairagon_mRNA_EST_v1-ev-signals N-SCAN-Pairagon_multiple_v2-ev-signals N-SCAN-Pairagon_novel_v2-ev-signals Aceview-ev-signals ExoGean-ev-signals ExonHunter-ev-signals TwinScan-MARS-ev-signals annotation_twinscan-ev-signals Craig_encode-ev-signals
+//

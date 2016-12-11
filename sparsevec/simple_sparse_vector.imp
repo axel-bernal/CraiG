@@ -1,0 +1,132 @@
+//=============================================================================
+// File Name: simple_sparse_vector.imp
+// Written by: Shai Shalev-Shwartz (23.03.06)
+// implements the functions of simple_sparse_vector.h
+//=============================================================================
+#ifndef _SHAI_SIMPLE_SPARSE_VECTOR_IMP_
+#define _SHAI_SIMPLE_SPARSE_VECTOR_IMP_
+
+//*****************************************************************************
+// Included Files
+//*****************************************************************************
+#include <map>
+#include <vector>
+
+
+/*---------------------------------------------------------------------------*/
+simple_sparse_vector::simple_sparse_vector(std::istream& is) : my_vec() {
+  
+  // read the number of elements
+  int n = 0;
+  is >> n;
+
+  // read the elements
+  for (int i=0; i<n ; ++i) {
+
+    // read the pair (key,val)
+    std::string key;
+    is >> key;
+    double val;
+    is >> val;
+
+    // insert to the map
+    my_vec[key] = val;
+
+  }
+
+}
+/*---------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------*/
+void simple_sparse_vector::add(simple_sparse_vector& other, double s) {
+  
+  for(std::map<std::string, double>::iterator it = other.my_vec.begin(); 
+      it != other.my_vec.end(); it++) {
+    double tmp = ((*it).second) * s;
+    if (my_vec.count((*it).first) != 0) { // this will be true if my_vec contains the key
+      my_vec[(*it).first] += tmp;
+    } else { // my_vec does not contain the key
+      my_vec[(*it).first] = tmp;
+    }
+  }
+}
+/*---------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------*/
+double simple_sparse_vector::snorm() {
+
+  double output = 0.0;
+  for(std::map<std::string, double>::iterator it = my_vec.begin(); 
+      it != my_vec.end(); it++) {
+    double tmp = (*it).second;
+    output += tmp*tmp;
+  }
+
+  return(output);
+}
+/*---------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------*/
+void simple_sparse_vector::make_binary() {
+
+  for(std::map<std::string, double>::iterator it = my_vec.begin(); 
+      it != my_vec.end(); it++) {
+    (*it).second = 1;
+  }
+
+}
+/*---------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------*/
+double operator* (simple_sparse_vector& u, simple_sparse_vector& v) {
+  
+  double output = 0.0;
+  if (u.my_vec.size() < v.my_vec.size()) {
+
+    for(std::map<std::string, double>::iterator it = u.my_vec.begin(); 
+	it != u.my_vec.end(); it++) {
+      if (v.my_vec.count((*it).first) != 0) // this will be true if v contains the key
+	output += (*it).second * v.my_vec[(*it).first];
+    }
+
+  } else {
+
+    for(std::map<std::string, double>::iterator it = v.my_vec.begin(); 
+	it != v.my_vec.end(); it++) {
+      if (u.my_vec.count((*it).first) != 0) // this will be true if v contains the key
+	output += (*it).second * u.my_vec[(*it).first];
+    }
+
+  }
+
+  return(output);
+}
+/*---------------------------------------------------------------------------*/
+
+
+/*---------------------------------------------------------------------------*/
+infra::vector_base operator* (std::vector<simple_sparse_vector>& A, 
+			      simple_sparse_vector& v) {
+  
+  infra::vector output(A.size());
+  output.zeros();
+
+  for(std::map<std::string, double>::iterator it = v.my_vec.begin(); 
+      it != v.my_vec.end(); it++) {
+    for (unsigned int i=0; i < output.size(); ++i) {
+      if (A[i].my_vec.count((*it).first) != 0) // this will be true if A[i] contains the key
+	output(i) += (*it).second * A[i].my_vec[(*it).first];
+    }
+  }
+
+  return(output);
+}
+/*---------------------------------------------------------------------------*/
+
+
+#endif
+

@@ -1,0 +1,177 @@
+#
+#Types of features
+#
+#
+#
+#
+#
+
+
+##############################################################################
+#                           NODE-RELATED FEATURES
+##############################################################################
+
+#
+# Defining PreComputeTod entries for these features
+PreComputeTo  0     1     true
+PreComputeTo  1     1     true
+PreComputeTo  2     1     true
+PreComputeTo  3     1     true
+PreComputeTo  4     1     true
+PreComputeTo  5     1     true
+PreComputeTo  6     3     true
+PreComputeTo  7     3     true
+PreComputeTo  8     3     true
+PreComputeTo  9     0     false
+PreComputeTo  10    0     false
+PreComputeTo  11    0     false
+PreComputeTo  12    0     false
+PreComputeTo  13    3     true
+PreComputeTo  14    3     true
+PreComputeTo  15    3     true
+PreComputeTo  16    3     true
+PreComputeTo  17    3     true
+PreComputeTo  18    3     true
+PreComputeTo  19    3     true
+PreComputeTo  20    3     true
+PreComputeTo  21    3     true
+PreComputeTo  22    3     true
+PreComputeTo  23    3     true
+PreComputeTo  24    3     true
+PreComputeTo  25    3     true
+PreComputeTo  26    3     true
+PreComputeTo  27    3     true
+PreComputeTo  28    3     true
+PreComputeTo  29    3     true
+PreComputeTo  30    3     true
+PreComputeTo  31    3     true
+PreComputeTo  32    3     true
+PreComputeTo  33    3     true
+PreComputeTo  34    3     true
+PreComputeTo  35    3     true
+PreComputeTo  36    3     true
+PreComputeTo  37    3     true
+PreComputeTo  38    3     true
+PreComputeTo  39    3     true
+PreComputeTo  40    3     true
+PreComputeTo  41    3     true
+
+@define TagSet ALL_CODING* 8 SINGLE_EXON_F INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_B INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B
+
+@define TagSet  ALIGN_VOTING* 2 INTRON_F INTRON_B, 2 LONG_INTRON_F LONG_INTRON_B, 2 INIT_EXON_F INIT_EXON_B, 2 INTERNAL_EXON_F INTERNAL_EXON_B, 2 LAST_EXON_F LAST_EXON_B, 2 SINGLE_EXON_F SINGLE_EXON_B
+#@define TagSet  ALIGN_VOTING* 2 INTRON_F INTRON_B, 2 INIT_EXON_F INIT_EXON_B, 2 INTERNAL_EXON_F INTERNAL_EXON_B, 2 LAST_EXON_F LAST_EXON_B, 2 SINGLE_EXON_F SINGLE_EXON_B
+
+@define TagSet ALL_INTRONS* 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+#@define TagSet ALL_INTRONS* 2 INTRON_F INTRON_B
+
+@define TagSet START* 2 START_F START_B @ 9
+@define TagSet STOP* 2 STOP_F STOP_B @ 10
+@define TagSet DONOR* 2 DONOR_F DONOR_B @ 11
+@define TagSet ACCEPTOR* 2 ACCEPTOR_F ACCEPTOR_B @ 12
+
+#
+#State Background Features
+#
+
+PerTagFeature		State-Background        StateBackground 3 1000 -> 2 SINGLE_EXON_F SINGLE_EXON_B, 2 INIT_EXON_F INIT_EXON_B, 2 INTERGENIC_F INTERGENIC_B, 2 INTRON_F INTRON_B, 2 LONG_INTRON_F LONG_INTRON_B, 2 INTERNAL_EXON_F INTERNAL_EXON_B, 2 LAST_EXON_F LAST_EXON_B, 2 INIT_EXON_F INIT_EXON_B, 2 LAST_EXON_F LAST_EXON_B
+
+#Feature		Intergenic-Background           StateBackground 1 1000 -> 2 INTERGENIC_F INTERGENIC_B
+#Feature         Intron-Background               StateBackground 3 1000 -> 2 INTRON_F INTRON_B
+#Feature         LongIntron-Background               StateBackground 3 1000 -> 2 LONG_INTRON_F LONG_INTRON_B
+#Feature         Multi-Exon-Background           StateBackground 3 1000 -> 8 INIT_EXON_F INIT_EXON_B INTERNAL_EXON_F INTERNAL_EXON_B LAST_EXON_F LAST_EXON_B SINGLE_EXON_F SINGLE_EXON_B
+##Feature         Single-Exon-Background          StateBackground 1 1000 -> 2 SINGLE_EXON_F SINGLE_EXON_B
+
+#
+#Voting Features
+#
+Feature           LinearBin4-IntronVotes            Bin<int> null 7 0 0 20
+Feature           LinearBin4-LongIntronVotes        Bin<int> null 6 2 120 30
+Feature           LinearBin4-InternalExonVotes      Bin<int> null 6 2 0 10
+Feature           LinearBin4-OtherExonVotes         Bin<int> null 6 2 0 20
+Feature           LinearBin4-SingleExonVotes        Bin<int> null 6 2 0 40
+Feature           LinearBin4-IgenicVotes            Bin<int> null 10 2 0 40
+Feature           LinearBin4-TwoWayVotes            Bin<int> null 8 2 0 15
+
+#Feature           LinearBin4-IntronVotes            Bin<int> null 6 0 0 20
+#Feature           LinearBin4-LongIntronVotes        Bin<int> null 6 0 0 20
+#Feature           LinearBin4-InternalExonVotes      Bin<int> null 6 0 0 20
+#Feature           LinearBin4-OtherExonVotes         Bin<int> null 6 0 0 20
+#Feature           LinearBin4-SingleExonVotes        Bin<int> null 6 0 0 20
+#Feature           LinearBin4-IgenicVotes            Bin<int> null 6 0 0 20
+#Feature           LinearBin4-TwoWayVotes            Bin<int> null 6 0 0 20
+
+#
+# Gram Features
+#
+
+MultiFeature(States-1xgram-1mer-$$)       1mer-NPhaseHist-1GRAM-$$             SparseBinnedSegment<UCHAR,int,UCHAR> 1 States-1xgram-1mer-$$ 1 8 LinearBin4-IgenicVotes false 1 0 LinearBin4-LongIntronVotes false 1 2 LinearBin4-IntronVotes false 1 1 LinearBin4-SingleExonVotes false 1 4 LinearBin4-InternalExonVotes false 1 7 LinearBin4-OtherExonVotes false 1 5 LinearBin4-OtherExonVotes false 1 6 LinearBin4-TwoWayVotes false 1 3 -> 2 INTRON_F INTRON_B
+#, 2 LONG_INTRON_F LONG_INTRON_B
+
+MultiPerTagFeature(States-1xgram-1mer-$$)       1mer-PhaseHist-1GRAM-$$             PhasedSparseBinnedSegment<UCHAR,int,UCHAR> 1 States-1xgram-1mer-$$ 3 8 LinearBin4-IgenicVotes false 1 0 LinearBin4-LongIntronVotes false 1 2 LinearBin4-IntronVotes false 1 1 LinearBin4-SingleExonVotes false 1 4 LinearBin4-InternalExonVotes false 1 7 LinearBin4-OtherExonVotes false 1 5 LinearBin4-OtherExonVotes false 1 6 LinearBin4-TwoWayVotes false 1 3 -> 2 INIT_EXON_F INIT_EXON_B, 2 INTERNAL_EXON_F INTERNAL_EXON_B, 2 LAST_EXON_F LAST_EXON_B, 2 SINGLE_EXON_F SINGLE_EXON_B
+
+MultiFeature(States-1xgram-2mer-$$)       2mer-NPhaseHist-1GRAM-$$              SparseBinnedSegment<UCHAR,int,UCHAR> 1 States-1xgram-2mer-$$ 1 8 LinearBin4-IgenicVotes false 1 0 LinearBin4-LongIntronVotes false 1 18 LinearBin4-IntronVotes false 1 9 LinearBin4-SingleExonVotes false 1 36 LinearBin4-InternalExonVotes false 1 63 LinearBin4-OtherExonVotes false 1 45 LinearBin4-OtherExonVotes false 1 54 LinearBin4-TwoWayVotes false 0 -> 2 INTRON_F INTRON_B
+#, 2 LONG_INTRON_F LONG_INTRON_B
+
+MultiPerTagFeature(States-1xgram-2mer-$$)       2mer-PhaseHist-1GRAM-$$              PhasedSparseBinnedSegment<UCHAR,int,UCHAR> 1 States-1xgram-2mer-$$ 3 8 LinearBin4-IgenicVotes false 1 0 LinearBin4-LongIntronVotes false 1 18 LinearBin4-IntronVotes false 1 9 LinearBin4-SingleExonVotes false 1 36 LinearBin4-InternalExonVotes false 1 63 LinearBin4-OtherExonVotes false 1 45 LinearBin4-OtherExonVotes false 1 54 LinearBin4-TwoWayVotes false 0 -> 2 INIT_EXON_F INIT_EXON_B, 2 INTERNAL_EXON_F INTERNAL_EXON_B, 2 LAST_EXON_F LAST_EXON_B, 2 SINGLE_EXON_F SINGLE_EXON_B
+
+Feature           LinearBin4-AgreementCounts         	LinearFitBin<int> null 7 0 0 4
+
+MultiSparsePerTagFeature(States-3gram-1mer-$$)           1mer-3GRAM-1st-Frame-$$        PeriodicCountingSegment<UCHAR> 3 States-3gram-1mer-$$ 0 3 0 false 1 -> ALL_CODING* @ 21, 2 INTRON_F INTRON_B @ 22, 2 LONG_INTRON_F LONG_INTRON_B @ 23
+MultiSparsePerTagFeature(States-3gram-1mer-$$)           1mer-3GRAM-2nd-Frame-$$        PeriodicCountingSegment<UCHAR> 3 States-3gram-1mer-$$ 0 3 1 false 1 -> ALL_CODING* @ 24, 2 INTRON_F INTRON_B @ 25, 2 LONG_INTRON_F LONG_INTRON_B @ 26
+MultiSparsePerTagFeature(States-3gram-1mer-$$)           1mer-3GRAM-3rd-Frame-$$        PeriodicCountingSegment<UCHAR> 3 States-3gram-1mer-$$ 0 3 2 false 1 -> ALL_CODING* @ 27, 2 INTRON_F INTRON_B @ 28, 2 LONG_INTRON_F LONG_INTRON_B @ 29
+
+MultiSparseFeature(States-3gram-1mer-$$)           1mer-Codonx3GRAM-1st-Frame-$$  LazyFilterXFeature<UCHAR,UCHAR> 3-gram 1mer-3GRAM-1st-Frame-$$ -> ALL_CODING* @ 30
+MultiSparseFeature(States-3gram-1mer-$$)           1mer-Codonx3GRAM-2nd-Frame-$$  LazyFilterXFeature<UCHAR,UCHAR> 3-gram 1mer-3GRAM-2nd-Frame-$$ -> ALL_CODING* @ 31
+MultiSparseFeature(States-3gram-1mer-$$)           1mer-Codonx3GRAM-3rd-Frame-$$  LazyFilterXFeature<UCHAR,UCHAR> 3-gram 1mer-3GRAM-3rd-Frame-$$ -> ALL_CODING* @ 32
+
+Feature						   3GRAM-1st-Frame        PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 0 false 1 -> ALL_CODING* @ 33
+Feature						   3GRAM-2nd-Frame        PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 1 false 1 -> ALL_CODING* @ 34
+Feature						   3GRAM-3rd-Frame        PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 2 false 1 -> ALL_CODING* @ 35
+
+SparseFeature           3GRAM-Cod-1st-Frame        BinnedPeriodicCountingSegment<UCHAR,UCHAR#> 3 States-3multigram-1mer 0 1 LinearBin4-AgreementCounts null 64 3 0 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 36
+SparseFeature           3GRAM-Cod-2nd-Frame         BinnedPeriodicCountingSegment<UCHAR,UCHAR#> 3 States-3multigram-1mer 0 1 LinearBin4-AgreementCounts null 64 3 1 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 37
+SparseFeature           3GRAM-Cod-3rd-Frame       BinnedPeriodicCountingSegment<UCHAR,UCHAR#> 3 States-3multigram-1mer 0 1 LinearBin4-AgreementCounts null 64 3 2 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 38
+
+#SparsePerTagFeature           3GRAM-Cod-1st-Frame        BinnedPeriodicCountingSegment<UCHAR,UCHAR#> 3 States-3multigram-1mer 0 1 LinearBin4-AgreementCounts null 64 3 0 false 1 -> ALL_CODING* @ 36
+#SparsePerTagFeature           3GRAM-Cod-2nd-Frame         BinnedPeriodicCountingSegment<UCHAR,UCHAR#> 3 States-3multigram-1mer 0 1 LinearBin4-AgreementCounts null 64 3 1 false 1 -> ALL_CODING* @ 37 
+#SparsePerTagFeature           3GRAM-Cod-3rd-Frame    	  BinnedPeriodicCountingSegment<UCHAR,UCHAR#> 3 States-3multigram-1mer 0 1 LinearBin4-AgreementCounts null 64 3 2 false 1 -> ALL_CODING* @ 38
+
+##############################################################################
+#                           EDGE-RELATED FEATURES
+##############################################################################
+
+Feature		Start-Background                Edge<int> 1 Start-Signal 1 -> START*
+Feature		Stop-Background                 Edge<int> 1 Stop-Signal 1 -> STOP*
+Feature		Donor-Background                Edge<int> 3 Donor-Signal 1 -> DONOR*
+Feature		Acceptor-Background             Edge<int> 3 Acceptor-Signal 1 -> ACCEPTOR*
+
+Feature		Start-PWM                       GramPWM<UCHAR,UCHAR> 1 Start-Signal -7 12 1 1-gram
+Feature		Stop-PWM                        GramPWM<UCHAR,UCHAR> 1 Stop-Signal -1 5 1 1-gram
+Feature		Donor-PWM                       GramPWM<UCHAR,UCHAR> 3 Donor-Signal -4 12 1 1-gram -> DONOR*
+Feature		Acceptor-PWM                    GramPWM<UCHAR,UCHAR> 3 Acceptor-Signal -8 12 1 1-gram -> ACCEPTOR*
+
+#SparseFeature           Binned-Start-Signal-1mer     	 BinnedGramWWAM<int,UCHAR,UCHAR> 1 Start-Signal -1 2 1 3 LinearBin4-AgreementCounts States-3multigram-1mer -> START*
+#SparseFeature           Binned-Stop-Signal-1mer 	 BinnedGramWWAM<int,UCHAR,UCHAR> 1 Stop-Signal -3 2 1 3 LinearBin4-AgreementCounts States-3multigram-1mer -> STOP*
+#SparsePhaseFeature      Binned-Donor-Signal-1mer     	 BinnedGramWWAM<int,UCHAR,UCHAR> 3 Donor-Signal -3 2 1 3 LinearBin4-AgreementCounts States-3multigram-1mer -> DONOR*
+#SparsePhaseFeature      Binned-Acceptor-Signal-1mer 	 BinnedGramWWAM<int,UCHAR,UCHAR> 3 Acceptor-Signal 1 2 1 3 LinearBin4-AgreementCounts States-3multigram-1mer -> ACCEPTOR*
+
+MultiFeature(States-1gram-1mer-$$)           Start-Signal-1mer-$$     	 GramPWM<UCHAR,UCHAR> 1 Start-Signal -1 4 1 States-1gram-1mer-$$ -> START*
+MultiFeature(States-1gram-1mer-$$)           Stop-Signal-1mer-$$ 	 GramPWM<UCHAR,UCHAR> 1 Stop-Signal -3 4 1 States-1gram-1mer-$$ -> STOP*
+MultiPhaseFeature(States-1gram-1mer-$$)      Donor-Signal-1mer-$$     	 GramPWM<UCHAR,UCHAR> 3 Donor-Signal -3 4 1 States-1gram-1mer-$$ -> DONOR*
+MultiPhaseFeature(States-1gram-1mer-$$)      Acceptor-Signal-1mer-$$ 	 GramPWM<UCHAR,UCHAR> 3 Acceptor-Signal 1 4 1 States-1gram-1mer-$$ -> ACCEPTOR*
+
+PackedFeature(Start-Signal-1mer-$$)                Start-PWM-Union-1mer     PWMUnion<UCHAR> 1 Start-Signal 0 0 1 Start-Signal-1mer-$$ -> START*
+PackedFeature(Stop-Signal-1mer-$$)            	   Stop-PWM-Union-1mer      PWMUnion<UCHAR> 1 Stop-Signal 0 0 1 Stop-Signal-1mer-$$ -> STOP*
+PackedPhaseFeature(Donor-Signal-1mer-$$)      Donor-PWM-Union-1mer     PWMUnion<UCHAR> 3 Donor-Signal 0 0 1 Donor-Signal-1mer-$$ -> DONOR*
+PackedPhaseFeature(Acceptor-Signal-1mer-$$)   Acceptor-PWM-Union-1mer  PWMUnion<UCHAR> 3 Acceptor-Signal 0 0 1 Acceptor-Signal-1mer-$$ -> ACCEPTOR*
+
+SparseFeature				      	      Donor-PWMxPWM-1mer    	 PWMxPWM<UCHAR> Donor-PWM Donor-PWM-Union-1mer -> DONOR*
+SparseFeature   				      Acceptor-PWMxPWM-1mer PWMxPWM<UCHAR> Acceptor-PWM Acceptor-PWM-Union-1mer -> ACCEPTOR*
+
+#Feature                SE-Boundaries               EdgeMatchSegment 1 Starts-gram Stops-gram partial -> 2 SINGLE_EXON_F SINGLE_EXON_B
+#Feature                IE-Boundaries               EdgeMatchSegment 3 Acceptors-gram Donors-gram partial -> 2 INTERNAL_EXON_F INTERNAL_EXON_B
+#Feature                LE-Boundaries               EdgeMatchSegment 3 Acceptors-gram Stops-gram partial -> 2 LAST_EXON_F LAST_EXON_B
+#Feature                FE-Boundaries               EdgeMatchSegment 3 Starts-gram Donors-gram partial -> 2 INIT_EXON_F INIT_EXON_B
+#Feature                IN-Boundaries               EdgeMatchSegment 3 Donors-gram Acceptors-gram partial -> 2 INTRON_F INTRON_B
+#Feature                LI-Boundaries               EdgeMatchSegment 3 Donors-gram Acceptors-gram partial -> 2 LONG_INTRON_F LONG_INTRON_B
+//

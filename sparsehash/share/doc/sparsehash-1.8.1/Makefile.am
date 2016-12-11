@@ -1,0 +1,1 @@
+EXTRA_DIST = AUTHORS ChangeLog COPYING dense_hash_map.html dense_hash_set.html designstyle.css implementation.html index.html INSTALL NEWS performance.html README README_windows.txt sparse_hash_map.html sparse_hash_set.html sparsetable.html TODO

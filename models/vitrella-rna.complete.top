@@ -1,0 +1,201 @@
+#
+#Constructor for edges is of the form:
+#Edge(int id, bool hasSignal, bool isSelfTransition, TStrand strand)
+#
+
+#
+
+Edge	TSS_F		   TSS		  true  false STRAND_FWD
+Edge	PAS_F		   PAS		  true  false STRAND_FWD
+Edge    START_F            START          true  false STRAND_FWD
+Edge    STOP_F             STOP           true  false STRAND_FWD
+Edge    DONOR_F            DONOR          true  false STRAND_FWD
+Edge    UTR_DONOR_F        DONOR          true  false STRAND_FWD
+Edge    ACCEPTOR_F         ACCEPTOR       true  false STRAND_FWD
+Edge    UTR_ACCEPTOR_F     ACCEPTOR       true  false STRAND_FWD
+Edge    SELF_INTERGENIC_F  NO_EDGE_INST      false true STRAND_FWD
+Edge    PAR_TSS_F          NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_PAS_F          NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_START_F        NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_STOP_F         NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_DONOR_F        NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_ACCEPTOR_F     NO_EDGE_INST      false false STRAND_FWD
+
+Edge	TSS_B		   TSS		  true  false STRAND_COMP    TSS_F
+Edge	PAS_B		   PAS		  true  false STRAND_COMP    PAS_F
+Edge    START_B            START          true  false STRAND_COMP    START_F
+Edge    STOP_B             STOP           true  false STRAND_COMP    STOP_F
+Edge    DONOR_B            DONOR          true  false STRAND_COMP    DONOR_F
+Edge    UTR_DONOR_B        DONOR          true  false STRAND_COMP    UTR_DONOR_F
+Edge    ACCEPTOR_B         ACCEPTOR       true  false STRAND_COMP    ACCEPTOR_F
+Edge    UTR_ACCEPTOR_B     ACCEPTOR       true  false STRAND_COMP    UTR_ACCEPTOR_F
+Edge    SELF_INTERGENIC_B  NO_EDGE_INST      false true STRAND_COMP  SELF_INTERGENIC_F
+Edge    PAR_TSS_B          NO_EDGE_INST      false false STRAND_COMP PAR_TSS_F
+Edge    PAR_PAS_B          NO_EDGE_INST      false false STRAND_COMP PAR_PAS_F
+Edge    PAR_START_B        NO_EDGE_INST      false false STRAND_COMP PAR_START_F
+Edge    PAR_STOP_B         NO_EDGE_INST      false false STRAND_COMP PAR_STOP_F
+Edge    PAR_DONOR_B        NO_EDGE_INST      false false STRAND_COMP PAR_DONOR_F
+Edge    PAR_ACCEPTOR_B     NO_EDGE_INST      false false STRAND_COMP PAR_ACCEPTOR_F
+
+#
+#Constructor for nodes is of the form:
+#FLNode    int id int phase TStrand strand [nextEdgePos:edge:nextNode ...])
+#VPNode    int id int phase TStrand strand[nextEdgePos:edge:nextNode...]
+#
+
+# Start Synchronization Node
+FLNode        ^                 SYNC_STATE      NO_NODE_INST 3  3  3  STRAND_FWD
+
+#
+# Forward strand Nodes
+#
+FLNode      INTERGENIC_F        ANY_INTERGENIC  INTERGENIC  1  1  1  STRAND_FWD
+VLNode      5INIT_UTR_F      	ANY_5UTR        UTR         1  1  1  STRAND_FWD
+VLNode      5INTERNAL_UTR_F     ANY_5UTR        UTR         1  1  1  STRAND_FWD
+VLNode      5LAST_UTR_F         ANY_5UTR        UTR         1  1  1  STRAND_FWD
+VLNode      5SINGLE_UTR_F       ANY_5UTR        UTR         1  1  1  STRAND_FWD
+VLNode      3INIT_UTR_F      	ANY_3UTR        UTR         1  1  1  STRAND_FWD
+VLNode      3INTERNAL_UTR_F     ANY_3UTR        UTR         1  1  1  STRAND_FWD
+VLNode      3LAST_UTR_F         ANY_3UTR        UTR         1  1  1  STRAND_FWD
+VLNode      3SINGLE_UTR_F       ANY_3UTR       	UTR         1  1  1  STRAND_FWD
+VLNode      5UTR_INTRON_F       ANY_UTR_INTRON 	INTRON      1  1  1  STRAND_FWD
+VLNode      3UTR_INTRON_F       ANY_UTR_INTRON 	INTRON      1  1  1  STRAND_FWD
+VLNode      INTRON_F            ANY_INTRON      INTRON      1  3  3  STRAND_FWD
+VPNode      INIT_EXON_F         INIT_EXON       EXON        3  1  3  STRAND_FWD STOP_F
+VPNode      INTERNAL_EXON_F     INTERNAL_EXON   EXON        3  3  3  STRAND_FWD STOP_F
+VPNode      LAST_EXON_F         LAST_EXON       EXON        3  3  1  STRAND_FWD STOP_F
+VPNode      SINGLE_EXON_F       SINGLE_EXON     EXON        3  1  1  STRAND_FWD STOP_F
+
+#
+# Complementary strand Nodes
+#
+FLNode      INTERGENIC_B       ANY_INTERGENIC  INTERGENIC  1  1  1  STRAND_COMP INTERGENIC_F
+VLNode      5INIT_UTR_B      ANY_5UTR        UTR         1  1  1  STRAND_COMP 5INIT_UTR_F
+VLNode      5INTERNAL_UTR_B  ANY_5UTR        UTR         1  1  1  STRAND_COMP 5INTERNAL_UTR_F
+VLNode      5LAST_UTR_B      ANY_5UTR        UTR         1  1  1  STRAND_COMP 5LAST_UTR_F
+VLNode      5SINGLE_UTR_B    ANY_5UTR        UTR         1  1  1  STRAND_COMP 5SINGLE_UTR_F
+VLNode      3INIT_UTR_B      ANY_3UTR        UTR         1  1  1  STRAND_COMP 3INIT_UTR_F
+VLNode      3INTERNAL_UTR_B  ANY_3UTR        UTR         1  1  1  STRAND_COMP 3INTERNAL_UTR_F
+VLNode      3LAST_UTR_B      ANY_3UTR        UTR         1  1  1  STRAND_COMP 3LAST_UTR_F
+VLNode      3SINGLE_UTR_B    ANY_3UTR        UTR         1  1  1  STRAND_COMP 3SINGLE_UTR_F
+VLNode      5UTR_INTRON_B    ANY_UTR_INTRON  INTRON      1  1  1  STRAND_COMP 5UTR_INTRON_F
+VLNode      3UTR_INTRON_B    ANY_UTR_INTRON  INTRON      1  1  1  STRAND_COMP 3UTR_INTRON_F
+VLNode      INTRON_B         ANY_INTRON      INTRON      1  3  3  STRAND_COMP INTRON_F
+VPNode      INIT_EXON_B      INIT_EXON       EXON        3  3  1  STRAND_COMP   STOP_B  INIT_EXON_F
+VPNode      INTERNAL_EXON_B  INTERNAL_EXON   EXON        3  3  3  STRAND_COMP   STOP_B  INTERNAL_EXON_F
+VPNode      LAST_EXON_B      LAST_EXON       EXON        3  1  3  STRAND_COMP   STOP_B  LAST_EXON_F
+VPNode      SINGLE_EXON_B    SINGLE_EXON     EXON        3  1  1  STRAND_COMP   STOP_B  SINGLE_EXON_F
+
+
+Transition from   ^                      to [-1:PAR_STOP_F:INTERGENIC_F 0:TSS_F:5SINGLE_UTR_F 0:TSS_F:5INIT_UTR_F 0:START_F:SINGLE_EXON_F 0:START_F:INIT_EXON_F -1:PAR_START_B:INTERGENIC_B]
+
+#
+# Transitions
+#
+Transition from   INTERGENIC_B           to [0:SELF_INTERGENIC_B:INTERGENIC_B -1:STOP_B:SINGLE_EXON_B -1:STOP_B:LAST_EXON_B 0:PAS_B:3SINGLE_UTR_B 0:PAS_B:3LAST_UTR_B 0:PAR_STOP_B:$]
+
+Transition from   3UTR_INTRON_B          to [-1:UTR_DONOR_B:3INIT_UTR_B -1:UTR_DONOR_B:3INTERNAL_UTR_B]
+
+Transition from   3INIT_UTR_B            to [-1:STOP_B:LAST_EXON_B -1:STOP_B:SINGLE_EXON_B -1:TSS_B:INTERGENIC_B -1:TSS_B:$]
+
+Transition from   3INTERNAL_UTR_B        to [1:UTR_ACCEPTOR_B:3UTR_INTRON_B]
+
+Transition from   3LAST_UTR_B            to [1:UTR_ACCEPTOR_B:3UTR_INTRON_B]
+
+Transition from   3SINGLE_UTR_B          to [-1:STOP_B:LAST_EXON_B -1:STOP_B:SINGLE_EXON_B -1:TSS_B:$]
+
+Transition from   INTRON_B               to [-1:DONOR_B:INIT_EXON_B -1:DONOR_B:INTERNAL_EXON_B]
+
+Transition from   INIT_EXON_B            to [-1:START_B:INTERGENIC_F -1:START_B:INTERGENIC_B -1:START_B:5SINGLE_UTR_B -1:START_B:5LAST_UTR_B -1:START_B:$]
+
+Transition from   INTERNAL_EXON_B        to [1:ACCEPTOR_B:INTRON_B]
+
+Transition from   LAST_EXON_B            to [1:ACCEPTOR_B:INTRON_B]
+
+Transition from   SINGLE_EXON_B          to [-1:START_B:INTERGENIC_F -1:START_B:INTERGENIC_B -1:START_B:5SINGLE_UTR_B -1:START_B:5LAST_UTR_B -1:START_B:$]
+
+Transition from   5UTR_INTRON_B          to [-1:UTR_DONOR_B:5INIT_UTR_B -1:UTR_DONOR_B:5INTERNAL_UTR_B]
+
+Transition from   5INIT_UTR_B            to [-1:TSS_B:INTERGENIC_B -1:TSS_B:INTERGENIC_F -1:TSS_B:$]
+
+Transition from   5INTERNAL_UTR_B        to [1:UTR_ACCEPTOR_B:5UTR_INTRON_B]
+
+Transition from   5LAST_UTR_B            to [1:UTR_ACCEPTOR_B:5UTR_INTRON_B]
+
+Transition from   5SINGLE_UTR_B          to [-1:TSS_B:INTERGENIC_B -1:TSS_B:INTERGENIC_F -1:TSS_B:$]
+
+
+Transition from   INTERGENIC_F           to [0:SELF_INTERGENIC_F:INTERGENIC_F 0:START_F:SINGLE_EXON_F 0:START_F:INIT_EXON_F 0:TSS_F:5SINGLE_UTR_F 0:TSS_F:5INIT_UTR_F 0:PAR_START_F:$]
+
+Transition from   5UTR_INTRON_F          to [-2:UTR_ACCEPTOR_F:5LAST_UTR_F -2:UTR_ACCEPTOR_F:5INTERNAL_UTR_F]
+
+Transition from   5INIT_UTR_F            to [0:UTR_DONOR_F:5UTR_INTRON_F]
+
+Transition from   5INTERNAL_UTR_F        to [0:UTR_DONOR_F:5UTR_INTRON_F]
+
+Transition from   5LAST_UTR_F            to [0:START_F:SINGLE_EXON_F 0:START_F:INIT_EXON_F -1:PAS_F:INTERGENIC_F]
+
+Transition from   5SINGLE_UTR_F          to [0:START_F:SINGLE_EXON_F 0:START_F:INIT_EXON_F -1:PAS_F:INTERGENIC_F]
+
+Transition from   INTRON_F               to [-2:ACCEPTOR_F:LAST_EXON_F -2:ACCEPTOR_F:INTERNAL_EXON_F]
+
+Transition from   INIT_EXON_F            to [0:DONOR_F:INTRON_F]
+
+Transition from   INTERNAL_EXON_F        to [0:DONOR_F:INTRON_F]
+
+Transition from   LAST_EXON_F            to [0:STOP_F:INTERGENIC_F 0:STOP_F:3INIT_UTR_F 0:STOP_F:3SINGLE_UTR_F 0:STOP_F:INTERGENIC_B]
+
+Transition from   SINGLE_EXON_F          to [0:STOP_F:INTERGENIC_F 0:STOP_F:3INIT_UTR_F 0:STOP_F:3SINGLE_UTR_F 0:STOP_F:INTERGENIC_B]
+
+Transition from   3UTR_INTRON_F          to [-2:UTR_ACCEPTOR_F:3LAST_UTR_F -2:UTR_ACCEPTOR_F:3INTERNAL_UTR_F]
+
+Transition from   3INIT_UTR_F            to [0:UTR_DONOR_F:3UTR_INTRON_F]
+
+Transition from   3INTERNAL_UTR_F        to [0:UTR_DONOR_F:3UTR_INTRON_F]
+
+Transition from   3LAST_UTR_F            to [-1:PAS_F:INTERGENIC_F -1:PAS_F:INTERGENIC_B]
+
+Transition from   3SINGLE_UTR_F          to [-1:PAS_F:INTERGENIC_F -1:PAS_F:INTERGENIC_B]
+
+#
+#Constructor for lengths
+#Lengths    int nodeId[context:openingLength->periodLength...] for fixed length nodes 
+#Lengths    int nodeId[context:minLen->maxLen...] for variable length nodes 
+#
+
+Lengths    INIT_EXON_F         [0:1->8144]
+Lengths    INIT_EXON_B         [0:1->8144]
+Lengths    INTERNAL_EXON_F     [0:1->12644]
+Lengths    INTERNAL_EXON_B     [0:1->12644]
+Lengths    LAST_EXON_F         [0:1->9144]
+Lengths    LAST_EXON_B         [0:1->9144]
+Lengths    SINGLE_EXON_F       [0:1->6644]
+Lengths    SINGLE_EXON_B       [0:1->6644]
+
+Lengths    INTERGENIC_F       [0:1->-1]
+Lengths    INTERGENIC_B       [0:1->-1]
+Lengths    INTRON_F           [0:3->1444]
+Lengths    INTRON_B           [0:3->1444]
+
+Lengths    5UTR_INTRON_F       [0:3->1444]
+Lengths    5UTR_INTRON_B       [0:3->1444]
+Lengths    3UTR_INTRON_F       [0:3->1444]
+Lengths    3UTR_INTRON_B       [0:3->1444]
+
+Lengths    5INIT_UTR_F         [0:1->8144]
+Lengths    5INTERNAL_UTR_F     [0:1->12144]
+Lengths    5LAST_UTR_F         [0:1->9144]     
+Lengths    5SINGLE_UTR_F       [0:1->6144]
+Lengths    5INIT_UTR_B         [0:1->8144]
+Lengths    5INTERNAL_UTR_B     [0:1->12144]
+Lengths    5LAST_UTR_B         [0:1->9144]     
+Lengths    5SINGLE_UTR_B       [0:1->6144]
+Lengths    3INIT_UTR_F         [0:4->8144]
+Lengths    3INTERNAL_UTR_F     [0:1->12144]
+Lengths    3LAST_UTR_F         [0:1->9144]     
+Lengths    3SINGLE_UTR_F       [0:4->6144]
+Lengths    3INIT_UTR_B         [0:4->8144]
+Lengths    3INTERNAL_UTR_B     [0:1->12144]
+Lengths    3LAST_UTR_B         [0:1->9144]     
+Lengths    3SINGLE_UTR_B       [0:4->6144]
+//

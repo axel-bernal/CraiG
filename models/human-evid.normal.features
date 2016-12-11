@@ -1,0 +1,456 @@
+#
+#Types of features
+#
+#
+#
+#
+#
+
+
+##############################################################################
+#                           NODE-RELATED FEATURES
+##############################################################################
+
+#
+# Defining PreComputeTod entries for these features
+PreComputeTo  0     3     true
+PreComputeTo  1     3     true
+PreComputeTo  2     3     true
+PreComputeTo  3     3     true
+PreComputeTo  4     3     true
+PreComputeTo  5     3     true
+PreComputeTo  6     3     true
+PreComputeTo  7     3     true
+PreComputeTo  8     3     true
+PreComputeTo  13     1     true
+PreComputeTo  14     1     true
+PreComputeTo  15     0     false
+PreComputeTo  16     0     false
+PreComputeTo  17     0     false
+PreComputeTo  18     0     false
+PreComputeTo  19     3     true
+PreComputeTo  20     3     true
+PreComputeTo  21     3     true
+PreComputeTo  22     3     true
+PreComputeTo  23     3     true
+PreComputeTo  24     3     true
+PreComputeTo  25     3     true
+PreComputeTo  26     3     true
+PreComputeTo  27     3     true
+PreComputeTo  28     3     true
+PreComputeTo  29     3     true
+PreComputeTo  30     3     true
+
+NodeSet CODING* = 8 INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B
+
+#
+#State Background Features
+#
+
+Feature		Intergenic-Background           StateBackground 1 10000
+Feature		GCxIntergenic-Background        FilterXFeature<double> GC-Content Intergenic-Background -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Intron-Background               StateBackground 3 10000
+Feature		GCxIntron-Background            FilterXFeature<double> GC-Content Intron-Background -> 2 INTRON_F INTRON_B
+Feature		Long-Intron-Background          StateBackground 3 10000
+Feature		GCxLong-Intron-Background       FilterXFeature<double> GC-Content Long-Intron-Background -> 2 LONG_INTRON_F LONG_INTRON_B
+#Feature		Internal-Exon-Background        StateBackground 3 10000 -> 6 INTERNAL_EXON_F INTERNAL_EXON_B INIT_EXON_F INIT_EXON_B LAST_EXON_F LAST_EXON_B
+Feature		Internal-Exon-Background        StateBackground 3 10000 -> 8 INTERNAL_EXON_F INTERNAL_EXON_B INIT_EXON_F INIT_EXON_B LAST_EXON_F LAST_EXON_B SINGLE_EXON_F SINGLE_EXON_B
+#Feature		Single-Exon-Background          StateBackground 3 10000
+#Feature		GC2xSingle-Exon-Background      FilterXFeature<double> GC-Content2 Single-Exon-Background -> 2 SINGLE_EXON_F SINGLE_EXON_B
+
+#
+#Ratio/Score Features
+#
+Feature		Intron/Igenic-Ratio             RatioSegment 3 Intron-Score Intergenic-Score 1 1 -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+Feature		Intron/Exon-Ratio               RatioSegment 3 Intron-Score Coding-Score 1 3
+Feature		Intron-Seg-Score                ScoringSegment<double> 3 Intron-Score 1 1 0 true -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+Feature		Igenic/Intron-Ratio             RatioSegment 3 Intergenic-Score Intron-Score 1 1 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Igenic/Exon-Ratio               RatioSegment 3 Intergenic-Score Coding-Score 1 3
+Feature		Intergenic-Seg-Score            ScoringSegment<double> 1 Intergenic-Score 1 1 0 true -> 2 INTERGENIC_F INTERGENIC_B
+
+Feature		Exon/Intron-Ratio               RatioSegment 3 Coding-Score Intron-Score 3 1
+Feature		Coding-Seg-Score                ScoringSegment<double> 3 Coding-Score 1 3 -1.34938786 true -> CODING*
+Feature		Coding-Differential             CodingDifferential Coding-Score -> CODING*
+
+# Length Features
+Feature		Segment-Length                  LengthSegment 3
+Feature           Bin4-Intron-Length              LogScaledBin<int> null 2000 240 200 2.0
+Feature		Intron-Length                   FeatureOFeature<int> Segment-Length Bin4-Intron-Length
+Feature		GCxIntron-Length                FilterXFeature<int> GC-Content Intron-Length -> 2 INTRON_F INTRON_B
+Feature		Long-Intron-Length              HarmonicSTerm Segment-Length 980.0
+Feature		GCxLong-Intron-Length           FilterXFeature<int> GC-Content Long-Intron-Length -> 2 LONG_INTRON_F LONG_INTRON_B
+Feature		Bin4-Exon-Length                Bin<int> null 2000 90 200
+Feature		Init-Exon-Length                FeatureOFeature<int> Segment-Length Bin4-Exon-Length -> 2 INIT_EXON_F INIT_EXON_B
+Feature		Internal-Exon-Length            FeatureOFeature<int> Segment-Length Bin4-Exon-Length -> 2 INTERNAL_EXON_F INTERNAL_EXON_B
+Feature		Last-Exon-Length                FeatureOFeature<int> Segment-Length Bin4-Exon-Length -> 2 LAST_EXON_F LAST_EXON_B
+Feature		Single-Exon-Length              FeatureOFeature<int> Segment-Length Bin4-Exon-Length -> 2 SINGLE_EXON_F SINGLE_EXON_B
+
+#
+#Content Features
+#
+Feature		Intergenic-Content              PeriodicCountingSegment 1 5-gram 0 1 0 false 1
+Feature		GCxIntergenic-Content           FilterXFeature<int> GC-Content Intergenic-Content
+Feature		Intron-Content                  PeriodicCountingSegment 3 5-gram 0 1 0 false 1
+Feature		GCxIntron-Content               FilterXFeature<int> GC-Content Intron-Content
+Feature		Initial-Pattern-1st-Frame       PeriodicCountingSegmentWUpperLimit 3 3-gram 0 3 0 false 1 15 -> 4 INIT_EXON_F SINGLE_EXON_F INIT_EXON_B SINGLE_EXON_B @ 0
+Feature		Initial-Pattern-2nd-Frame       PeriodicCountingSegmentWUpperLimit 3 3-gram 0 3 1 false 1 15 -> 4 INIT_EXON_F SINGLE_EXON_F INIT_EXON_B SINGLE_EXON_B @ 1
+Feature		Initial-Pattern-3rd-Frame       PeriodicCountingSegmentWUpperLimit 3 3-gram 0 3 2 false 1 15 -> 4 INIT_EXON_F SINGLE_EXON_F INIT_EXON_B SINGLE_EXON_B @ 2
+Feature		Codon-Usage-1st-Frame           PeriodicCountingSegment 3 3-gram 0 3 0 false 1
+Feature		GCxCodon-Usage-1st-Frame        FilterXFeature<int> GC-Content Codon-Usage-1st-Frame -> CODING* @ 3
+Feature		Codon-Usage-2nd-Frame           PeriodicCountingSegment 3 3-gram 0 3 1 false 1
+Feature		GCxCodon-Usage-2nd-Frame        FilterXFeature<int> GC-Content Codon-Usage-2nd-Frame -> CODING* @ 4
+Feature		Codon-Usage-3rd-Frame           PeriodicCountingSegment 3 3-gram 0 3 2 false 1
+Feature		GCxCodon-Usage-3rd-Frame        FilterXFeature<int> GC-Content Codon-Usage-3rd-Frame -> CODING* @ 5
+Feature		6GRAM-Coding-1st-Frame          PeriodicCountingSegment 3 6-gram 0 3 0 false 1 -> CODING* @ 6
+Feature		6GRAM-Coding-2nd-Frame          PeriodicCountingSegment 3 6-gram 0 3 1 false 1 -> CODING* @ 7
+Feature		6GRAM-Coding-3rd-Frame          PeriodicCountingSegment 3 6-gram 0 3 2 false 1 -> CODING* @ 8
+Feature		5GRAM-Coding-1st-Frame          PeriodicCountingSegment 3 5-gram 0 3 0 false 1
+Feature		5GRAM-Coding-2nd-Frame          PeriodicCountingSegment 3 5-gram 0 3 1 false 1
+Feature		5GRAM-Coding-3rd-Frame          PeriodicCountingSegment 3 5-gram 0 3 2 false 1
+Feature		Hidden-Stop-Sequence            HiddenSeq<int> 3 3 3 Stop-Signal 3 GCxCodon-Usage-1st-Frame GCxCodon-Usage-2nd-Frame GCxCodon-Usage-3rd-Frame -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+Feature         Mask-Content-Score              ScoringSegment<int> 1 Mask-Counts 1 1 0.5 true
+Feature         Test-Is-Masked                  GreaterThan<int> 1 0.5 1 Mask-Content-Score -> CODING*
+
+
+##############################################################################
+#                           EDGE-RELATED FEATURES
+##############################################################################
+
+PreComputeTo  9     0     false
+PreComputeTo  10    0     false
+PreComputeTo  11    0     false
+PreComputeTo  12    0     false
+
+EdgeSet ACCEPTOR* = 2 ACCEPTOR_F ACCEPTOR_B @ 9
+EdgeSet DONOR* = 2 DONOR_F DONOR_B @ 9
+
+#Counting Features
+Feature		PartGene-Start-Background       Edge<int> 1 null 1 -> 2 PAR_START_F PAR_START_B
+Feature		PartGene-Stop-Background        Edge<int> 1 null 1 -> 2 PAR_STOP_F PAR_STOP_B
+Feature		PartGene-Donor-Background       Edge<int> 1 null 1 -> 2 PAR_DONOR_F PAR_DONOR_B
+Feature		PartGene-Acceptor-Background    Edge<int> 1 null 1 -> 2 PAR_ACCEPTOR_F PAR_ACCEPTOR_B
+Feature		Start-Background                Edge<int> 1 Start-Signal 1 -> 2 START_F START_B @ 12
+Feature		Stop-Background                 Edge<int> 1 Stop-Signal 1 -> 2 STOP_F STOP_B @ 12
+Feature		Donor-Background                Edge<int> 3 Donor-Signal 1 -> DONOR*
+Feature		Acceptor-Background             Edge<int> 3 Acceptor-Signal 1 -> ACCEPTOR*
+Feature		Splice-Frame-Bias               EdgePhase 3 Acceptor-Signal 3 -> ACCEPTOR*
+
+#
+# Edge Content Features
+#
+Feature		Igenic-to-Non-Igenic@Start      EdgeContent<double> Start-Signal 0 Intergenic-Seg-Score 48 48 -> 2 START_F START_B @ 12
+Feature		Intron-to-Non-Intron@Acceptor   EdgeContent<double> Acceptor-Signal 2 Intron-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Non-Intron-to-Intron@Donor      EdgeContent<double> Donor-Signal 0 Intron-Seg-Score 48 48 -> DONOR*
+Feature		Non-Igenic-to-Igenic@Stop       EdgeContent<double> Stop-Signal 0 Intergenic-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+Feature		Non-Coding-to-Coding@Start      EdgeContent<double> Start-Signal 0 Coding-Seg-Score 48 48 -> 2 START_F START_B @ 12
+Feature		Non-Coding-to-Coding@Acceptor   EdgeContent<double> Acceptor-Signal 2 Coding-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Coding-to-Non-Coding@Donor      EdgeContent<double> Donor-Signal 0 Coding-Seg-Score 48 48 -> DONOR*
+Feature		Coding-to-Non-Coding@Stop       EdgeContent<double> Stop-Signal 0 Coding-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+
+
+#
+#                           Edge-Position-Counting Features
+#
+
+#
+# Start Edge WWAM-based Features
+#
+Feature		Start-Gram-WWAM                 GramWWAM 1 Start-Signal 20 -6 1 5 3-gram -> 2 START_F START_B @ 12
+Feature		Start-PWM                       GramPWM 1 Start-Signal 4 7 1 1-gram -> 2 START_F START_B @ 12
+Feature		Start-Cons-PWM                  ConsensusPWM 1 Start-Signal  4 7 1 1-gram CAMCATGSMSV -> 2 START_F START_B @ 12
+Feature		Start-PWMxPWM                   PWMxPWM Start-PWM Start-PWM -> 2 START_F START_B @ 12
+Feature		Start-Peptide-WWAM              PeptideWWAM 1 Start-Signal -6 39 15 15 3-gram -> 2 START_F START_B @ 12
+
+#
+#Stop Edge WWAM-based Features
+#
+Feature		Stop-PWM                        GramPWM 1 Stop-Signal 5 5 1 1-gram -> 2 STOP_F STOP_B @ 12
+Feature		Stop-Gram-WWAM                  GramWWAM 1 Stop-Signal -6 20 1 5 3-gram -> 2 STOP_F STOP_B @ 12
+
+#
+#Donor Edge WWAM-based Features
+#
+Feature		Donor-5P-Gram-WWAM              GramWWAM 1 Donor-Signal 6 -5 1 5 3-gram
+Feature		PhasexDonor-5P-WWAM             FeatureXFeature<int> Splice-Frame-Bias Donor-5P-Gram-WWAM -> DONOR*
+Feature		Donor-PWM                       GramPWM 3 Donor-Signal 3 7 1 1-gram -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-Cons-PWM                  ConsensusPWM 3 Donor-Signal 3 7 1 1-gram MAGGTRAGTG -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-PWMxPWM                   PWMxPWM Donor-PWM Donor-PWM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-Cons-PWMxPWM              PWMxPWM Donor-Cons-PWM Donor-PWM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-3P-Gram-WWAM              GramWWAM 3 Donor-Signal -8 20 1 5 3-gram -> DONOR*
+
+#
+# Acceptor Edge WWAM-based Features
+#
+Feature		Branch-Point-Gram-WWAM          GramWWAM 3 Acceptor-Signal 36 -20 1 5 3-gram -> ACCEPTOR*
+Feature		Branch-Point-Cons-WWAM ConsensusWWAM 3 Acceptor-Signal 33 -32 1 11 1-gram B*11 -> ACCEPTOR*
+Feature		Pyrimidin-Region-Cons-PWM       ConsensusWWAM 3 Acceptor-Signal 25 -9 5 5 1-gram Y*20 -> ACCEPTOR*
+Feature		Pyrimidin-Region-Gram-WWAM      GramWWAM 3 Acceptor-Signal 28 -8 1 3 2-gram -> ACCEPTOR*
+Feature		Acceptor-Cons-PWM               ConsensusPWM 3 Acceptor-Signal 7 4 1 1-gram YYYYYCYAGRB -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-PWM                    GramPWM 3 Acceptor-Signal  7 5 1 1-gram -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-Cons-PWMxPWM           PWMxPWM Acceptor-Cons-PWM Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-Pyr-PWMxPWM            PWMxPWM Acceptor-Cons-PWM Pyrimidin-Region-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-PWMxPWM                PWMxPWM Acceptor-PWM Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+
+#
+#External features: Look-Up Sums in external tables
+#
+#Donors
+Feature		Bin-Donor-ExactMatch            LogScaledBin<int> null 20 1 20 2.0
+Feature		Bin-Donor-SoftMatch-HD=1        LogScaledBin<int> null 20 1 20 2.0
+Feature		Donor-Match-Counts              SoftMatchWordCounter<int> 3 Donor-Signal 3 7 donor-softmatch-db 1-gram 2 0 Bin-Donor-ExactMatch 1 Bin-Donor-SoftMatch-HD=1 -> DONOR*
+#Acceptors
+Feature		Bin-Acceptor-ExactMatch         LogScaledBin<int> null 20 1 20 2.0
+Feature		Bin-Acceptor-SoftMatch-HD=1     LogScaledBin<int> null 20 1 20 2.0
+Feature		Acceptor-Match-Counts           SoftMatchWordCounter<int> 3 Acceptor-Signal 7 5 acceptor-softmatch-db 1-gram 2 0 Bin-Acceptor-ExactMatch 1 Bin-Acceptor-SoftMatch-HD=1 -> ACCEPTOR*
+
+#
+# External Evidence Node Features
+#
+
+Feature		GS-Start-PWM                    LazyFilterXFeature<int> GS-1-gram-sig Start-PWM
+Feature		GCxGS-Start-PWM                 FilterXFeature<int> GC-Content GS-Start-PWM -> 2 START_F START_B @ 15
+Feature		GS-Start-Gram-WWAM              LazyFilterXFeature<int> GS-1-gram-sig Start-Gram-WWAM
+Feature		GCxGS-Start-Gram-WWAM           FilterXFeature<int> GC-Content GS-Start-Gram-WWAM -> 2 START_F START_B @ 15
+Feature		GS-Stop-PWM                     LazyFilterXFeature<int> GS-1-gram-sig Stop-PWM
+Feature		GCxGS-Stop-PWM                  FilterXFeature<int> GC-Content GS-Stop-PWM -> 2 STOP_F STOP_B @ 16
+Feature		GS-Stop-Gram-WWAM               LazyFilterXFeature<int> GS-1-gram-sig Stop-Gram-WWAM
+Feature		GCxGS-Stop-Gram-WWAM            FilterXFeature<int> GC-Content GS-Stop-Gram-WWAM -> 2 STOP_F STOP_B @ 16
+Feature		GS-Donor-PWM                    LazyFilterXFeature<int> GS-1-gram-sig Donor-PWM
+Feature		GCxGS-Donor-PWM                 FilterXFeature<int> GC-Content GS-Donor-PWM -> 2 DONOR_F DONOR_B @ 17
+Feature		GS-Donor-3P-Gram-WWAM           LazyFilterXFeature<int> GS-1-gram-sig Donor-3P-Gram-WWAM
+Feature		GCxGS-Donor-3P-Gram-WWAM        FilterXFeature<int> GC-Content GS-Donor-3P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		GS-Donor-5P-Gram-WWAM           LazyFilterXFeature<int> GS-1-gram-sig Donor-5P-Gram-WWAM
+Feature		GCxGS-Donor-5P-Gram-WWAM        FilterXFeature<int> GC-Content GS-Donor-5P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		GS-Acceptor-PWM                 LazyFilterXFeature<int> GS-1-gram-sig Acceptor-PWM
+Feature		GCxGS-Acceptor-PWM              FilterXFeature<int> GC-Content GS-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		GS-BranchPt-Gram-WWAM           LazyFilterXFeature<int> GS-1-gram-sig Branch-Point-Gram-WWAM
+Feature		GCxGS-BranchPt-Gram-WWAM        FilterXFeature<int> GC-Content GS-BranchPt-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		GS-Pyr-Gram-WWAM                LazyFilterXFeature<int> GS-1-gram-sig Pyrimidin-Region-Gram-WWAM
+Feature		GCxGS-Pyr-Gram-WWAM             FilterXFeature<int> GC-Content GS-Pyr-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+
+Feature		GS-Align-Exon-1st-Frame         LazyFilterXFeature<int> GS-1-gram Codon-Usage-1st-Frame
+Feature		GS-Align-Exon-2nd-Frame         LazyFilterXFeature<int> GS-1-gram Codon-Usage-2nd-Frame
+Feature		GS-Align-Exon-3rd-Frame         LazyFilterXFeature<int> GS-1-gram Codon-Usage-3rd-Frame
+
+Feature		GCxGS-Align-Exon-1st-Frame      FilterXFeature<int> GC-Content GS-Align-Exon-1st-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 19
+Feature		GCxGS-Align-Exon-2nd-Frame      FilterXFeature<int> GC-Content GS-Align-Exon-2nd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 20
+Feature		GCxGS-Align-Exon-3rd-Frame      FilterXFeature<int> GC-Content GS-Align-Exon-3rd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 21
+
+#Feature		GS-Align-Igenic                 PeriodicCountingSegment 1 GS-1-gram 0 1 0 false 1
+#Feature		GCxGS-Align-Igenic              FilterXFeature<int> GC-Content GS-Align-Igenic -> 2 INTERGENIC_F INTERGENIC_B @ 22
+#Feature		GS-Align-Intron                 PeriodicCountingSegment 3 GS-1-gram 0 1 0 false 1
+#Feature		GS-PhasexAlign-Intron           FeatureXFeature<int> Splice-Frame-Bias GS-Align-Intron
+#Feature		GCxGS-PhasexAlign-Intron        FilterXFeature<int> GC-Content GS-PhasexAlign-Intron -> 2 INTRON_F INTRON_B @ 23
+#Feature		GS-Align-LongIntron             PeriodicCountingSegment 3 GS-1-gram 0 1 0 false 1
+#Feature		GS-PhasexAlign-LongIntron       FeatureXFeature<int> Splice-Frame-Bias GS-Align-LongIntron
+#Feature		GCxGS-PhasexAlign-LongIntron    FilterXFeature<int> GC-Content GS-PhasexAlign-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 24
+#Feature           GS-Align-InitExon               PeriodicCountingSegment 1 GS-1-gram 0 1 0 false 1 -> 2 INIT_EXON_F INIT_EXON_B @ 24
+#Feature           GS-Align-InterExon              PeriodicCountingSegment 3 GS-1-gram 0 1 0 false 1 -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 25
+#Feature		GS-Align-InterExonxPhase        FeatureXFeature<int> Splice-Frame-Bias GS-Align-InterExon -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 26
+#Feature           GS-Align-TermExon               PeriodicCountingSegment 3 GS-1-gram 0 1 0 false 1 -> 2 LAST_EXON_F LAST_EXON_B @ 27
+#Feature		GS-Align-TermExonxPhase         FeatureXFeature<int> Splice-Frame-Bias GS-Align-TermExon -> 2 LAST_EXON_F LAST_EXON_B @ 28
+#Feature           GS-Align-SingleExon             PeriodicCountingSegment 1 GS-1-gram 0 1 0 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 29
+
+Feature		GZ-Start-PWM                    LazyFilterXFeature<int> GZ-1-gram-sig Start-PWM
+Feature		GCxGZ-Start-PWM                 FilterXFeature<int> GC-Content GZ-Start-PWM -> 2 START_F START_B @ 15
+Feature		GZ-Start-Gram-WWAM              LazyFilterXFeature<int> GZ-1-gram-sig Start-Gram-WWAM
+Feature		GCxGZ-Start-Gram-WWAM           FilterXFeature<int> GC-Content GZ-Start-Gram-WWAM -> 2 START_F START_B @ 15
+Feature		GZ-Stop-PWM                     LazyFilterXFeature<int> GZ-1-gram-sig Stop-PWM
+Feature		GCxGZ-Stop-PWM                  FilterXFeature<int> GC-Content GZ-Stop-PWM -> 2 STOP_F STOP_B @ 16
+Feature		GZ-Stop-Gram-WWAM               LazyFilterXFeature<int> GZ-1-gram-sig Stop-Gram-WWAM
+Feature		GCxGZ-Stop-Gram-WWAM            FilterXFeature<int> GC-Content GZ-Stop-Gram-WWAM -> 2 STOP_F STOP_B @ 16
+Feature		GZ-Donor-PWM                    LazyFilterXFeature<int> GZ-1-gram-sig Donor-PWM
+Feature		GCxGZ-Donor-PWM                 FilterXFeature<int> GC-Content GZ-Donor-PWM -> 2 DONOR_F DONOR_B @ 17
+Feature		GZ-Donor-3P-Gram-WWAM           LazyFilterXFeature<int> GZ-1-gram-sig Donor-3P-Gram-WWAM
+Feature		GCxGZ-Donor-3P-Gram-WWAM        FilterXFeature<int> GC-Content GZ-Donor-3P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		GZ-Donor-5P-Gram-WWAM           LazyFilterXFeature<int> GZ-1-gram-sig Donor-5P-Gram-WWAM
+Feature		GCxGZ-Donor-5P-Gram-WWAM        FilterXFeature<int> GC-Content GZ-Donor-5P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		GZ-Acceptor-PWM                 LazyFilterXFeature<int> GZ-1-gram-sig Acceptor-PWM
+Feature		GCxGZ-Acceptor-PWM              FilterXFeature<int> GC-Content GZ-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		GZ-BranchPt-Gram-WWAM           LazyFilterXFeature<int> GZ-1-gram-sig Branch-Point-Gram-WWAM
+Feature		GCxGZ-BranchPt-Gram-WWAM        FilterXFeature<int> GC-Content GZ-BranchPt-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		GZ-Pyr-Gram-WWAM                LazyFilterXFeature<int> GZ-1-gram-sig Pyrimidin-Region-Gram-WWAM
+Feature		GCxGZ-Pyr-Gram-WWAM             FilterXFeature<int> GC-Content GZ-Pyr-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+
+
+Feature		GZ-Align-Exon-1st-Frame         LazyFilterXFeature<int> GZ-1-gram Codon-Usage-1st-Frame
+Feature		GZ-Align-Exon-2nd-Frame         LazyFilterXFeature<int> GZ-1-gram Codon-Usage-2nd-Frame
+Feature		GZ-Align-Exon-3rd-Frame         LazyFilterXFeature<int> GZ-1-gram Codon-Usage-3rd-Frame
+
+Feature		GCxGZ-Align-Exon-1st-Frame      FilterXFeature<int> GC-Content GZ-Align-Exon-1st-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 19
+Feature		GCxGZ-Align-Exon-2nd-Frame      FilterXFeature<int> GC-Content GZ-Align-Exon-2nd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 20
+Feature		GCxGZ-Align-Exon-3rd-Frame      FilterXFeature<int> GC-Content GZ-Align-Exon-3rd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 21
+
+#Feature		GZ-Align-Igenic                 PeriodicCountingSegment 1 GZ-1-gram 0 1 0 false 1
+#Feature		GCxGZ-Align-Igenic              FilterXFeature<int> GC-Content GZ-Align-Igenic -> 2 INTERGENIC_F INTERGENIC_B @ 22
+#Feature		GZ-Align-Intron                 PeriodicCountingSegment 3 GZ-1-gram 0 1 0 false 1
+#Feature		GZ-PhasexAlign-Intron           FeatureXFeature<int> Splice-Frame-Bias GZ-Align-Intron
+#Feature		GCxGZ-PhasexAlign-Intron        FilterXFeature<int> GC-Content GZ-PhasexAlign-Intron -> 2 INTRON_F INTRON_B @ 23
+#Feature		GZ-Align-LongIntron             PeriodicCountingSegment 3 GZ-1-gram 0 1 0 false 1
+#Feature		GZ-PhasexAlign-LongIntron       FeatureXFeature<int> Splice-Frame-Bias GZ-Align-LongIntron
+#Feature		GCxGZ-PhasexAlign-LongIntron    FilterXFeature<int> GC-Content GZ-PhasexAlign-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 24
+
+#Feature		GZ-Align-Igenic                 PeriodicCountingSegment 1 GZ-1-gram 0 1 0 false 1 -> 2 INTERGENIC_F INTERGENIC_B @ 19
+#Feature		GZ-Align-Intron                 PeriodicCountingSegment 3 GZ-1-gram 0 1 0 false 1 -> 2 INTRON_F INTRON_B @ 20
+#Feature		GZ-Align-IntronxPhase           FeatureXFeature<int> Splice-Frame-Bias GZ-Align-Intron -> 2 INTRON_F INTRON_B @ 21
+#Feature		GZ-Align-LongIntron             PeriodicCountingSegment 3 GZ-1-gram 0 1 0 false 1 -> 2 LONG_INTRON_F LONG_INTRON_B @ 22
+#Feature		GZ-Align-LongIntronxPhase       FeatureXFeature<int> Splice-Frame-Bias GZ-Align-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 23
+#Feature           GZ-Align-InitExon               PeriodicCountingSegment 1 GZ-1-gram 0 1 0 false 1 -> 2 INIT_EXON_F INIT_EXON_B @ 24
+#Feature           GZ-Align-InterExon              PeriodicCountingSegment 3 GZ-1-gram 0 1 0 false 1 -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 25
+#Feature		GZ-Align-InterExonxPhase        FeatureXFeature<int> Splice-Frame-Bias GZ-Align-InterExon -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 26
+#Feature           GZ-Align-TermExon               PeriodicCountingSegment 3 GZ-1-gram 0 1 0 false 1 -> 2 LAST_EXON_F LAST_EXON_B @ 27
+#Feature		GZ-Align-TermExonxPhase         FeatureXFeature<int> Splice-Frame-Bias GZ-Align-TermExon -> 2 LAST_EXON_F LAST_EXON_B @ 28
+#Feature           GZ-Align-SingleExon             PeriodicCountingSegment 1 GZ-1-gram 0 1 0 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 29
+
+Feature		AU-Start-PWM                    LazyFilterXFeature<int> AU-1-gram-sig Start-PWM
+Feature		GCxAU-Start-PWM                 FilterXFeature<int> GC-Content AU-Start-PWM -> 2 START_F START_B @ 15
+Feature		AU-Start-Gram-WWAM              LazyFilterXFeature<int> AU-1-gram-sig Start-Gram-WWAM
+Feature		GCxAU-Start-Gram-WWAM           FilterXFeature<int> GC-Content AU-Start-Gram-WWAM -> 2 START_F START_B @ 15
+Feature		AU-Stop-PWM                     LazyFilterXFeature<int> AU-1-gram-sig Stop-PWM
+Feature		GCxAU-Stop-PWM                  FilterXFeature<int> GC-Content AU-Stop-PWM -> 2 STOP_F STOP_B @ 16
+Feature		AU-Stop-Gram-WWAM               LazyFilterXFeature<int> AU-1-gram-sig Stop-Gram-WWAM
+Feature		GCxAU-Stop-Gram-WWAM            FilterXFeature<int> GC-Content AU-Stop-Gram-WWAM -> 2 STOP_F STOP_B @ 16
+Feature		AU-Donor-PWM                    LazyFilterXFeature<int> AU-1-gram-sig Donor-PWM
+Feature		GCxAU-Donor-PWM                 FilterXFeature<int> GC-Content AU-Donor-PWM -> 2 DONOR_F DONOR_B @ 17
+Feature		AU-Donor-3P-Gram-WWAM           LazyFilterXFeature<int> AU-1-gram-sig Donor-3P-Gram-WWAM
+Feature		GCxAU-Donor-3P-Gram-WWAM        FilterXFeature<int> GC-Content AU-Donor-3P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		AU-Donor-5P-Gram-WWAM           LazyFilterXFeature<int> AU-1-gram-sig Donor-5P-Gram-WWAM
+Feature		GCxAU-Donor-5P-Gram-WWAM        FilterXFeature<int> GC-Content AU-Donor-5P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		AU-Acceptor-PWM                 LazyFilterXFeature<int> AU-1-gram-sig Acceptor-PWM
+Feature		GCxAU-Acceptor-PWM              FilterXFeature<int> GC-Content AU-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		AU-BranchPt-Gram-WWAM           LazyFilterXFeature<int> AU-1-gram-sig Branch-Point-Gram-WWAM
+Feature		GCxAU-BranchPt-Gram-WWAM        FilterXFeature<int> GC-Content AU-BranchPt-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		AU-Pyr-Gram-WWAM                LazyFilterXFeature<int> AU-1-gram-sig Pyrimidin-Region-Gram-WWAM
+Feature		GCxAU-Pyr-Gram-WWAM             FilterXFeature<int> GC-Content AU-Pyr-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+
+Feature		AU-Align-Exon-1st-Frame         LazyFilterXFeature<int> AU-1-gram Codon-Usage-1st-Frame
+Feature		AU-Align-Exon-2nd-Frame         LazyFilterXFeature<int> AU-1-gram Codon-Usage-2nd-Frame
+Feature		AU-Align-Exon-3rd-Frame         LazyFilterXFeature<int> AU-1-gram Codon-Usage-3rd-Frame
+
+Feature		GCxAU-Align-Exon-1st-Frame      FilterXFeature<int> GC-Content AU-Align-Exon-1st-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 19
+Feature		GCxAU-Align-Exon-2nd-Frame      FilterXFeature<int> GC-Content AU-Align-Exon-2nd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 20
+Feature		GCxAU-Align-Exon-3rd-Frame      FilterXFeature<int> GC-Content AU-Align-Exon-3rd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 21
+
+#Feature		AU-Align-Igenic                 PeriodicCountingSegment 1 AU-1-gram 0 1 0 false 1
+#Feature		GCxAU-Align-Igenic              FilterXFeature<int> GC-Content AU-Align-Igenic -> 2 INTERGENIC_F INTERGENIC_B @ 22
+#Feature		AU-Align-Intron                 PeriodicCountingSegment 3 AU-1-gram 0 1 0 false 1
+#Feature		AU-PhasexAlign-Intron           FeatureXFeature<int> Splice-Frame-Bias AU-Align-Intron
+#Feature		GCxAU-PhasexAlign-Intron        FilterXFeature<int> GC-Content AU-PhasexAlign-Intron -> 2 INTRON_F INTRON_B @ 23
+#Feature		AU-Align-LongIntron             PeriodicCountingSegment 3 AU-1-gram 0 1 0 false 1
+#Feature		AU-PhasexAlign-LongIntron       FeatureXFeature<int> Splice-Frame-Bias AU-Align-LongIntron
+#Feature		GCxAU-PhasexAlign-LongIntron    FilterXFeature<int> GC-Content AU-PhasexAlign-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 24
+
+#Feature		AU-Align-Igenic                 PeriodicCountingSegment 1 AU-1-gram 0 1 0 false 1 -> 2 INTERGENIC_F INTERGENIC_B @ 19
+#Feature		AU-Align-Intron                 PeriodicCountingSegment 1 AU-1-gram 0 1 0 false 1 -> 2 INTRON_F INTRON_B @ 20
+#Feature		AU-Align-IntronxPhase           FeatureXFeature<int> Splice-Frame-Bias AU-Align-Intron -> 2 INTRON_F INTRON_B @ 21
+#Feature		AU-Align-LongIntron             PeriodicCountingSegment 1 AU-1-gram 0 1 0 false 1 -> 2 LONG_INTRON_F LONG_INTRON_B @ 22
+#Feature		AU-Align-LongIntronxPhase       FeatureXFeature<int> Splice-Frame-Bias AU-Align-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 23
+#Feature           AU-Align-InitExon               PeriodicCountingSegment 1 AU-1-gram 0 1 0 false 1 -> 2 INIT_EXON_F INIT_EXON_B @ 24
+#Feature           AU-Align-InterExon              PeriodicCountingSegment 3 AU-1-gram 0 1 0 false 1 -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 25
+#Feature		AU-Align-InterExonxPhase        FeatureXFeature<int> Splice-Frame-Bias AU-Align-InterExon -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 26
+#Feature           AU-Align-TermExon               PeriodicCountingSegment 3 AU-1-gram 0 1 0 false 1 -> 2 LAST_EXON_F LAST_EXON_B @ 27
+#Feature		AU-Align-TermExonxPhase         FeatureXFeature<int> Splice-Frame-Bias AU-Align-TermExon -> 2 LAST_EXON_F LAST_EXON_B @ 28
+#Feature           AU-Align-SingleExon             PeriodicCountingSegment 1 AU-1-gram 0 1 0 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 29
+
+
+Feature		TS-Start-PWM                    LazyFilterXFeature<int> TS-1-gram-sig Start-PWM
+Feature		GCxTS-Start-PWM                 FilterXFeature<int> GC-Content TS-Start-PWM -> 2 START_F START_B @ 15
+Feature		TS-Start-Gram-WWAM              LazyFilterXFeature<int> TS-1-gram-sig Start-Gram-WWAM
+Feature		GCxTS-Start-Gram-WWAM           FilterXFeature<int> GC-Content TS-Start-Gram-WWAM -> 2 START_F START_B @ 15
+Feature		TS-Stop-PWM                     LazyFilterXFeature<int> TS-1-gram-sig Stop-PWM
+Feature		GCxTS-Stop-PWM                  FilterXFeature<int> GC-Content TS-Stop-PWM -> 2 STOP_F STOP_B @ 16
+Feature		TS-Stop-Gram-WWAM               LazyFilterXFeature<int> TS-1-gram-sig Stop-Gram-WWAM
+Feature		GCxTS-Stop-Gram-WWAM            FilterXFeature<int> GC-Content TS-Stop-Gram-WWAM -> 2 STOP_F STOP_B @ 16
+Feature		TS-Donor-PWM                    LazyFilterXFeature<int> TS-1-gram-sig Donor-PWM
+Feature		GCxTS-Donor-PWM                 FilterXFeature<int> GC-Content TS-Donor-PWM -> 2 DONOR_F DONOR_B @ 17
+Feature		TS-Donor-3P-Gram-WWAM           LazyFilterXFeature<int> TS-1-gram-sig Donor-3P-Gram-WWAM
+Feature		GCxTS-Donor-3P-Gram-WWAM        FilterXFeature<int> GC-Content TS-Donor-3P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		TS-Donor-5P-Gram-WWAM           LazyFilterXFeature<int> TS-1-gram-sig Donor-5P-Gram-WWAM
+Feature		GCxTS-Donor-5P-Gram-WWAM        FilterXFeature<int> GC-Content TS-Donor-5P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		TS-Acceptor-PWM                 LazyFilterXFeature<int> TS-1-gram-sig Acceptor-PWM
+Feature		GCxTS-Acceptor-PWM              FilterXFeature<int> GC-Content TS-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		TS-BranchPt-Gram-WWAM           LazyFilterXFeature<int> TS-1-gram-sig Branch-Point-Gram-WWAM
+Feature		GCxTS-BranchPt-Gram-WWAM        FilterXFeature<int> GC-Content TS-BranchPt-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		TS-Pyr-Gram-WWAM                LazyFilterXFeature<int> TS-1-gram-sig Pyrimidin-Region-Gram-WWAM
+Feature		GCxTS-Pyr-Gram-WWAM             FilterXFeature<int> GC-Content TS-Pyr-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+
+Feature		TS-Align-Exon-1st-Frame         LazyFilterXFeature<int> TS-1-gram Codon-Usage-1st-Frame
+Feature		TS-Align-Exon-2nd-Frame         LazyFilterXFeature<int> TS-1-gram Codon-Usage-2nd-Frame
+Feature		TS-Align-Exon-3rd-Frame         LazyFilterXFeature<int> TS-1-gram Codon-Usage-3rd-Frame
+
+Feature		GCxTS-Align-Exon-1st-Frame      FilterXFeature<int> GC-Content TS-Align-Exon-1st-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 19
+Feature		GCxTS-Align-Exon-2nd-Frame      FilterXFeature<int> GC-Content TS-Align-Exon-2nd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 20
+Feature		GCxTS-Align-Exon-3rd-Frame      FilterXFeature<int> GC-Content TS-Align-Exon-3rd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 21
+
+#Feature		TS-Align-Igenic                 PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1
+#Feature		GCxTS-Align-Igenic              FilterXFeature<int> GC-Content TS-Align-Igenic -> 2 INTERGENIC_F INTERGENIC_B @ 22
+#Feature		TS-Align-Intron                 PeriodicCountingSegment 3 TS-1-gram 0 1 0 false 1
+#Feature		TS-PhasexAlign-Intron           FeatureXFeature<int> Splice-Frame-Bias TS-Align-Intron
+#Feature		GCxTS-PhasexAlign-Intron        FilterXFeature<int> GC-Content TS-PhasexAlign-Intron -> 2 INTRON_F INTRON_B @ 23
+#Feature		TS-Align-LongIntron             PeriodicCountingSegment 3 TS-1-gram 0 1 0 false 1
+#Feature		TS-PhasexAlign-LongIntron       FeatureXFeature<int> Splice-Frame-Bias TS-Align-LongIntron
+#Feature		GCxTS-PhasexAlign-LongIntron    FilterXFeature<int> GC-Content TS-PhasexAlign-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 24
+
+#Feature		TS-Align-Igenic                 PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 INTERGENIC_F INTERGENIC_B @ 19
+#Feature		TS-Align-Intron                 PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 INTRON_F INTRON_B @ 20
+#Feature		TS-Align-IntronxPhase           FeatureXFeature<int> Splice-Frame-Bias TS-Align-Intron -> 2 INTRON_F INTRON_B @ 21
+#Feature		TS-Align-LongIntron             PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 LONG_INTRON_F LONG_INTRON_B @ 22
+#Feature		TS-Align-LongIntronxPhase       FeatureXFeature<int> Splice-Frame-Bias TS-Align-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 23
+#Feature          TS-Align-InitExon               PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 INIT_EXON_F INIT_EXON_B @ 24
+#Feature          TS-Align-InterExon              PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 LONG_INTRON_F LONG_INTRON_B @ 25
+#Feature		TS-Align-InterExonxPhase        FeatureXFeature<int> Splice-Frame-Bias TS-Align-InterExon -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 26
+#Feature          TS-Align-TermExon               PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 LAST_EXON_F LAST_EXON_B @ 27
+#Feature		TS-Align-TermExonxPhase         FeatureXFeature<int> Splice-Frame-Bias TS-Align-TermExon -> 2 LAST_EXON_F LAST_EXON_B @ 28
+#Feature          TS-Align-SingleExon             PeriodicCountingSegment 1 TS-1-gram 0 1 0 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 29
+
+
+Feature		CR-Start-PWM                    LazyFilterXFeature<int> CR-1-gram-sig Start-PWM
+Feature		GCxCR-Start-PWM                 FilterXFeature<int> GC-Content CR-Start-PWM -> 2 START_F START_B @ 15
+Feature		CR-Start-Gram-WWAM              LazyFilterXFeature<int> CR-1-gram-sig Start-Gram-WWAM
+Feature		GCxCR-Start-Gram-WWAM           FilterXFeature<int> GC-Content CR-Start-Gram-WWAM -> 2 START_F START_B @ 15
+Feature		CR-Stop-PWM                     LazyFilterXFeature<int> CR-1-gram-sig Stop-PWM
+Feature		GCxCR-Stop-PWM                  FilterXFeature<int> GC-Content CR-Stop-PWM -> 2 STOP_F STOP_B @ 16
+Feature		CR-Stop-Gram-WWAM               LazyFilterXFeature<int> CR-1-gram-sig Stop-Gram-WWAM
+Feature		GCxCR-Stop-Gram-WWAM            FilterXFeature<int> GC-Content CR-Stop-Gram-WWAM -> 2 STOP_F STOP_B @ 16
+Feature		CR-Donor-PWM                    LazyFilterXFeature<int> CR-1-gram-sig Donor-PWM
+Feature		GCxCR-Donor-PWM                 FilterXFeature<int> GC-Content CR-Donor-PWM -> 2 DONOR_F DONOR_B @ 17
+Feature		CR-Donor-3P-Gram-WWAM           LazyFilterXFeature<int> CR-1-gram-sig Donor-3P-Gram-WWAM
+Feature		GCxCR-Donor-3P-Gram-WWAM        FilterXFeature<int> GC-Content CR-Donor-3P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		CR-Donor-5P-Gram-WWAM           LazyFilterXFeature<int> CR-1-gram-sig Donor-5P-Gram-WWAM
+Feature		GCxCR-Donor-5P-Gram-WWAM        FilterXFeature<int> GC-Content CR-Donor-5P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 17
+Feature		CR-Acceptor-PWM                 LazyFilterXFeature<int> CR-1-gram-sig Acceptor-PWM
+Feature		GCxCR-Acceptor-PWM              FilterXFeature<int> GC-Content CR-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		CR-BranchPt-Gram-WWAM           LazyFilterXFeature<int> CR-1-gram-sig Branch-Point-Gram-WWAM
+Feature		GCxCR-BranchPt-Gram-WWAM        FilterXFeature<int> GC-Content CR-BranchPt-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+Feature		CR-Pyr-Gram-WWAM                LazyFilterXFeature<int> CR-1-gram-sig Pyrimidin-Region-Gram-WWAM
+Feature		GCxCR-Pyr-Gram-WWAM             FilterXFeature<int> GC-Content CR-Pyr-Gram-WWAM -> 2 ACCEPTOR_F ACCEPTOR_B @ 18
+
+Feature		CR-Align-Exon-1st-Frame         LazyFilterXFeature<int> CR-1-gram Codon-Usage-1st-Frame
+Feature		CR-Align-Exon-2nd-Frame         LazyFilterXFeature<int> CR-1-gram Codon-Usage-2nd-Frame
+Feature		CR-Align-Exon-3rd-Frame         LazyFilterXFeature<int> CR-1-gram Codon-Usage-3rd-Frame
+
+Feature		GCxCR-Align-Exon-1st-Frame      FilterXFeature<int> GC-Content CR-Align-Exon-1st-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 19
+Feature		GCxCR-Align-Exon-2nd-Frame      FilterXFeature<int> GC-Content CR-Align-Exon-2nd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 20
+Feature		GCxCR-Align-Exon-3rd-Frame      FilterXFeature<int> GC-Content CR-Align-Exon-3rd-Frame -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 21
+
+#Feature		CR-Align-Igenic                 PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1
+#Feature		GCxCR-Align-Igenic              FilterXFeature<int> GC-Content CR-Align-Igenic -> 2 INTERGENIC_F INTERGENIC_B @ 22
+#Feature		CR-Align-Intron                 PeriodicCountingSegment 3 CR-1-gram 0 1 0 false 1
+#Feature		CR-PhasexAlign-Intron           FeatureXFeature<int> Splice-Frame-Bias CR-Align-Intron
+#Feature		GCxCR-PhasexAlign-Intron        FilterXFeature<int> GC-Content CR-PhasexAlign-Intron -> 2 INTRON_F INTRON_B @ 23
+#Feature		CR-Align-LongIntron             PeriodicCountingSegment 3 CR-1-gram 0 1 0 false 1
+#Feature		CR-PhasexAlign-LongIntron       FeatureXFeature<int> Splice-Frame-Bias CR-Align-LongIntron
+#Feature		GCxCR-PhasexAlign-LongIntron    FilterXFeature<int> GC-Content CR-PhasexAlign-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 24
+
+#Feature		CR-Align-Igenic                 PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 INTERGENIC_F INTERGENIC_B @ 19
+#Feature		CR-Align-Intron                 PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 INTRON_F INTRON_B @ 20
+#Feature		CR-Align-IntronxPhase           FeatureXFeature<int> Splice-Frame-Bias CR-Align-Intron -> 2 INTRON_F INTRON_B @ 21
+#Feature		CR-Align-LongIntron             PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 LONG_INTRON_F LONG_INTRON_B @ 22
+#Feature		CR-Align-LongIntronxPhase       FeatureXFeature<int> Splice-Frame-Bias CR-Align-LongIntron -> 2 LONG_INTRON_F LONG_INTRON_B @ 23
+#Feature          CR-Align-InitExon               PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 INIT_EXON_F INIT_EXON_B @ 24
+#Feature          CR-Align-InterExon              PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 LONG_INTRON_F LONG_INTRON_B @ 25
+#Feature		CR-Align-InterExonxPhase        FeatureXFeature<int> Splice-Frame-Bias CR-Align-InterExon -> 2 INTERNAL_EXON_F INTERNAL_EXON_B @ 26
+#Feature          CR-Align-TermExon               PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 LAST_EXON_F LAST_EXON_B @ 27
+#Feature		CR-Align-TermExonxPhase         FeatureXFeature<int> Splice-Frame-Bias CR-Align-TermExon -> 2 LAST_EXON_F LAST_EXON_B @ 28
+#Feature          CR-Align-SingleExon             PeriodicCountingSegment 1 CR-1-gram 0 1 0 false 1 -> 2 SINGLE_EXON_F SINGLE_EXON_B @ 29
+//
