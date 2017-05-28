@@ -26,7 +26,7 @@ def clusterAnnotations(prefix, annotation, files, use_gmscore, menv, log_file):
         log_and_exec(shell_cmd, menv, log_file)
 
 
-def startCraigPredictDJob(djob_input, fa_input, model_params, prefix_data, 
+def startCraigPredictDJob(djob_input, fa_input, model_params, prefix_data,
                           djob_num_nodes, djob_node_class,
                           add_opts, output_file, menv, log_file):
     initializeDJob(djob_input, "craigpred", menv, log_file)
@@ -41,7 +41,7 @@ def startCraigPredictDJob(djob_input, fa_input, model_params, prefix_data,
     size_contigs = os.path.getsize(fa_input)
     subtask_size = int((200000*num_contigs)/size_contigs)
     subtask_size = 1 if subtask_size < 1 else subtask_size
-    subtask_size = 30 if subtask_size > 30 else subtask_size       
+    subtask_size = 30 if subtask_size > 30 else subtask_size
     fdcontroller = open(djob_input+"/craigpred_input/controller.prop", "w")
     fdcontroller.write("masterdir="+djob_input+"/craigpred_input/master\ninputdir="+djob_input+"/craigpred_input\nnodedir="+djob_input+"/craigpred_DJob\nslotspernode=1\nsubtasksize="+str(subtask_size)+"\ntaskclass=DJob::DistribJobTasks::CRAIGPredTask\nnodeclass=DJob::DistribJob::"+djob_node_class+"\n")
     fdcontroller.close()
@@ -54,12 +54,12 @@ def startCraigPredictDJob(djob_input, fa_input, model_params, prefix_data,
     subprocess.call(shell_cmd, env = menv, stdout = log_file, stderr = log_file, shell=True)
     if not checkLog4Completion("Done", menv, log_file):
         raise CraigUndefined("distribjob for CRAIGPredTask ("+prefix_data+") failed")
-    
+
     shell_cmd = "cp "+djob_input+"/craigpred_input/master/mainresult/output0.locs "+output_file
     log_and_exec(shell_cmd, menv, log_file)
 
 
-def startXSignalsDJob(djob_input, fa_input, prefix_data, 
+def startXSignalsDJob(djob_input, fa_input, prefix_data,
                       djob_num_nodes, djob_node_class,
                       add_opts,
                       menv, log_file):
@@ -85,7 +85,7 @@ def startXSignalsDJob(djob_input, fa_input, prefix_data,
     if max_contig_len > 4E+7:
         num_gbs = max_contig_len/11E+6
     elif max_contig_len > 8.5E+6:
-        num_gbs = max_contig_len/4E+6        
+        num_gbs = max_contig_len/4E+6
     shell_cmd = "distribjob --propFile "+djob_input+"/xsignals_input/controller.prop --numNodes "+str(djob_num_nodes)
     shell_cmd += (" --mpn "+str(num_gbs) if num_gbs > 1.8 else "")
     logging.info('Executing \"'+shell_cmd+'\"')
@@ -94,7 +94,7 @@ def startXSignalsDJob(djob_input, fa_input, prefix_data,
         raise CraigUndefined("distribjob for XSignalTask ("+prefix_data+") failed")
 
 
-def startScoreGenesDJob(djob_input, fa_input, annot_input, model_params, 
+def startScoreGenesDJob(djob_input, fa_input, annot_input, model_params,
                         prefix_data, djob_num_nodes, djob_node_class,
                         add_opts, output_file,
                         menv, log_file):
@@ -126,11 +126,11 @@ def startScoreGenesDJob(djob_input, fa_input, annot_input, model_params,
     subprocess.call(shell_cmd, env = menv, stdout = log_file, stderr = log_file, shell=True)
     if not checkLog4Completion("Done", menv, log_file):
         raise CraigUndefined("distribjob for ScoreGenesTask ("+prefix_data+") failed")
-    
+
     shell_cmd = "cp "+djob_input+"/scoregenes_input/master/mainresult/output.gms.locs "+output_file
     log_and_exec(shell_cmd, menv, log_file)
 
-def computeSubContigFilters(prefix_ctg, prefix_subctg, 
+def computeSubContigFilters(prefix_ctg, prefix_subctg,
                             djob_input,
                             djob_num_nodes, djob_node_class,
                             num_permutations, stranded,
@@ -141,18 +141,18 @@ def computeSubContigFilters(prefix_ctg, prefix_subctg,
     log_and_exec(shell_cmd, menv, log_file)
     shell_cmd = "extractWeightedSignalFilter.pl -truncated -ctg "+prefix_subctg+".fa -locs "+prefix_subctg+".junction"
     log_and_exec(shell_cmd, menv, log_file)
-    
+
     if djob_num_nodes > 1:
         add_opts = "minCoverage=2\nblockLen=20\nstranded="+("yes" if stranded else "no")+"\nnumPermutations="+str(num_permutations)+"\n"
-        startXSignalsDJob(djob_input, prefix_subctg+".fa", 
+        startXSignalsDJob(djob_input, prefix_subctg+".fa",
                           prefix_subctg,
                           djob_num_nodes, djob_node_class,
                           add_opts, menv, log_file)
     else:
         shell_cmd = "get_covxsignals "+("--stranded" if stranded else "")+" --prefix-evidence="+prefix_subctg+" --num-permutations="+str(num_permutations)+" --chunk-size=30000 --block-len=20 "+prefix_subctg+".fa"
-        log_and_exec(shell_cmd, menv, log_file) 
+        log_and_exec(shell_cmd, menv, log_file)
 
- 
+
 def produceSubContigAnnotation(contigs, contig_locs,
                                prefix_output, use_subcontiglocs_as_ids, preserve_ids,
                                menv, log_file) :
@@ -205,8 +205,8 @@ def annotateUTRs(prefix, prefix_files, model_name,
     log_and_exec(shell_cmd, menv, log_file)
 
 
-def createSetup4Training(prefix_train, prefix_genome, 
-                         prefix_xvalfiles, 
+def createSetup4Training(prefix_train, prefix_genome,
+                         prefix_xvalfiles,
                          model_name, gc_classes,
                          out_dir, conf_file,
                          menv, log_file) :
@@ -243,7 +243,7 @@ def checkLog4Completion(phrase, menv, log_file) :
 
 def log_and_exec(shell_cmd, menv, log_file) :
     logging.info('Executing \"'+shell_cmd+'\"')
-    return_code = subprocess.call(shell_cmd, env = menv, stderr = log_file, shell=True)
+    return_code = subprocess.check_call(shell_cmd, env = menv, stderr = log_file, shell=True)
     logging.info('Done \"'+shell_cmd+'\"!')
     return return_code
 
@@ -252,7 +252,7 @@ def processFasta(script_in, fmt, fn_in, fn_out, menv, log_file):
     shell_cmd = script_in+" < "+fn_in+" > "+fn_out+".0.fa"
     log_and_exec(shell_cmd, menv, log_file)
 
-    if fmt == 'genbank':        
+    if fmt == 'genbank':
         shell_cmd = "genbank2fa.pl < "+fn_out+".0.fa > "+fn_out+".fa"
         log_and_exec(shell_cmd, menv, log_file)
     elif fmt == 'fasta':
@@ -271,18 +271,18 @@ def processAnnotation(script_in, fmt, tr_tag, cds_tag, non_uniq_ids, fn_in, fn_o
     log_and_exec(shell_cmd, menv, log_file)
 
     gtfBin = "gtf2Locs.pl "+("" if non_uniq_ids else "--uniq-id")
-    
+
     if fmt == 'gff3':
-        shell_cmd = "grep -s -P -v \"\s"+tr_tag+"\s\" "+fn_out+".0.locs | gff32GTF.pl -all | "+gtfBin+" | sort > "+fn_out+".1.locs"
+        shell_cmd = "grep -s -E -v \"\s"+tr_tag+"\s\" "+fn_out+".0.locs | gff32GTF.pl -all | "+gtfBin+" | sort > "+fn_out+".1.locs"
         log_and_exec(shell_cmd, menv, log_file)
         if tr_tag != 'null':
-            shell_cmd = "grep -s -P -v \"\s"+cds_tag+"\s\" "+fn_out+".0.locs | gff32GTF.pl -all | "+gtfBin+" > "+fn_out+".3.locs"
+            shell_cmd = "grep -s -E -v \"\s"+cds_tag+"\s\" "+fn_out+".0.locs | gff32GTF.pl -all | "+gtfBin+" > "+fn_out+".3.locs"
             log_and_exec(shell_cmd, menv, log_file)
     elif fmt == 'gtf':
-        shell_cmd = "grep -s -P -v \"\s"+tr_tag+"\s\" "+fn_out+".0.locs | "+gtfBin+" | sort > "+fn_out+".1.locs"
+        shell_cmd = "grep -s -E -v \"\s"+tr_tag+"\s\" "+fn_out+".0.locs | "+gtfBin+" | sort > "+fn_out+".1.locs"
         log_and_exec(shell_cmd, menv, log_file)
         if tr_tag != 'null':
-            shell_cmd = "grep -s -P -v \"\s"+cds_tag+"\s\" "+fn_out+".0.locs | "+gtfBin+" > "+fn_out+".3.locs"
+            shell_cmd = "grep -s -E -v \"\s"+cds_tag+"\s\" "+fn_out+".0.locs | "+gtfBin+" > "+fn_out+".3.locs"
             log_and_exec(shell_cmd, menv, log_file)
     elif fmt == genbank:
         subprocess.call("genbank2Locs.pl --cds-tag "+cds_tag+" --transcript-tag "+tr_tag+" < "+fn_out+".0.locs > "+fn_out+".1.locs", env = menv, stderr = log_file, shell=True)
@@ -296,12 +296,12 @@ def processAnnotation(script_in, fmt, tr_tag, cds_tag, non_uniq_ids, fn_in, fn_o
     if tr_tag != 'null' and (fmt == 'gff3' or fmt == 'gtf'):
         shell_cmd = "biointers.py "+fn_out+".3.locs "+fn_out+".1.locs -by ii | sort > "+fn_out+".4.locs"
         log_and_exec(shell_cmd, menv, log_file)
-        shell_cmd = "produceUTRannot.pl -utr "+fn_out+".4.locs < "+fn_out+".1.locs > "+fn_out+".2.locs; mv "+fn_out+".2.locs "+fn_out+".1.locs"
+        shell_cmd = "produceUTRannot.pl -sort -utr "+fn_out+".4.locs < "+fn_out+".1.locs > "+fn_out+".2.locs; mv "+fn_out+".2.locs "+fn_out+".1.locs"
         log_and_exec(shell_cmd, menv, log_file)
 
     shell_cmd = "filterRepeatedGenes.pl < "+fn_out+".1.locs > "+fn_out+".locs; rm "+fn_out+".?.locs"
     log_and_exec(shell_cmd, menv, log_file)
-    
+
     fixTranslatedProduct(fn_out+".fa", fn_out+".locs", menv, log_file)
 
 
@@ -312,13 +312,13 @@ def computePreprocAuxFiles(chrfasta_fn, chrannot_fn, chrlen_fn, chrlen2_fn, chrs
     log_and_exec(shell_cmd, menv, log_file)
     shell_cmd = "reportSSpairs.pl -ctg "+chrfasta_fn+" < "+chrannot_fn+" > "+chrss_fn
     log_and_exec(shell_cmd, menv, log_file)
-    
+
 
 def fixTranslatedProduct(chrfasta_fn, chrannot_fn, menv, log_file):
     shell_cmd = "cat "+chrannot_fn+" | fixTranslatedProduct.pl --preserve-phases -ctg "+chrfasta_fn+" | grep -s \">\" > "+chrannot_fn+".1 ; mv "+chrannot_fn+".1 "+chrannot_fn
     log_and_exec(shell_cmd, menv, log_file)
 
-# strict_remove is true if we want to remove contigs in which at least one annotation was removed. 
+# strict_remove is true if we want to remove contigs in which at least one annotation was removed.
 # A value of false will only remove those contigs which have no annotations in chrannot_fn
 def synchronizeAnnotation(strict_remove, chrfasta_fn, oldcharannot_fn, chrannot_fn, menv, log_file):
     shell_cmd = "biointers.py "+chrfasta_fn+" "+chrannot_fn+" -by ic > "+chrfasta_fn+".1"
@@ -334,7 +334,7 @@ def initializeDJob(djob_inpdir, djob_prefix, menv, log_file):
     djob_name = djob_inpdir+"/"+djob_prefix
     shell_cmd = "rm -rf "+djob_name+"_DJob/*" if os.path.exists(djob_name+"_DJob") else "mkdir "+djob_name+"_DJob"
     log_and_exec(shell_cmd, menv, log_file)
-    shell_cmd = "rm -rf "+djob_name+"_input/*" if os.path.exists(djob_name+"_input") else "mkdir "+djob_name+"_input" 
+    shell_cmd = "rm -rf "+djob_name+"_input/*" if os.path.exists(djob_name+"_input") else "mkdir "+djob_name+"_input"
     log_and_exec(shell_cmd, menv, log_file)
     shell_cmd = "mkdir "+djob_name+"_input/master"
     log_and_exec(shell_cmd, menv, log_file)
@@ -352,4 +352,3 @@ def makeNaiveRSqParamModel(naive_model, abi_model, menv, log_file):
     log_and_exec(shell_cmd, menv, log_file)
     shell_cmd = "rm "+naive_model+".patch"
     log_and_exec(shell_cmd, menv, log_file)
-        

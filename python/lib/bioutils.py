@@ -7,7 +7,7 @@ def readRecords(inputFile,
                 recordSep="\\n",
                 readSize=8192):
     """Like the normal file iter but you can set what string indicates newline.
-    
+
     The newline string can be arbitrarily long; it need not be restricted to a
     single character. You can also set the read size and control whether or not
     the newline string is left on the end of the iterated lines.  Setting
@@ -28,12 +28,14 @@ def readRecords(inputFile,
             mrs = 2*mrs
             chunk = inputFile.read(mrs)
 
-        if not charsJustRead: break            
-        partialLine += charsJustRead      
+        if not charsJustRead:
+            break
+        partialLine += charsJustRead
         lines = partialLine.split(recordSep)
-        partialLine = lines.pop()        
-        for line in lines: yield line
-    if partialLine: yield partialLine       
+        partialLine = lines.pop()
+        for line in lines:
+            yield line
+    if partialLine: yield partialLine
 
 
 recParsei = re.compile(r"^\>?(\S+)(\s*[\S,\s,\n]*)$")
@@ -43,13 +45,16 @@ recParsel = re.compile(r"^\>?(\S+)(\s+\d?\<?)([^\s,\>]+)(.*)$")
 def processRecord(line, idType):
     if idType == 'i':
         match = recParsei.match(line)
-        if match: return (match.group(1).lstrip('>'), match.group(2).rstrip('\n'))
+        if match:
+            return (match.group(1).lstrip('>'), match.group(2).rstrip('\n'))
     elif idType == 'c':
         match = recParsec.match(line)
-        if match: return (match.group(3), line.rstrip('\n').lstrip('>'))
+        if match:
+            return (match.group(3), line.rstrip('\n').lstrip('>'))
     elif idType == 'l':
         match = recParsel.match(line)
-        if match: return (match.group(3), line.rstrip('\n').lstrip('>'))
+        if match:
+            return (match.group(3), line.rstrip('\n').lstrip('>'))
     else: return (None, None)
 
 def printRecord(key, value, recordSep, idType):
@@ -67,9 +72,9 @@ exonParse = re.compile(r"^\s*(\S+)_(\d+)_(\d+)\s*")
 def readLocExons(location, exons) :
     exons = []
     res = location.split(";")
-    for i in range(len(res)): 
+    for i in range(len(res)):
         match = exonParse.match(res[i])
-        if match: 
+        if match:
             exons.append([match.group(1),match.group(2),match.group(3)])
         else:
             raise CraigUndefined("Wrong exon format in "+location)
@@ -115,7 +120,7 @@ def readLocation(location, fiveUtrExons, exons, threeUtrExons):
     match = locParse2.match(location)
     if match :
         location = match.group(1)
-        noStop = 1 # partial last exon 
+        noStop = 1 # partial last exon
 
     match = locParse3.match(location)
     if match :
@@ -124,4 +129,3 @@ def readLocation(location, fiveUtrExons, exons, threeUtrExons):
 	    exons[i].append(weight[i])
     else :
         raise CraigUndefined("Wrong exon format in "+location)
-

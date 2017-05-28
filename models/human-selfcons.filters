@@ -1,0 +1,69 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Content            Context 0 GCgc 0 4 43 51 57 100
+Filter      Intron-Score          ImmScore 1 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 2 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 3 0 GC-Content exon-model
+Filter      1-gram                Gram 4 1 false dna-alpha
+Filter      2-gram                Gram 5 2 false dna-alpha
+Filter      3-gram                Gram 6 3 false dna-alpha
+Filter      5-gram                Gram 7 5 false dna-alpha
+Filter      6-gram                Gram 8 6 false dna-alpha
+Filter      Start-Signal          EdgeInst 9 START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst 9 STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst 9 DONOR dna-alpha 1 GT
+Filter      Acceptor-Signal       EdgeInst 9 ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 10 1 0 mask-alpha 1
+Filter      Noise-Counts          ContainScore 11 1 0 noise-alpha 0 6
+Filter      GC-Content2           Context 12 GCgc 0 2 51 100
+Filter      1-mm8-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      mm8-Multiz-Input      FastaxFilter<int> 15 mm8-multiz-file 1-mm8-gram
+Filter      3-mm8-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      mm8-Multiz-Input      FastaxFilter<int> 16 mm8-multiz-file 3-mm8-gram
+Filter      1-rheMac2-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      rheMac2-Multiz-Input      FastaxFilter<int> 17 rheMac2-multiz-file 1-rheMac2-gram
+Filter      3-rheMac2-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      rheMac2-Multiz-Input      FastaxFilter<int> 18 rheMac2-multiz-file 3-rheMac2-gram
+Filter      1-rn4-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      rn4-Multiz-Input      FastaxFilter<int> 19 rn4-multiz-file 1-rn4-gram
+Filter      3-rn4-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      rn4-Multiz-Input      FastaxFilter<int> 20 rn4-multiz-file 3-rn4-gram
+Filter      1-oryCun1-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      oryCun1-Multiz-Input      FastaxFilter<int> 21 oryCun1-multiz-file 1-oryCun1-gram
+Filter      3-oryCun1-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      oryCun1-Multiz-Input      FastaxFilter<int> 22 oryCun1-multiz-file 3-oryCun1-gram
+Filter      1-canFam2-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      canFam2-Multiz-Input      FastaxFilter<int> 23 canFam2-multiz-file 1-canFam2-gram
+Filter      3-canFam2-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      canFam2-Multiz-Input      FastaxFilter<int> 24 canFam2-multiz-file 3-canFam2-gram
+Filter      1-bosTau3-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      bosTau3-Multiz-Input      FastaxFilter<int> 25 bosTau3-multiz-file 1-bosTau3-gram
+Filter      3-bosTau3-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      bosTau3-Multiz-Input      FastaxFilter<int> 26 bosTau3-multiz-file 3-bosTau3-gram
+Filter      1-dasNov1-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      dasNov1-Multiz-Input      FastaxFilter<int> 27 dasNov1-multiz-file 1-dasNov1-gram
+Filter      3-dasNov1-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      dasNov1-Multiz-Input      FastaxFilter<int> 28 dasNov1-multiz-file 3-dasNov1-gram
+Filter      1-loxAfr1-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      loxAfr1-Multiz-Input      FastaxFilter<int> 29 loxAfr1-multiz-file 1-loxAfr1-gram
+Filter      3-loxAfr1-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      loxAfr1-Multiz-Input      FastaxFilter<int> 30 loxAfr1-multiz-file 3-loxAfr1-gram
+Filter      1-echTel1-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      echTel1-Multiz-Input      FastaxFilter<int> 31 echTel1-multiz-file 1-echTel1-gram
+Filter      3-echTel1-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      echTel1-Multiz-Input      FastaxFilter<int> 32 echTel1-multiz-file 3-echTel1-gram
+Filter      1-monDom4-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      monDom4-Multiz-Input      FastaxFilter<int> 33 monDom4-multiz-file 1-monDom4-gram
+Filter      3-monDom4-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      monDom4-Multiz-Input      FastaxFilter<int> 34 monDom4-multiz-file 3-monDom4-gram
+Filter      1-galGal3-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      galGal3-Multiz-Input      FastaxFilter<int> 35 galGal3-multiz-file 1-galGal3-gram
+Filter      3-galGal3-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      galGal3-Multiz-Input      FastaxFilter<int> 36 galGal3-multiz-file 3-galGal3-gram
+//

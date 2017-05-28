@@ -1,6 +1,6 @@
 # adding doxygen support
 
-SUBDIRS = models python/bin python/lib perl/bin perl/lib regex sparsevec sparsehash/include/google sparsehash/share/doc/sparsehash-1.8.1 lless src tests doc datasets
+SUBDIRS = models python/bin python/lib perl/bin perl/lib regex sparsevec lless src tests doc datasets
 
 AUX_DIST =  @top_srcdir@/$(ac_aux_dir)/config.guess @top_srcdir@/$(ac_aux_dir)/config.sub @top_srcdir@/$(ac_aux_dir)/install-sh @top_srcdir@/$(ac_aux_dir)/ltmain.sh @top_srcdir@/$(ac_aux_dir)/missing
 

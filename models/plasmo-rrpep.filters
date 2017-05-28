@@ -1,0 +1,12 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      SignalP-Score         ScoreFile<double,double> signalp-scores
+Filter      SignalP-RelScore      RerankScore<double> TRAIN_SET EDGE_INST START SignalP-Score
+Filter      SignalP-RelOffset     RerankOffset<double> TRAIN_SET EDGE_INST START SignalP-Score
+//

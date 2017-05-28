@@ -1,0 +1,40 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+
+Resource	dna-alpha	DNASigma
+Resource	mask-alpha	Sigma 2 TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource	aa-alpha  	AASigma
+Resource    complete           	FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial          	FSM ~partial.top 100 BOTH_STRANDS
+
+Resource    ev-states-alpha     Sigma 4 .-_ilnIELSCAO .-_ilnIELSCAO   . iln _- SIELCAO
+Resource    ev-xstates-alpha    Sigma 8 .-_ilnIELSCAO .-_ilnIELSCAO   . i ln _- S I L ECAO
+Resource    ev-signals-alpha    Sigma 5 -STDA -STDA - S T D A
+
+Resource	craig-ev-states	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.craig.state ev-states-alpha true false
+Resource	ensembl-ev-states	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.ensembl.state ev-states-alpha true false
+Resource	exoniphy-ev-states	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.exoniphy.state ev-states-alpha true false
+Resource	geneid-ev-states	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.geneid.state ev-states-alpha true false
+Resource	nscan-ev-states	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.nscan.state ev-states-alpha true false
+Resource	sgp-ev-states	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.sgp.state ev-states-alpha true false
+
+Resource	1mer-ev-colstates	SparseFastaFileCollapser<UCHAR> null false 1 6  craig-ev-states ensembl-ev-states exoniphy-ev-states geneid-ev-states nscan-ev-states sgp-ev-states
+
+Resource	1mer-ev-colxstates	SparseFastaFileCollapser<UCHAR> ev-xstates-alpha false 1 6 craig-ev-states ensembl-ev-states exoniphy-ev-states geneid-ev-states nscan-ev-states sgp-ev-states
+
+Resource	2mer-ev-colstates	SparseFastaFileCollapser<UCHAR> null false 2 6 craig-ev-states ensembl-ev-states exoniphy-ev-states geneid-ev-states nscan-ev-states sgp-ev-states
+
+Resource	2mer-ev-colxstates	SparseFastaFileCollapser<UCHAR> ev-xstates-alpha false 2 6 craig-ev-states ensembl-ev-states exoniphy-ev-states geneid-ev-states nscan-ev-states sgp-ev-states
+
+Resource	craig-ev-signals	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.craig.signal ev-signals-alpha true false
+Resource	ensembl-ev-signals	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.ensembl.signal ev-signals-alpha true false
+Resource	exoniphy-ev-signals	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.exoniphy.signal ev-signals-alpha true false
+Resource	geneid-ev-signals	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.geneid.signal ev-signals-alpha true false
+Resource	nscan-ev-signals	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.nscan.signal ev-signals-alpha true false
+Resource	sgp-ev-signals	File XFASTA /home/abernal/Data/Human//hg19/SP/Combiner/curated.longest.sgp.signal ev-signals-alpha true false
+
+Resource	ev-signals-all	    	FileMerger null false - 6 craig-ev-signals ensembl-ev-signals exoniphy-ev-signals geneid-ev-signals nscan-ev-signals sgp-ev-signal
+//

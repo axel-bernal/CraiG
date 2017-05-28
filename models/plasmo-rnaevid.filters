@@ -1,0 +1,41 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Content            Context GCgc 0 1 100
+Filter      1-gram                Gram<UCHAR> 1 dna-alpha
+Filter      2-gram                Gram<UCHAR> 2 dna-alpha
+Filter      3-gram                Gram<UCHAR> 3 dna-alpha
+LazyFilter  Start-Signal          EdgeInst START ev-signals-alpha 1 S
+#LazyFilter  Stop-DNASignal        EdgeInst STOP dna-alpha 3 TGA TAG TAA
+LazyFilter  Stop-Signal           EdgeInst STOP ev-signals-alpha 1 T
+LazyFilter  Donor-Signal          EdgeInst DONOR ev-signals-alpha 1 D
+LazyFilter  Acceptor-Signal       EdgeInst ACCEPTOR ev-signals-alpha 1 A
+Filter      Start-Signal-input    FastaxFilter<char,EdgeInst> ev-signals-all Start-Signal
+Filter      Stop-Signal-input     FastaxFilter<char,EdgeInst> ev-signals-all Stop-Signal
+Filter      Donor-Signal-input    FastaxFilter<char,EdgeInst> ev-signals-all Donor-Signal
+Filter      Acceptor-Signal-input FastaxFilter<char,EdgeInst> ev-signals-all Acceptor-Signal
+
+#
+# Filters for incorporating external evidence
+#
+
+MultiLazyFilter(1mer-ev-colstates)  States-1gram-1mer-$$         FastGram<UCHAR,UCHAR> 1 4
+MultiFilter(1mer-ev-colstates)      States-1gram-1mer-$$-input   FastaxFilter<UCHAR*,UCHAR> 1mer-ev-colstates $$ States-1gram-1mer-$$
+
+MultiLazyFilter(1mer-ev-colxstates)  States-1xgram-1mer-$$       SparseGram<UCHAR,UCHAR> 1 7 2
+MultiSparseFilter(1mer-ev-colxstates)      States-1xgram-1mer-$$-input   FastaxFilter<UCHAR*,UCHAR> 1mer-ev-colxstates $$ States-1xgram-1mer-$$
+
+MultiLazyFilter(1mer-ev-colstates)  States-3gram-1mer-$$         FastGram<UCHAR,UCHAR> 3  4
+MultiFilter(1mer-ev-colstates)      States-3gram-1mer-$$-input   FastaxFilter<UCHAR*,UCHAR> 1mer-ev-colstates $$ States-3gram-1mer-$$
+
+MultiLazyFilter(1mer-ev-colstates)  States-4gram-1mer-$$         FastGram<UCHAR,UCHAR> 4  4
+MultiFilter(1mer-ev-colstates)      States-4gram-1mer-$$-input   FastaxFilter<UCHAR*,UCHAR> 1mer-ev-colstates $$ States-4gram-1mer-$$
+
+MultiLazyFilter(2mer-ev-colxstates)   States-1xgram-2mer-$$           SparseGram<UCHAR,UCHAR> 1 49 2
+MultiSparseFilter(2mer-ev-colxstates) States-1xgram-2mer-$$-input     FastaxFilter<UCHAR*,UCHAR> 2mer-ev-colxstates $$ States-1xgram-2mer-$$
+//

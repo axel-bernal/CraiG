@@ -1,0 +1,27 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Content            Context 0 GCgc 0 4 43 51 57 100
+Filter      Intron-Score          ImmScore 1 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 2 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 3 0 GC-Content exon-model
+Filter      1-gram                Gram 4 1 false dna-alpha
+Filter      2-gram                Gram 5 2 false dna-alpha
+Filter      3-gram                Gram 6 3 false dna-alpha
+Filter      5-gram                Gram 7 5 false dna-alpha
+Filter      6-gram                Gram 8 6 false dna-alpha
+Filter      Start-Signal          EdgeInst 9 START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst 9 STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst 9 DONOR dna-alpha 1 GT
+Filter      Acceptor-Signal       EdgeInst 9 ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 10 1 0 mask-alpha 1
+Filter      GC-Content2           Context 11 GCgc 0 2 51 100
+Filter      MP-Acceptor-Score     ScoreFile<double> 12 mp-acc-scores
+Filter      MP-Donor-Score        ScoreFile<double> 13 mp-don-scores
+#Filter      Fasta-Mask-Counts     FastaxFilter<int> 14 masked-regions Mask-Counts
+//

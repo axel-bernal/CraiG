@@ -21,28 +21,54 @@ my $curr_clen;
 open(PREFIX_PLUS, ">$prefix"."_plus.bed") || die "Can't open file $prefix"."_plus.bed\n";
 open(PREFIX_MINUS, ">$prefix"."_minus.bed") || die "Can't open file $prefix"."_minus.bed\n";
 
+# Need to buffer the neg strand ouput as it's in reverse position
+my @minus_buffer = ();
+# keep track of last position in comp strand
+my $last_comp_position = 0;
+
 while(defined($line = <STDIN>)) {    
     if($line =~ />(\S+)/) { 
+	if(scalar(@minus_buffer) > 0) {
+	    print PREFIX_MINUS join("\n", @minus_buffer), "\n";
+	    $last_comp_position = 0;
+	}	    
 	$contig = $1; 
 	$curr_clen = $lengths{$contig};
 	exit(1) if !defined($curr_clen);
 	$factor = 1;
+	@minus_buffer = ();
     } elsif($line =~ /\/\//) { 
 	$factor = -1; 
     } elsif($line =~ /(\d+)\.\.(\d+)\s+(\S.+)$/) { 
 	if($factor < 0) { 
-	    print PREFIX_MINUS "$contig\t", $curr_clen - $2, "\t", $curr_clen - $1 + 1, "\t", $factor*$3, "\n";
+	    if($1 > $last_comp_position) {
+		unshift(@minus_buffer, "$contig\t".($curr_clen - $2)."\t".($curr_clen - $1 + 1)."\t".sprintf("%.3f", $factor*log($3)));
+	    }
+	    else {
+		push(@minus_buffer, "$contig\t".($curr_clen - $2)."\t".($curr_clen - $1 + 1)."\t".sprintf("%.3f", $factor*log($3)));
+	    }
+	    $last_comp_position = $1;
 	} else {
-	    print PREFIX_PLUS "$contig\t", $1 - 1, "\t$2\t", $factor*$3, "\n";
+	    print PREFIX_PLUS "$contig\t", $1 - 1, "\t$2\t", sprintf("%.3f", $factor*log($3)), "\n";
 	}
     } elsif($line =~ /(\d+)\s+(\S.+)$/) { 
 	if($factor < 0) { 
-	    print PREFIX_MINUS "$contig\t", $curr_clen - $1, "\t", $curr_clen - $1 + 1, "\t", $factor*$2, "\n";
-	} else { 
-	    print PREFIX_PLUS "$contig\t", $1 - 1, "\t$1\t", $factor*$2, "\n";
-	} 
+	    if($1 > $last_comp_position) {
+		unshift(@minus_buffer, "$contig\t".($curr_clen - $1)."\t".($curr_clen - $1 + 1)."\t".sprintf("%.3f", $factor*log($2)));
+	    }
+	    else {
+		push(@minus_buffer, "$contig\t".($curr_clen - $1)."\t".($curr_clen - $1 + 1)."\t".sprintf("%.3f", $factor*log($2)));
+	    }
+	    $last_comp_position = $1;
+	} else {
+	    print PREFIX_PLUS "$contig\t", $1 - 1, "\t$1\t", sprintf("%.3f", $factor*log($2)), "\n";
+	}
     }
 }
+
+if(scalar(@minus_buffer > 0)) {
+    print PREFIX_MINUS join("\n", @minus_buffer), "\n";
+}	    
 									
 close(PREFIX_PLUS);
 close(PREFIX_MINUS);									     

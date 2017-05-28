@@ -1,0 +1,130 @@
+#
+#Constructor for edges is of the form:
+#Edge(int id, bool hasSignal, bool isSelfTransition, TStrand strand)
+#
+
+#
+
+Edge    START_F            START          true  false STRAND_FWD
+Edge    PEPSTART_F         START          true  false STRAND_FWD
+Edge    STOP_F              STOP          true  false STRAND_FWD
+Edge    DONOR_F            DONOR          true  false STRAND_FWD
+Edge    ACCEPTOR_F         ACCEPTOR       true  false STRAND_FWD
+Edge    SELF_INTERGENIC_F  NO_EDGE_INST      false true STRAND_FWD
+Edge    PAR_START_F        NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_STOP_F         NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_DONOR_F        NO_EDGE_INST      false false STRAND_FWD
+Edge    PAR_ACCEPTOR_F     NO_EDGE_INST      false false STRAND_FWD
+
+Edge    START_B            START          true  false STRAND_COMP    START_F
+Edge    PEPSTART_B         START          true  false STRAND_COMP    PEPSTART_F
+Edge    STOP_B             STOP           true  false STRAND_COMP    STOP_F
+Edge    DONOR_B            DONOR          true  false STRAND_COMP    DONOR_F
+Edge    ACCEPTOR_B         ACCEPTOR       true  false STRAND_COMP    ACCEPTOR_F
+Edge    SELF_INTERGENIC_B  NO_EDGE_INST      false true STRAND_COMP  SELF_INTERGENIC_F
+Edge    PAR_START_B        NO_EDGE_INST      false false STRAND_COMP PAR_START_F
+Edge    PAR_STOP_B         NO_EDGE_INST      false false STRAND_COMP PAR_STOP_F
+Edge    PAR_DONOR_B        NO_EDGE_INST      false false STRAND_COMP PAR_DONOR_F
+Edge    PAR_ACCEPTOR_B     NO_EDGE_INST      false false STRAND_COMP PAR_ACCEPTOR_F
+
+#
+#Constructor for nodes is of the form:
+#FLNode    int id int phase TStrand strand [nextEdgePos:edge:nextNode ...])
+#VPNode    int id int phase TStrand strand[nextEdgePos:edge:nextNode...]
+#
+
+# Start Synchronization Node
+FLNode        ^                 SYNC_STATE      NO_NODE_INST  3  3  3  STRAND_FWD
+
+#
+# Forward strand Nodes
+#
+FLNode      INTERGENIC_F        ANY_INTERGENIC  INTERGENIC  1  1  1  STRAND_FWD
+VLNode      INTRON_F            ANY_INTRON      INTRON      1  3  3  STRAND_FWD
+VPNode      INIT_EXON_F         INIT_EXON       EXON        3  1  3  STRAND_FWD  STOP_F
+VPNode      PEPINIT_EXON_F      INIT_EXON       EXON        3  1  3  STRAND_FWD  STOP_F
+VPNode      INTERNAL_EXON_F     INTERNAL_EXON   EXON        3  3  3  STRAND_FWD  STOP_F
+VPNode      LAST_EXON_F         LAST_EXON       EXON        3  3  1  STRAND_FWD  STOP_F
+VPNode      SINGLE_EXON_F       SINGLE_EXON     EXON        3  1  1  STRAND_FWD  STOP_F
+VPNode      PEPSINGLE_EXON_F    SINGLE_EXON     EXON        3  1  1  STRAND_FWD  STOP_F
+#
+# Complementary strand Nodes
+#
+FLNode      INTERGENIC_B        ANY_INTERGENIC  INTERGENIC  1  1  1  STRAND_COMP  INTERGENIC_F
+VLNode      INTRON_B            ANY_INTRON      INTRON      1  3  3  STRAND_COMP INTRON_F
+VPNode      INIT_EXON_B         INIT_EXON       EXON        3  3  1  STRAND_COMP  STOP_B INIT_EXON_F
+VPNode      PEPINIT_EXON_B      INIT_EXON       EXON        3  3  1  STRAND_COMP  STOP_B PEPINIT_EXON_F
+VPNode      INTERNAL_EXON_B     INTERNAL_EXON   EXON        3  3  3  STRAND_COMP  STOP_B INTERNAL_EXON_F
+VPNode      LAST_EXON_B         LAST_EXON       EXON        3  1  3  STRAND_COMP  STOP_B LAST_EXON_F
+VPNode      SINGLE_EXON_B       SINGLE_EXON     EXON        3  1  1  STRAND_COMP  STOP_B SINGLE_EXON_F
+VPNode      PEPSINGLE_EXON_B    SINGLE_EXON     EXON        3  1  1  STRAND_COMP  STOP_B PEPSINGLE_EXON_F
+
+#
+# Words
+#
+#Word  GENE_F      ANY_INTERGENIC    ANY_INTERGENIC      1  3  3  STRAND_FWD
+#Word  GENE_B      ANY_INTERGENIC    ANY_INTERGENIC      1  3  3  STRAND_COMP GENE_F
+Word  SEQTAG_F    SYNC_STATE        SYNC_STATE          3  3  3  STRAND_FWD
+Word  SEQTAG_B    SYNC_STATE        SYNC_STATE          3  3  3  STRAND_COMP  SEQTAG_F
+
+Transition from   ^                      to [-1:PAR_STOP_F:INTERGENIC_F -1:PAR_START_F:SINGLE_EXON_F -1:PAR_START_F:INIT_EXON_F -1:PAR_DONOR_F:INTRON_F -1:PAR_START_B:INTERGENIC_B -1:PAR_STOP_B:SINGLE_EXON_B -1:PAR_STOP_B:LAST_EXON_B -1:PAR_ACCEPTOR_B:INTRON_B]
+
+#
+# Transitions
+#
+Transition from   INTERGENIC_B           to [0:SELF_INTERGENIC_B:INTERGENIC_B -1:STOP_B:SINGLE_EXON_B -1:STOP_B:PEPSINGLE_EXON_B -1:STOP_B:LAST_EXON_B 0:PAR_STOP_B:$]
+
+Transition from   INTRON_B               to [-1:DONOR_B:INIT_EXON_B -1:DONOR_B:INTERNAL_EXON_B 0:PAR_DONOR_B:$]
+
+Transition from   INIT_EXON_B            to [-1:START_B:INTERGENIC_F -1:START_B:INTERGENIC_B  0:PAR_START_B:$]
+
+Transition from   PEPINIT_EXON_B         to [-1:PEPSTART_B:INTERGENIC_F -1:PEPSTART_B:INTERGENIC_B  0:PAR_START_B:$]
+
+Transition from   INTERNAL_EXON_B        to [1:ACCEPTOR_B:INTRON_B]
+
+Transition from   LAST_EXON_B            to [1:ACCEPTOR_B:INTRON_B]
+
+Transition from   SINGLE_EXON_B          to [-1:START_B:INTERGENIC_F -1:START_B:INTERGENIC_B 0:PAR_START_B:$]
+
+Transition from   PEPSINGLE_EXON_B       to [-1:PEPSTART_B:INTERGENIC_F -1:PEPSTART_B:INTERGENIC_B 0:PAR_START_B:$]
+
+Transition from   INTERGENIC_F           to [0:SELF_INTERGENIC_F:INTERGENIC_F 0:START_F:SINGLE_EXON_F  0:PEPSTART_F:PEPSINGLE_EXON_F 0:START_F:INIT_EXON_F 0:PEPSTART_F:PEPINIT_EXON_F 0:PAR_START_F:$]
+
+Transition from   INTRON_F               to [-2:ACCEPTOR_F:LAST_EXON_F -2:ACCEPTOR_F:INTERNAL_EXON_F 0:PAR_ACCEPTOR_F:$]
+
+Transition from   INIT_EXON_F            to [0:DONOR_F:INTRON_F]
+
+Transition from   PEPINIT_EXON_F         to [0:DONOR_F:INTRON_F]
+
+Transition from   INTERNAL_EXON_F        to [0:DONOR_F:INTRON_F]
+
+Transition from   LAST_EXON_F            to [0:STOP_F:INTERGENIC_F 0:STOP_F:INTERGENIC_B 0:PAR_STOP_F:$]
+
+Transition from   SINGLE_EXON_F          to [0:STOP_F:INTERGENIC_F 0:STOP_F:INTERGENIC_B 0:PAR_STOP_F:$]
+
+Transition from   PEPSINGLE_EXON_F       to [0:STOP_F:INTERGENIC_F 0:STOP_F:INTERGENIC_B 0:PAR_STOP_F:$]
+
+#
+#Constructor for lengths
+#Lengths    int nodeId[context:openingLength->periodLength...] for fixed length nodes 
+#Lengths    int nodeId[context:minLen->maxLen...] for variable length nodes 
+#
+
+Lengths    INIT_EXON_F         [0:1->8144]
+Lengths    INIT_EXON_B         [0:1->8144]
+Lengths    PEPINIT_EXON_F      [0:1->6144]
+Lengths    PEPINIT_EXON_B      [0:1->6144]
+Lengths    INTERNAL_EXON_F     [0:1->3144]
+Lengths    INTERNAL_EXON_B     [0:1->3144]
+Lengths    LAST_EXON_F         [0:1->8144]
+Lengths    LAST_EXON_B         [0:1->8144]
+Lengths    SINGLE_EXON_F       [0:1->10144]
+Lengths    SINGLE_EXON_B       [0:1->10144]
+Lengths    PEPSINGLE_EXON_F    [0:1->10144]
+Lengths    PEPSINGLE_EXON_B    [0:1->10144]
+
+Lengths    INTERGENIC_F       [0:1->-1]
+Lengths    INTERGENIC_B       [0:1->-1] 
+Lengths    INTRON_F           [0:3->944] 
+Lengths    INTRON_B           [0:3->944] 
+//

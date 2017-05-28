@@ -1,10 +1,10 @@
-#!/usr/bin/env python                                                                
+#!/usr/bin/env python
 import sys, argparse, re, warnings, numpy
 
 parser = argparse.ArgumentParser(description='Convert gsnap reads to coverage filter.')
 parser.add_argument('--len-file', type=argparse.FileType('r'), help='file with contig lengths', dest='len_file')
 parser.add_argument('-nu','--non-unique', action='store_true', help='Report non-unique mappings. By default only unique mappings are reported', dest='nunique')
-parser.add_argument('-o', '--orientation', type=str, help='RNA-Seq reads arestranded and thus have orientation. Possible values are N,F,R,RF,FR, FF or NN. A value of N indicates no orientation and thus no strand can be extracted', dest='orientation', default='NN')
+parser.add_argument('-o', '--orientation', type=str, help='RNA-Seq reads are stranded and thus have orientation. Possible values are N,F,R,RF,FR, FF or NN. A value of N indicates no orientation and thus no strand can be extracted', dest='orientation', default='NN')
 
 if len(sys.argv) < 2:
     sys.exit('Bad Usage: use '+sys.argv[0] + ' -h for options')
@@ -31,14 +31,14 @@ try:
     for line in sys.stdin:
         if not line.strip():
             continue
-        
+
         tokens = line.split()
 
         if tokens[0][0]==">" or tokens[0][0]=="<":
-            read_no = (0 if tokens[0][0] == ">" else 1)            
+            read_no = (0 if tokens[0][0] == ">" else 1)
             if read_no and len(args.orientation) < 2:
                 sys.exit("orientation should be given for each paired read")
-            
+
             unique = True if tokens[1] == "1" else False
             continue
 
@@ -58,7 +58,7 @@ try:
         if contig not in coverages:
             coverages[contig] = (numpy.zeros(lens[contig]+1, dtype=numpy.int),
                                  numpy.zeros(lens[contig]+1, dtype=numpy.int))
-            
+
         strand = 0
         if args.orientation[read_no] == "R":
             beg = end
@@ -76,7 +76,7 @@ try:
 
         for i in range(beg, end + 1):
             coverages[contig][strand][i] += 1
-        
+
     for contig in coverages:
         sys.stdout.write(">"+contig+"\t"+str(lens[contig])+"\n")
         for strand in range(0,2):
@@ -99,8 +99,8 @@ try:
                 if last_pos < lens[contig]:
                     sys.stdout.write(".." + str(lens[contig]))
                 sys.stdout.write("\t" + str(last_cov) + "\n")
-                
+
             if strand==0 and args.orientation!='N' and args.orientation!='NN':
                 sys.stdout.write("//\n")
             else : break
-except AttributeError: sys.stderr.write(line+" did not match record\n") 
+except AttributeError: sys.stderr.write(line+" did not match record\n")

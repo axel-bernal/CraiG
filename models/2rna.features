@@ -1,0 +1,95 @@
+__FEATURE_SECTION__
+
+PreComputeTo  13    0     false
+
+@define TagSet TAPERED_UTRS* 8 5INIT_UTR_F 5INIT_UTR_B 3LAST_UTR_B 3LAST_UTR_F 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 
+@define TagSet UNIFORM_UTRS* 8 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 3INIT_UTR_F 3INIT_UTR_B
+@define TagSet ALL_UTRS* 16 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 3LAST_UTR_F 3LAST_UTR_B 5INIT_UTR_F 5INIT_UTR_B 3INIT_UTR_B 3INIT_UTR_F 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 
+
+@define TagSet 5UTR_EXONS* 8 5INIT_UTR_F 5INIT_UTR_B 5INTERNAL_UTR_F 5INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 5SINGLE_UTR_F 5SINGLE_UTR_B 
+@define TagSet 3UTR_EXONS* 8 3INIT_UTR_F 3INIT_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 3LAST_UTR_F 3LAST_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 
+@define TagSet UTR_INTRONS* 4 5UTR_INTRON_F 5UTR_INTRON_B 3UTR_INTRON_F 3UTR_INTRON_B
+
+
+#
+# RNASeq Introns
+#
+Feature         Log-RNASeq-Introns-AlignType            AlignmentType 1 Log-RNASeq-Edges
+Feature         Log-RNASeq-Introns-AlignWeight  AlignmentWeight 1 Log-RNASeq-Edges
+Feature         LinearBin4Log-RNASeq-Weights            LinearFitBin<double> Log-RNASeq-Introns-AlignWeight 5 1.25 0 1
+
+PerTagFeature   LinearBin4xLog-RNASeq-IntronWeight      FeatureXFeature<UCHAR,double> Log-RNASeq-Introns-AlignType LinearBin4Log-RNASeq-Weights -> CDS_INTRONS*, 2 INTERGENIC_F INTERGENIC_B, UTR_INTRONS*
+
+#
+#RNASeq Coverage
+#
+Feature         LinearBin4-Log-RNAseq-Coverage  LinearFitBin<double> null 5 1.25 0 1
+
+Feature         Log-Segment-Coverage    ScoringSegment<double> 3 Log-RNAseq-AccCoverage 1 3 true
+
+PerTagFeature   LinearBin4xLog-Day3Coverage     FeatureOFeature<double> Log-Segment-Coverage LinearBin4-Log-RNAseq-Coverage -> CODING*, CDS_INTRONS*, 2 INTERGENIC_F INTERGENIC_B, ALL_UTRS*, UTR_INTRONS*
+
+#
+#TR rates conjunctions with RNASeq
+#
+Feature         Transcript-Rates                FilterWrapper<double> Xcript-Rates
+Feature         LinearBin4Transcript-Rates      LinearFitBin<double> Transcript-Rates 3 0 0 3
+
+Feature		Tr-RatesXAln-Weights	MultiBin<double> 1 2 Transcript-Rates LinearBin4Transcript-Rates  Log-RNASeq-Introns-AlignWeight LinearBin4Log-RNASeq-Weights
+PerTagFeature	Aln-TypeXTr-RatesXAln-Weights	FeatureXFeature<UCHAR,double> Log-RNASeq-Introns-AlignType Tr-RatesXAln-Weights -> CDS_INTRONS*, 2 INTERGENIC_F INTERGENIC_B, UTR_INTRONS*
+
+#TR Coverage conjunctions
+PerTagFeature	Tr-RatesXCoverage		MultiBin<double> 1 2 Transcript-Rates LinearBin4Transcript-Rates Log-Segment-Coverage LinearBin4-Log-RNAseq-Coverage -> CODING*, CDS_INTRONS*, 2 INTERGENIC_F INTERGENIC_B, ALL_UTRS*, UTR_INTRONS*
+
+
+Overwrite @define TagSet ACCEPTOR* 2 ACCEPTOR_F ACCEPTOR_B @ 9, 2 UTR_ACCEPTOR_F UTR_ACCEPTOR_B @ 10
+Overwrite @define TagSet DONOR* 2 DONOR_F DONOR_B @ 9, 2 UTR_DONOR_F UTR_DONOR_B @ 10
+
+Overwrite Feature		Acceptor-Background             Edge<int> 3 Acceptor-Signal 1 -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+#
+# UTR Transcript background features
+#
+Feature         3UTR-Intron-Background          StateBackground 3 10000 -> 2 3UTR_INTRON_F 3UTR_INTRON_B
+Feature         3UTR-Exon-Background            StateBackground 3 10000 -> 3UTR_EXONS*
+Feature         5UTR-Intron-Background          StateBackground 3 10000 -> 2 5UTR_INTRON_F 5UTR_INTRON_B
+Feature         5UTR-Exon-Background            StateBackground 3 10000 -> 5UTR_EXONS*
+
+Feature         UTR-Intron-Length               FeatureOFeature<int> Segment-Length LinearBin4-IntronLength -> UTR_INTRONS*
+Feature         UTR-Init-Exon-Length            FeatureOFeature<int> Segment-Length LinearBin4-InitExonLength -> 4 5INIT_UTR_F 5INIT_UTR_B 3INIT_UTR_F 3INIT_UTR_B
+Feature         UTR-Internal-Exon-Length        FeatureOFeature<int> Segment-Length LinearBin4-InterExonLength -> 4 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B
+Feature         UTR-Last-Exon-Length            FeatureOFeature<int> Segment-Length LinearBin4-TermExonLength -> 4 5LAST_UTR_F 5LAST_UTR_B 3LAST_UTR_F 3LAST_UTR_B
+Feature         UTR-Single-Exon-Length          FeatureOFeature<int> Segment-Length LinearBin4-SingleExonLength -> 4 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B
+
+Feature         TSS-Background                  Edge<int> 1 Start-Signal 1 -> 2 TSS_F TSS_B @ 13
+Feature         PAS-Background                  Edge<int> 1 Start-Signal 1 -> 2 PAS_F PAS_B @ 13
+Feature         UtrDonor-Background             Edge<int> 3 Donor-Signal 1 -> 2 UTR_DONOR_F UTR_DONOR_B @ 10
+Feature         UtrAcceptor-Background          Edge<int> 3 Acceptor-Signal 1 -> 2 UTR_ACCEPTOR_F UTR_ACCEPTOR_B @ 10
+
+#
+# UTR RNA-Seq Edge features
+#
+#Feature                XSignal-LeftScore               MeanScoringSegment<double> 1 Log-AccTotCoverage 1 XSig-Score-0 XSig-Score-1
+#Feature                XSignal-RightScore              MeanScoringSegment<double> 1 Log-AccTotCoverage 1 XSig-Score-1 XSig-Score-2
+
+# these are second order features
+#Feature                XSignal-LeftScore               MeanScoringSignal<double> 1 Log-AccTotCoverage 1 left
+#Feature                XSignal-RightScore              MeanScoringSignal<double> 1 Log-AccTotCoverage 1 right
+#Feature                XSigScore-NLinCorr              MultiBin<double> 1 2 XSignal-LeftScore LinearBin4Log-RNASeq-Weights XSignal-RightScore LinearBin4Log-RNASeq-Weights
+#Feature                TSS-CorrScore                   EdgeFeature<double> 1 TSS-Signal XSigScore-NLinCorr -> 2 TSS_F TSS_B
+#Feature                PAS-CorrScore                   EdgeFeature<double> 1 PAS-Signal XSigScore-NLinCorr -> 2 PAS_F PAS_B
+
+Feature                 XSignal-RampOnsetScore          RampScoringSignal<double> 1 AccTotCoverage 1 true
+Feature                 XSignal-RampOffsetScore         RampScoringSignal<double> 1 AccTotCoverage 1 false
+
+Feature                 LinearBin4-RampScore            LinearFitBin<double> null 7 3 0 8
+
+Feature                 XSigScore-RampOnset             FeatureOFeature<double> XSignal-RampOnsetScore LinearBin4-RampScore
+Feature                 XSigScore-RampOffset            FeatureOFeature<double> XSignal-RampOffsetScore LinearBin4-RampScore
+Feature                 TSS-RampScore                   EdgeFeature<double> 1 TSS-Signal XSigScore-RampOnset -> 2 TSS_F TSS_B
+Feature                 PAS-RampScore                   EdgeFeature<double> 1 PAS-Signal XSigScore-RampOffset -> 2 PAS_F PAS_B
+
+Feature                 TR-RatesXRampOnsets-NLinCorr    MultiBin<double> 1 2 Transcript-Rates LinearBin4Transcript-Rates  XSignal-RampOnsetScore LinearBin4-RampScore
+Feature                 TR-RatesXRampOffsets-NLinCorr   MultiBin<double> 1 2 Transcript-Rates LinearBin4Transcript-Rates  XSignal-RampOffsetScore LinearBin4-RampScore
+
+Feature                 TR-RatesxRampOnsets             EdgeFeature<double> 1 TSS-Signal TR-RatesXRampOnsets-NLinCorr -> 2 TSS_F TSS_B
+Feature                 TR-RatesxRampOffsets            EdgeFeature<double> 1 PAS-Signal TR-RatesXRampOffsets-NLinCorr -> 2 PAS_F PAS_B

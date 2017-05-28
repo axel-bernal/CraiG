@@ -33,7 +33,7 @@ get_coverage_genes_SOURCES = get_coverage_genes.cpp
 remove_suspect_transcripts_SOURCES = remove_suspect_transcripts.cpp
 AM_LDFLAGS = @top_srcdir@/lless/liblless.la @top_srcdir@/regex/libboost_regex.a
 
-AM_CPPFLAGS = -I@top_srcdir@/src/ -I@top_srcdir@/lless/ -I@top_srcdir@/regex -I@top_srcdir@/sparsehash/include
+AM_CPPFLAGS = -I@top_srcdir@/src/ -I@top_srcdir@/lless/ -I@top_srcdir@/regex
 
 include_HEADERS =  Overlap.h GeneTagPrinter.h  RepeatedElem.h RSqUtils.h GeneUtils.h Sim.h Exon.h  Transcript.h Gene.h Organism.h TypeDefs.h GeneEvaluator.h ArgParseUtils.h
 

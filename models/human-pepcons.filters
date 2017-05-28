@@ -1,0 +1,69 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Percent            Content<UCHAR> 40 GCgc 0
+Filter      GC-Content            Context 0 GCgc 0 4 43 51 57 100
+Filter      Intron-Score          ImmScore 1 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 2 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 3 0 GC-Content exon-model
+Filter      1-gram                Gram 4 1 false dna-alpha
+Filter      2-gram                Gram 5 2 false dna-alpha
+Filter      3-gram                Gram 6 3 false dna-alpha
+Filter      5-gram                Gram 7 5 false dna-alpha
+Filter      6-gram                Gram 8 6 false dna-alpha
+Filter      Start-Signal          EdgeInst 9 START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst 10 STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst 11 DONOR dna-alpha 2 GT GC
+Filter      Acceptor-Signal       EdgeInst 12 ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 13 1 0 mask-alpha 1
+Filter      GC-Content2           Context 14 GCgc 0 2 51 100
+Filter      1-mm9-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      mm9-Pepcons-Input      FastaxFilter<int> 15 mm9-pepcons-file 1-mm9-gram
+Filter      3-mm9-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      mm9-Pepcons-Input      FastaxFilter<int> 16 mm9-pepcons-file 3-mm9-gram
+Filter      1-rheMac2-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      rheMac2-Pepcons-Input      FastaxFilter<int> 17 rheMac2-pepcons-file 1-rheMac2-gram
+Filter      3-rheMac2-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      rheMac2-Pepcons-Input      FastaxFilter<int> 18 rheMac2-pepcons-file 3-rheMac2-gram
+Filter      1-rn4-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      rn4-Pepcons-Input      FastaxFilter<int> 19 rn4-pepcons-file 1-rn4-gram
+Filter      3-rn4-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      rn4-Pepcons-Input      FastaxFilter<int> 20 rn4-pepcons-file 3-rn4-gram
+Filter      1-oryCun1-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      oryCun1-Pepcons-Input      FastaxFilter<int> 21 oryCun1-pepcons-file 1-oryCun1-gram
+Filter      3-oryCun1-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      oryCun1-Pepcons-Input      FastaxFilter<int> 22 oryCun1-pepcons-file 3-oryCun1-gram
+Filter      1-canFam2-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      canFam2-Pepcons-Input      FastaxFilter<int> 23 canFam2-pepcons-file 1-canFam2-gram
+Filter      3-canFam2-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      canFam2-Pepcons-Input      FastaxFilter<int> 24 canFam2-pepcons-file 3-canFam2-gram
+Filter      1-bosTau4-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      bosTau4-Pepcons-Input      FastaxFilter<int> 25 bosTau4-pepcons-file 1-bosTau4-gram
+Filter      3-bosTau4-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      bosTau4-Pepcons-Input      FastaxFilter<int> 26 bosTau4-pepcons-file 3-bosTau4-gram
+Filter      1-dasNov2-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      dasNov2-Pepcons-Input      FastaxFilter<int> 27 dasNov2-pepcons-file 1-dasNov2-gram
+Filter      3-dasNov2-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      dasNov2-Pepcons-Input      FastaxFilter<int> 28 dasNov2-pepcons-file 3-dasNov2-gram
+Filter      1-loxAfr2-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      loxAfr2-Pepcons-Input      FastaxFilter<int> 29 loxAfr2-pepcons-file 1-loxAfr2-gram
+Filter      3-loxAfr2-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      loxAfr2-Pepcons-Input      FastaxFilter<int> 30 loxAfr2-pepcons-file 3-loxAfr2-gram
+Filter      1-echTel1-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      echTel1-Pepcons-Input      FastaxFilter<int> 31 echTel1-pepcons-file 1-echTel1-gram
+Filter      3-echTel1-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      echTel1-Pepcons-Input      FastaxFilter<int> 32 echTel1-pepcons-file 3-echTel1-gram
+Filter      1-monDom4-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      monDom4-Pepcons-Input      FastaxFilter<int> 33 monDom4-pepcons-file 1-monDom4-gram
+Filter      3-monDom4-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      monDom4-Pepcons-Input      FastaxFilter<int> 34 monDom4-pepcons-file 3-monDom4-gram
+Filter      1-galGal3-gram            ConsGram -1 1 false dna-alpha gap-alpha .
+Filter      galGal3-Pepcons-Input      FastaxFilter<int> 35 galGal3-pepcons-file 1-galGal3-gram
+Filter      3-galGal3-gram            ConsGram -1 3 false dna-alpha gap-alpha .
+Filter      galGal3-Pepcons-Input      FastaxFilter<int> 36 galGal3-pepcons-file 3-galGal3-gram
+//

@@ -2,7 +2,7 @@
 ($] >= 5.004) || die "version is $] -- need perl 5.004 or greater";
 # -*- perl -*-
 
-use lib "$ENV{CRAIG_HOME}/perl/lib";  
+use lib "$ENV{CRAIG_HOME}/perl/lib";
 use Organism;
 use Contig;
 use Getopt::Long;
@@ -61,14 +61,14 @@ for my $c (keys %contigs) {
 
     for($i = 0; $i < 2; $i++) {
         @{$sigArray[$i]} = ();
-	@{$countArray[$i]} = ();
-	@{$maxArray[$i]} = ();
-	
+        @{$countArray[$i]} = ();
+        @{$maxArray[$i]} = ();
+
         for($j = 0; $j <= $contigs{$c}->{'Len'}; $j++) {
             my @tmp = (); push(@tmp, "-");
             push(@{$sigArray[$i]}, \@tmp);
-	    push(@{$countArray[$i]}, 0);
-	    push(@{$maxArray[$i]}, 0);
+            push(@{$countArray[$i]}, 0);
+            push(@{$maxArray[$i]}, 0);
         }
     }
 
@@ -79,56 +79,56 @@ for my $c (keys %contigs) {
         my $goodAlignment = 0;
         my $strand = $gene->{'Strand'};
         my $lastOffset = 0;
-	my $lastPos = -1;
+        my $lastPos = -1;
         my $phase = $gene->{'Phase'};
-	my $exons = $gene->{'Exons'};
+        my $exons = $gene->{'Exons'};
 
-	if(scalar(@{$exons}) == 0) {
-	    next;
-	}
-	
-	my $e_i = $exons->[0];
-	my $this_seq = $gene->{'Contig'}->getSequence(0, $e_i->[1], $e_i->[2], 0, 1, $strand);
-	
-	my $numStops = GenUtils::numPhaseOccurrences($this_seq, $phase, "taa", "tga", "tag");
-	if($numStops > 0) {
-	    print STDERR "$gene->{'Contig'}->{'Id'} $gene->{'Id'} $e_i->[1] $e_i->[2] with $numStops stops in phase $phase\t";
-	    ($phase, $numStops) = GenUtils::minPhaseOccurrences($this_seq, "taa", "tga", "tag");
+        if(scalar(@{$exons}) == 0) {
+            next;
+        }
 
-	    if(!$numStops) {
-		$gene->{'Phase'} = $phase;
-		print STDERR "\tfixed with phase $phase\n";
-	    }
-	    else { print STDERR "\tnew phase $phase gives $numStops stops\n";}
-	}
+        my $e_i = $exons->[0];
+        my $this_seq = $gene->{'Contig'}->getSequence(0, $e_i->[1], $e_i->[2], 0, 1, $strand);
 
-	if($truncated) {
-	    $phase = 3;
-	}
+        my $numStops = GenUtils::numPhaseOccurrences($this_seq, $phase, "taa", "tga", "tag");
+        if($numStops > 0) {
+            print STDERR "$gene->{'Contig'}->{'Id'} $gene->{'Id'} $e_i->[1] $e_i->[2] with $numStops stops in phase $phase\t";
+            ($phase, $numStops) = GenUtils::minPhaseOccurrences($this_seq, "taa", "tga", "tag");
 
-	$seqExon = $gene->{'Contig'}->getSequence(0, $e_i->[1], $e_i->[1], 2, 1, $strand);	
-	if(!$gene->{'NoStart'} && length($seqExon) == 3 && $seqExon =~ /atg/i) {
-	    ($phase == 0) || warn "gene $gene->{'Id'} $gene->{'NoStart'} has bad start phase\n";
-	    if(GenUtils::fillSigArray($gene, $e_i->[3], \@countArray, \@maxArray, \@sigArray, "S", $e_i->[1], 0, $contigs{$c}->{'Len'}, $lastPos, 0, 0, \$maxCounts, $strand)) {
-		$lastPos = $e_i->[1];
-	    }
-	}
-	else {
-	    $seqExon = $gene->{'Contig'}->getSequence(3, $e_i->[1], $e_i->[1], 0, 1, $strand);
-	    if(length($seqExon) > 2 && !$truncated) {
-		$acceptor = substr($seqExon, 1, 2);
-		if($acceptor =~ /ag/i || !$canonical) {
-		    if(GenUtils::fillSigArray($gene, $e_i->[3], \@countArray, \@maxArray, \@sigArray, "A", $e_i->[1], -2, $contigs{$c}->{'Len'}, $lastPos, 0, $phase, \$maxCounts, $strand)) {
-			$lastOffset = -2;
-			$lastPos = $e_i->[1];	    
-		    }
+            if(!$numStops) {
+                $gene->{'Phase'} = $phase;
+                print STDERR "\tfixed with phase $phase\n";
+            }
+            else { print STDERR "\tnew phase $phase gives $numStops stops\n";}
+        }
+
+        if($truncated) {
+            $phase = 3;
+        }
+
+        $seqExon = $gene->{'Contig'}->getSequence(0, $e_i->[1], $e_i->[1], 2, 1, $strand);
+        if(!$gene->{'NoStart'} && length($seqExon) == 3 && $seqExon =~ /atg/i) {
+            ($phase == 0) || warn "gene $gene->{'Id'} $gene->{'NoStart'} has bad start phase\n";
+            if(GenUtils::fillSigArray($gene, $e_i->[3], \@countArray, \@maxArray, \@sigArray, "S", $e_i->[1], 0, $contigs{$c}->{'Len'}, $lastPos, 0, 0, \$maxCounts, $strand)) {
+                $lastPos = $e_i->[1];
+            }
+        }
+        else {
+            $seqExon = $gene->{'Contig'}->getSequence(3, $e_i->[1], $e_i->[1], 0, 1, $strand);
+            if(length($seqExon) > 2 && !$truncated) {
+                $acceptor = substr($seqExon, 1, 2);
+                if($acceptor =~ /ag/i || !$canonical) {
+                    if(GenUtils::fillSigArray($gene, $e_i->[3], \@countArray, \@maxArray, \@sigArray, "A", $e_i->[1], -2, $contigs{$c}->{'Len'}, $lastPos, 0, $phase, \$maxCounts, $strand)) {
+                        $lastOffset = -2;
+                        $lastPos = $e_i->[1];
+                    }
 		}
 		elsif($acceptor !~ /ag/i) {
 		    warn "$gene->{'Id'} non-canonical acceptor $seqExon $e_i->[1]\n";
 		}
 	    }
 	}
-	
+
         for(my $i = 0; $i < scalar(@{$exons}); $i++) {
             $e_i = $exons->[$i];
 
@@ -154,7 +154,7 @@ for my $c (keys %contigs) {
 		}
 
 		$this_seq = $gene->{'Contig'}->getSequence(0, $e_i->[1], $e_i->[2], 0, 1, $strand);
-		
+
 		my $numStops = GenUtils::numPhaseOccurrences($this_seq, $phase, "taa", "tga", "tag");
 		if($numStops > 0) {
 		    print STDERR "$gene->{'Contig'}->{'Id'} $gene->{'Id'} $e_i->[1] $e_i->[2] with $numStops stops in phase $phase\t";
@@ -171,14 +171,14 @@ for my $c (keys %contigs) {
 		}
 
                 $seqExon = $gene->{'Contig'}->getSequence(3, $e_i->[1], $e_i->[1], 0, 1, $strand);
-                
-                if(length($seqExon) > 2) {     
+
+                if(length($seqExon) > 2) {
                     $acceptor = substr($seqExon, 1, 2);
 #                    ($acceptor =~ /ag/i) || warn "$gene->{'Id'} acceptor $seqExon $e_i->[1]\n";
                     if($acceptor =~ /ag/i || !$canonical) {
 			if(GenUtils::fillSigArray($gene, $e_i->[3], \@countArray, \@maxArray, \@sigArray, "A", $e_i->[1], -2, $contigs{$c}->{'Len'}, $lastPos, 1, $phase, \$maxCounts,  $strand)) {
 			    $lastOffset = -2;
-			    $lastPos = $e_i->[1];	    
+			    $lastPos = $e_i->[1];
 			}
 		    }
 		    else {
@@ -187,11 +187,11 @@ for my $c (keys %contigs) {
 			    warn "$gene->{'Id'} non-canonical acceptor $seqExon $e_i->[1]\n";
 			}
 		    }
-		    $goodAlignment = 1;		    
-		    
+		    $goodAlignment = 1;
+
 		}
             }
-            
+
             $phase = ($phase + abs($e_i->[2] - $e_i->[1]) + 1) % 3;
 
 	    if($truncated) {
@@ -222,7 +222,7 @@ for my $c (keys %contigs) {
             }
         }
     }
-    
+
     print SIGNAL ">$c\t$contigs{$c}->{'Len'}\t3\n";
     GenUtils::printSigArray($sigArray[0], \*SIGNAL);
     print SIGNAL "\/\/\n";
@@ -247,11 +247,11 @@ for my $c (keys %contigs) {
 	    }
 	}
 	print NORM_SCORE ">$c\t$contigs{$c}->{'Len'}\t2\n";
-	
+
 	printAllFilters($countArray[0], $maxArray[0], \*NORM_SCORE);
 	print NORM_SCORE "\/\/\n";
 	printAllFilters($countArray[1], $maxArray[1], \*NORM_SCORE);
-	
+
     }
 
 }
@@ -267,12 +267,11 @@ sub printAllFilters {
     my ($carray_ref, $marray_ref, $file) = @_;
 
     (scalar(@{$carray_ref}) > 0 && scalar(@{$marray_ref}) > 0) || die "invalid array ref\n";
-    
+
     my $pos;
-    for(my $i = 1; $i < scalar(@{$carray_ref}); $i++)  {	
+    for(my $i = 1; $i < scalar(@{$carray_ref}); $i++)  {
         if($carray_ref->[$i] || $marray_ref->[$i]) {
             print $file "$i\t", (sprintf "%.2f", $carray_ref->[$i]),"\t", (sprintf "%.3f", $marray_ref->[$i]),"\n";
 	}
     }
 }
-

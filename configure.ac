@@ -55,7 +55,7 @@ fi
 AM_INIT_AUTOMAKE([1.9 tar-pax])
 
 # Set output files
-AC_CONFIG_FILES([Makefile src/Makefile lless/Makefile regex/Makefile sparsevec/Makefile sparsehash/include/google/Makefile sparsehash/share/doc/sparsehash-1.8.1/Makefile models/Makefile python/bin/Makefile python/lib/Makefile perl/bin/Makefile perl/lib/Makefile tests/Makefile doc/Makefile tests/atlocal datasets/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile lless/Makefile regex/Makefile sparsevec/Makefile models/Makefile python/bin/Makefile python/lib/Makefile perl/bin/Makefile perl/lib/Makefile tests/Makefile doc/Makefile tests/atlocal datasets/Makefile])
 
 AC_OUTPUT
 

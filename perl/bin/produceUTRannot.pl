@@ -42,7 +42,6 @@ for(my $i = 0; $i <= $#$sort_utrs && $j <= $#$sort_locs; ) {
     my $utr = $sort_utrs->[$i];
     my $loc = $sort_locs->[$j];
     my $b = $utr->contigId() cmp $loc->contigId();
-#    print "pair $utr->{'Id'} $loc->{'Id'} \n";
     if(!$b) {
 	if($utr->lowestCoord() <= $loc->lowestCoord() &&
 	   $utr->highestCoord() >= $loc->highestCoord()) {
@@ -66,10 +65,12 @@ for(my $i = 0; $i <= $#$sort_utrs && $j <= $#$sort_locs; ) {
 	}
     }
     elsif($b < 0) {
+	print STDERR "pair $utr->{'Id'} $loc->{'Id'} \n";
 	die "Your gff3 has problems. Try the --sort option." if !$sort;
 	$i++;
     }
     else {
+	print STDERR "pair $utr->{'Id'} $loc->{'Id'} \n";
 	die "Your gff3 has problems. Try the --sort option" if !$sort;
 	$j++;
     }

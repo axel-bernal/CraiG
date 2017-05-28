@@ -1,0 +1,24 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Percent            Content<UCHAR> GCgc 0
+Filter      GC-Content            Context GCgc 0 1 100
+Filter      Intron-Score          ImmScore 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 0 GC-Content exon-model
+Filter      1-gram                Gram<UCHAR> 1 dna-alpha
+Filter      2-gram                Gram<UCHAR> 2 dna-alpha
+Filter      3-gram                Gram<UCHAR> 3 dna-alpha
+Filter      5-gram                Gram<UCHAR> 5 dna-alpha
+Filter      6-gram                Gram<USHORT> 6 dna-alpha
+Filter      Start-Signal          EdgeInst START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst DONOR dna-alpha 1 GT
+Filter      Acceptor-Signal       EdgeInst ACCEPTOR dna-alpha 1 AG
+#Filter      Mask-Counts           CountingScore 1 0 mask-alpha 1
+//

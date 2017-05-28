@@ -46,7 +46,7 @@ try:
     my_env["PATH"] = os.environ['CRAIG_HOME']+"/perl/bin:" + \
         os.environ['CRAIG_HOME']+"/python/bin:" + \
         os.environ['CRAIG_HOME']+"/bin:" + my_env.get("PATH", '')
-    
+
     args = parser.parse_args(sys.argv[1:])
 
     if args.file_list:
@@ -56,7 +56,7 @@ try:
         shutil.rmtree(args.out_dir)
 
     os.makedirs(args.out_dir)
-    
+
     # determining the model name
     model_name = args.SPECIES
     if args.model == 'ecraig':
@@ -76,7 +76,7 @@ try:
         ab_model = os.environ['CRAIG_HOME']+"/models/"+args.SPECIES+".params"
     if args.model == 'ngscraig' and not os.path.exists(ab_model):
         raise CraigUndefined("ab initio model "+ab_model+" must be available for RNA-Seq")
-    
+
     logging.info('Transforming annotation and fasta to standard internal format')
     ioutils.processFasta(args.fasta_wrapper, args.contig_fmt, args.FASTA_FILE, outFile+".chr", my_env, log_file)
     ioutils.processAnnotation(args.annot_wrapper, args.annot_fmt, args.tr_tag, args.cds_tag, args.non_uniq_ids, args.ANNOT_FILE, outFile+".chr", my_env, log_file)
@@ -94,7 +94,7 @@ try:
     # preconfig file contains information about sources of evidence
     # for rnaseq sources this is the header:
     # evid_type(rnaseq|gpred)  subtype(rum|gsnap|epdb*) dataset_id sample_id filename stranded(yes|no) wrapper_in
-    
+
     prefix_files = ""
     prefix_trainfiles = ""
 
@@ -123,28 +123,25 @@ try:
                 if tokens[1] == 'rum':
                     logging.info('Processing junction reads for '+tokens[4])
                     # dealing with junctions
-                    shell_cmd = "sed 1,1d "+tokens[4]+"/junctions_all.rum | sort > "+outFile+".1sorted" 
+                    shell_cmd = "sed 1,1d "+tokens[4]+"/junctions_all.rum | sort > "+outFile+".1sorted"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
                     shell_cmd = "sed 1,1d "+tokens[4]+"/junctions_high-quality.bed | perl -ne '@l = split(/\s+/, $_); $l[10] =~/([^\,]+)\,(\d+)/; $l[1] = $l[1] + $1 + 1; $l[2] = $l[2] - $2; print \"$l[0]\:$l[1]\-$l[2]\n\";' | sort > "+outFile+".2sorted"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                    shell_cmd = "join "+outFile+".2sorted "+outFile+".1sorted | junctions2weightedLocs.py "+("--stranded" if tokens[5] == 'yes' else "")+" --dataset-id "+ tokens[2] + " --sample-id "+tokens[3]+" --cut-off 1 --format rum > "+rsqfn2+".orig.locs"
+                    shell_cmd = "join "+outFile+".2sorted "+outFile+".1sorted | junctions2weightedLocs.py "+("--stranded" if tokens[5] == 'yes' else "")+" --dataset-id "+ tokens[2] + " --sample-id "+tokens[3]+" --cut-off 1 --format rum - > "+rsqfn2+".orig.locs"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                    shell_cmd = "join -v2 "+outFile+".2sorted "+outFile+".1sorted | junctions2weightedLocs.py --dataset-id "+tokens[2] +" --sample-id "+tokens[3]+" --cut-off 2 --format "+tokens[1]+" >> "+rsqfn2+".orig.locs"
+                    shell_cmd = "join -v2 "+outFile+".2sorted "+outFile+".1sorted | junctions2weightedLocs.py --dataset-id "+tokens[2] +" --sample-id "+tokens[3]+" --cut-off 2 --format "+tokens[1]+" - >> "+rsqfn2+".orig.locs"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                    shell_cmd = "rm "+outFile+".1sorted "+outFile+".2sorted"                   
+                    shell_cmd = "rm "+outFile+".1sorted "+outFile+".2sorted"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-                    logging.info('Processing coverage reads for '+tokens[4])                    
+                    logging.info('Processing coverage reads for '+tokens[4])
                      # dealing with coverage
                     if tokens[5] == 'no':
-                        shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum > "+rsqfn1+".chr.cov"
- # add contigs without coverage
-                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                        shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum - > "+rsqfn1+".chr.cov"                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
                     else:
-                        shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.plus.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum | (perl -ne '$counter++; if($_ =~ /^>/\
- && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //)> "+rsqfn1+".chr.plus.cov"
+                        shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.plus.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum - | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //)> "+rsqfn1+".chr.plus.cov"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                        shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.minus.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //) | moveScoreFilterToCompStrand.pl "+chrfasta_fn +" > "+rsqfn1+".chr.minus.cov"
+                        shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.minus.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum - | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //) | moveScoreFilterToCompStrand.pl "+chrfasta_fn +" > "+rsqfn1+".chr.minus.cov"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
                         shell_cmd = "biosort.py "+rsqfn1+".chr.plus.cov > "+rsqfn1+".chr.plus.1.cov"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -159,25 +156,33 @@ try:
                         shell_cmd = "rm "+rsqfn1+".chr.minus.1.cov"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
- # add contigs without coverage
+                    # add contigs without coverage
                     shell_cmd = "biodiff.py "+chrlen2_fn+" "+rsqfn1+".chr.cov -by ii >"+rsqfn1+".chr.cov.suppl ; cat "+rsqfn1+".chr.cov.suppl >> "+rsqfn1+".chr.cov"
-                    ioutils.log_and_exec(shell_cmd, my_env, log_file)       
-                        
-#                    print 'hola'
-                elif tokens[1] == 'gsnap':
-                    #dealing with junctions
-                    shell_cmd = "cat "+tokens[4]+"/\*concordant_uniq | junctions2weightedLocs.py "+("--stranded" if tokens[5] == 'yes' else "")+" --dataset-id "+tokens[2]+" --format gsnap | filterRepeatedGenes.pl perl -ne 'if($_ =~ /^>\S+\.(\d)\s+\S+\s+(\S+)/) { if($1 eq '0' && $2 eq \"1;1\") {;} else {print $_;}}' > "+rsqfn1+".chr.cov"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                elif tokens[1] == 'gsnap':
+
+                    #dealing with junctions
+                    shell_cmd = "cat "+tokens[4]+"/\*concordant_uniq | junctions2weightedLocs.py "+("--stranded" if tokens[5] == 'yes' else "")+" --dataset-id "+tokens[2]+" --format gsnap - | filterRepeatedGenes.pl | perl -ne 'if($_ =~ /^>\S+\.(\d)\s+\S+\s+(\S+)/) { if($1 eq '0' && $2 eq \"1;1\") {;} else {print $_;}}' > "+rsqfn1+".chr.cov"
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
+
                     #dealing with coverage
                     shell_cmd = "cat "+tokens[4]+"/\*concordat_uniq | gsreads2covfilter.py "+("--stranded" if tokens[5] == 'yes' else "")+" --len-file "+chrlen_fn+" > "+rsqfn1+".chr.cov"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                elif tokens[1] == 'bam':
+
+                    #dealing with junctions
+                    shell_cmd = "junctions2weightedLocs.py "+("--stranded" if tokens[5] == 'yes' else "")+" --dataset-id "+tokens[2]+" --format bam " + tokens[4] + "  | filterRepeatedGenes.pl | perl -ne 'if($_ =~ /^>\S+\.(\d)\s+\S+\s+(\S+)/) { if($1 eq '0' && $2 eq \"1;1\") {;} else {print $_;}}' > "+rsqfn1+".chr.cov"
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
+
+                    #dealing with coverage
+                    shell_cmd = "coverage2filter.py "+("--stranded" if tokens[5] == 'yes' else "")+" --len-file "+chrlen_fn+" " + tokens[4] + " > "+rsqfn1+".chr.cov"
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
                 else:
-                    shell_cmd = "sed 1,1d "+tokens[4]+" | junctions2weightedLocs.py --dataset-id "+ tokens[2] + "--sample-id "+tokens[3]+" --cut-off 1 --format "+tokens[1]
+                    shell_cmd = "sed 1,1d "+tokens[4]+" | junctions2weightedLocs.py --dataset-id "+ tokens[2] + "--sample-id "+tokens[3]+" --cut-off 1 --format " + tokens[1] + " - "
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                 # dealing with junctions in non-stranded rnaseq sets
                 logging.info('Processing junction reads strand information for '+tokens[4])
-#                if tokens[5] == 'no':
                 shell_cmd = "cut -f1,2 "+rsqfn2+".orig.locs | filterNonCannonSS.pl -canon-pairs "+chrss_fn+" -truncated -ctg "+ chrfasta_fn+" -filter gene | grep -s \">\" | biointers.py "+rsqfn2+".orig.locs - > "+rsqfn2+".orig.fwd.locs"
                 ioutils.log_and_exec(shell_cmd, my_env, log_file)
                 shell_cmd = "cut -f1,2 "+rsqfn2+".orig.locs | reverseExons.pl | filterNonCannonSS.pl -canon-pairs "+chrss_fn+" -truncated -ctg "+chrfasta_fn+" -filter gene | grep -s \">\" | biointers.py "+rsqfn2+".orig.locs - | reverseExons.pl > "+rsqfn2+".orig.comp.locs"
@@ -202,7 +207,7 @@ try:
                 shell_cmd = "perl -ne '$_ =~ /^(\S+)\s+(\S+)\s*$/; print \">$2\t$1\t3\n\/\/\n\";' < "+chrlen_fn+" > "+rsqfn1+".chr.xsigscores"
                 ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-# moving information to subcontigs
+                # moving information to subcontigs
                 shell_cmd = "find_nocov_regions --coverage-density="+str(args.coverage_density)+" --max-genic=100000 --smooth-window="+str(args.smooth_window)+(" --stranded" if tokens[5] == 'yes' else " ")+ " --min-coverage="+str(args.min_coverage)+" --prefix-evidence="+rsqfn1+".chr "+chrfasta_fn+" > "+rsqfn1+".igenics"
                 ioutils.log_and_exec(shell_cmd, my_env, log_file)
                 if not ioutils.checkLog4Completion("Done!", outFile+".error.log", my_env, log_file):
@@ -241,7 +246,7 @@ try:
                         raise CraigUndefined("distribjob for finding xsignals failed")
                 else:
                     shell_cmd = "get_covxsignals "+("--stranded" if tokens[5] == 'yes' else "")+" --prefix-evidence="+rsqfn1+" --num-permutations="+str(args.num_permutations)+" --block-len=20 "+rsqfn1+".fa"
-                    ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
 #                    print "hola"
 
 # move utr_only model files
@@ -270,7 +275,7 @@ try:
                 print "hola"
             else:
                 raise CraigUndefined("Unrecognized source type")
-    
+
     if not len(prefix_files) and args.model == 'craig':
         # compute ab initio gene split of the annotation
         prefix_files = outFile
@@ -294,7 +299,7 @@ try:
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
         shell_cmd = "craigPredict --prefix-evidence="+prefix_files+" --format=locs --START-resource=Annot-ev-signals --STOP-resource=Annot-ev-signals --DONOR-resource=RNAseq-signals --ACCEPTOR-resource=RNAseq-signals "+parmodel_prefix+".naive.params "+prefix_files+".fa > "+prefix_files+".2.locs"
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
-        shell_cmd = "cat "+prefix_files+".nutr.locs | grep -s -v \"<\" | grep -s -v -P \"\S>\" | filterOlapGenes.pl -v -o "+prefix_files+".2.locs | filterDiscordantIntrons.pl "+prefix_files+".2.locs >"+prefix_files+".3.locs"
+        shell_cmd = "cat "+prefix_files+".nutr.locs | grep -s -v \"<\" | grep -E -s -v \"\S>\" | filterOlapGenes.pl -v -o "+prefix_files+".2.locs | filterDiscordantIntrons.pl "+prefix_files+".2.locs >"+prefix_files+".3.locs"
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
         shell_cmd = "cat "+prefix_files+".3.locs | filterDiscordantTIS.pl "+prefix_files+".1.locs > "+prefix_files+".4.locs"
@@ -312,10 +317,10 @@ try:
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
 
-        ioutils.annotateUTRs(prefix_files, "naivPrCorr.noAS", 
+        ioutils.annotateUTRs(prefix_files, "naivPrCorr.noAS",
                              tokens[5], my_env, log_file)
         prefix_trainfiles = prefix_files+".naivPrCorr.noAS.utr"
-    
+
     elif args.model == 'ecraig':
         prefix_trainfiles = prefix_files
     elif args.model == 'craig':
@@ -323,7 +328,7 @@ try:
     else:
         raise CraigUndefined("--model option undefined")
 
-    ioutils.genCrossValRuns(prefix_trainfiles, model_name, 
+    ioutils.genCrossValRuns(prefix_trainfiles, model_name,
                             args.out_dir, my_env, log_file)
 
 except CraigUndefined, msg:

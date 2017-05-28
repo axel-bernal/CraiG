@@ -24,7 +24,7 @@ parser.add_argument("--output-model-scores", action='store_true', help='Outputs 
 parser.add_argument("-f", "--force-train", action='store_true', help='Train model even if parameter files already exist', dest='force_train')
 parser.add_argument("--model", type=str, help='The type of model to be learnt. Either craig for ab initio, ecraig for evidence integration or ngscraig for rna-seq driven gene finding', default='craig')
 parser.add_argument("--closest-species", type=str, help='Closest species to be used if feature definitions for the model type to be learnt are not available for the current SPECIES', default="")
-parser.add_argument("--min-perc-junc-aligns", type=int, help='Minimum percentage of genes with introns that have good junction alignments that are needed in order to use the junction information as the sole source for splicing');
+parser.add_argument("--min-perc-junc-aligns", type=int, help='Minimum percentage of genes with introns that have good junction alignments that are needed in order to use the junction information as the sole source for splicing', default=90);
 parser.add_argument("--training-iterations", type=int, help='Number of training iterations needed for convergence', default=10)
 parser.add_argument("--model-params", type=str, help='model parameters to use instead of performing training', default="")
 parser.add_argument("--djob-num-nodes", type=int, help='A number greater or equal than 2 would allow the use of distribjob for parallelizing prediction', default=1)
@@ -42,7 +42,7 @@ try:
     my_env["PATH"] = craig_home+"/perl/bin:" + \
         craig_home+"/python/bin:" + \
         craig_home+"/bin:" + my_env.get("PATH", '')
-    
+
     args = parser.parse_args(sys.argv[1:])
 
     # determining the model name
@@ -57,15 +57,15 @@ try:
     model_output_dir = args.prefix_output_dir+".model"
     if not os.path.exists(model_output_dir):
         os.makedirs(model_output_dir)
-    
+
     # opening log files
     log_file = open(model_output_dir+"/"+model_name+".error.log", "a")
     logging.basicConfig(filename=model_output_dir+"/"+model_name+".master.log", level=logging.DEBUG)
 
     #### PREPROCESSING ####
     preproc_output_dir = args.prefix_output_dir+".preproc" \
-        if args.prefix_output_dir[0] == "/" \
-        else os.path.dirname(os.getcwd())+"/"+args.prefix_output_dir+".preproc"
+        if os.path.isabs(args.prefix_output_dir) \
+        else os.getcwd()+"/"+args.prefix_output_dir+".preproc"
 
     shell_cmd = "craigPreprocess.py --config-file config"+(" --use-model-length-limits" if args.use_model_length_limits else "")+(" --pre-config-file "+args.preconfig_file if args.preconfig_file else "")+" --out-dir "+preproc_output_dir +(" --closest-species "+args.closest_species if args.closest_species != "" else "")+(" --annot-tag "+args.annot_tag if args.annot_tag != "" else "")+" --annot-fmt "+args.annot_fmt+" --contig-fmt "+args.contig_fmt+" --transcript-tag "+args.tr_tag+" --cds-tag "+args.cds_tag+" --gc-classes "+args.gc_classes+" --model "+args.model+" --num-permutations 1000 --block-length 20 "+("--model-utrs " if args.model_utrs else "")
 
@@ -73,9 +73,9 @@ try:
         shell_cmd += "--djob-num-nodes "+str(args.djob_num_nodes)+" --djob-node-class "+args.djob_node_class+" --djob-input "+args.djob_input+"/preprocess "
 
     shell_cmd += args.SPECIES+" "+args.ANNOT_FILE+" "+args.FASTA_FILE
-    ioutils.log_and_exec(shell_cmd, my_env, log_file)
+#    ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-#### TRAINING and TESTING #####
+    #### TRAINING and TESTING #####
     # Sanity check
     if not os.path.exists(preproc_output_dir+"/config"):
         raise ioutils.CraigUndefined("File "+preproc_output_dir+"/config needed for training but has not been created!.\nMost likely craigPreprocess.py crashed")
@@ -90,7 +90,7 @@ try:
     shell_cmd = "grep -s Path "+preproc_output_dir+"/config"
     preproc_path = os.path.dirname((subprocess.Popen(shell_cmd.split(), stdout = subprocess.PIPE, env = my_env, stderr = log_file).communicate()[0]).split()[1])
     chrfasta_fn = preproc_path+"/"+model_name+".chr.fa"
-    
+
     shell_cmd = "grep -s PrefixFiles "+preproc_output_dir+"/config"
     prefix_train = (subprocess.Popen(shell_cmd.split(), stdout = subprocess.PIPE, env = my_env, stderr = log_file).communicate()[0]).split()[1]
 
@@ -106,7 +106,8 @@ try:
 
     logging.info('Deciding whether to find splice signals or the ones provided by the junctions ')
     craigtrain_opts = ""
-#train deciding whether to find splice signals or use the ones provided by the junctions
+
+    #train deciding whether to find splice signals or use the ones provided by the junctions
     if args.model == 'ngscraig':
         shell_cmd = "grep -s -v \"PAR_\" "+prefix_xvalfiles+".err | grep -s \"Added\" | perl -ne '$_ =~ /.+\s(\S+)$/; print \"$1\n\";' | sort -u | awk '{print \">\" $1}' > "+prefix_xvalfiles+".err.ids"
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -118,15 +119,15 @@ try:
         total_ids = len((subprocess.Popen(shell_cmd.split(), stdout = subprocess.PIPE, env = my_env, stderr = log_file).communicate()[0]).split("\n"))
         logging.info('There are '+str(unsupp_ids)+' sequences with unsupported RNA-Seq evidence and '+str(total_ids)+' ids in total for training')
         craigtrain_opts += " --prefix-evidence="+prefix_train+" "
-        
+
         if 100*unsupp_ids/total_ids < 100 - args.min_perc_junc_aligns:
             logging.info("RNASeq data set looks good, we will use junction information only")
             craigtrain_opts += "--DONOR-resource=RNAseq-signals --ACCEPTOR-resource=RNAseq-signals "
         else:
             logging.info("There are more than 25% of ids without junction support. We need to use all splice sites in the sequence for training\n")
-#    elif args.model == 'craig' or args.model == 'ecraig':
-        
-# making sure all the needed files are present
+    #    elif args.model == 'craig' or args.model == 'ecraig':
+
+    # making sure all the needed files are present
     if not os.path.exists(model_prefix+".resources"):
         raise ioutils.CraigUndefined("File "+model_prefix+".resources needed for training but does not exist!\n")
 
@@ -157,9 +158,9 @@ try:
 
     if not os.path.exists(mparams) or args.force_train :
         shell_cmd = "cd "+model_output_dir+" && craigTrain "+craigtrain_opts+" --r=100 --model-utrs --loss-function=HAMMING --algorithm=ARROW -v --limit="+str(args.training_iterations)+" --avg-method=all "+preproc_output_dir+"/config params"
-        ioutils.log_and_exec(shell_cmd, my_env, log_file)    
+        ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-#decide which iteration to pick for final parameter model
+        # Decide which iteration to pick for final parameter model
         shell_cmd = "grep -s Validation "+model_output_dir+"/"+model_name+".error.log"
         valid_lines = (subprocess.Popen(shell_cmd.split(), stdout = subprocess.PIPE, env = my_env, stderr = log_file).communicate()[0]).split("\n")
 
@@ -174,7 +175,7 @@ try:
             if this_min < minimum :
                 minimum = this_min
                 ind_min = iteration
-            
+
         if os.path.exists(mparams) :
             sys.stderr.write("File "+mparams+" exists! Creating a new version\n")
             mparams = new_mparams
@@ -190,14 +191,14 @@ try:
         ioutils.startCraigPredictDJob(args.djob_input+"/model",
                                       chrfasta_fn,
                                       mparams, prefix_genome+".chr",
-                                      args.djob_num_nodes, 
+                                      args.djob_num_nodes,
                                       args.djob_node_class,
                                       add_opts, output_file+".chr.locs",
                                       my_env, log_file)
     else:
-        shell_cmd = "craigPredict --prefix-evidence="+prefix_genome+ (" --predict-utrs " if args.model_utrs else " ")+" --format=locs "+mparams+" "+chrfasta_fn+" > "+output_file+".chr.locs"
-        ioutils.log_and_exec(shell_cmd, my_env, log_file) 
-        
+        shell_cmd = "craigPredict --prefix-evidence=" + prefix_genome + ".chr" + (" --predict-utrs " if args.model_utrs else " ")+" --format=locs "+mparams+" "+chrfasta_fn+" > "+output_file+".chr.locs"
+        ioutils.log_and_exec(shell_cmd, my_env, log_file)
+
     shell_cmd = "cat "+output_file+".chr.locs | locs2GTF.pl "+chrfasta_fn+" | gtf2gff3.pl | sed \'s/5UTR/UTR/g\' | sed \'s/3UTR/UTR/g\' | sed \'s/CRAIG/CRAIG_denovo/g\' > "+output_file+".chr.gff3"
     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
@@ -220,7 +221,7 @@ try:
                                                output_file+".chr.locs",
                                                output_file, True, True,
                                                my_env, log_file)
-    
+
             shell_cmd = "score_genes "+("--have-utrs " if args.model_utrs else "")+"--prefix-evidence="+prefix_genome+".chr "+mparams+" "+output_file+".fa "+output_file+"locs > "+output_file+".gms.locs"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
             shell_cmd = "moveLocsToOrigContigs.pl "+output_file+".subcontigs < "+output_file+".gms.locs > "+output_file+".chr.gms.locs"

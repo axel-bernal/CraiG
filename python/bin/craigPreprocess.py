@@ -46,7 +46,7 @@ try:
     my_env["PATH"] = craig_home+"/perl/bin:" + \
         craig_home+"/python/bin:" + \
         craig_home+"/bin:" + my_env.get("PATH", '')
-    
+
     args = parser.parse_args(sys.argv[1:])
 
     if args.file_list:
@@ -56,7 +56,7 @@ try:
 #        shutil.rmtree(args.out_dir)
     if not os.path.exists(args.out_dir):
         os.makedirs(args.out_dir)
-    
+
     # determining the model name
     model_name = args.SPECIES
     if args.model == 'ecraig':
@@ -106,12 +106,12 @@ try:
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
         ioutils.makeNaiveRSqParamModel(naive_rsq_parmodel,
                                        out_file+".ab_initio.params",
-                                       my_env, log_file) 
+                                       my_env, log_file)
         shell_cmd = "rm "+out_file+".ab_initio.params"
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
     upd_length_limits = True
-    
+
     if not os.path.exists(model_prefix+".features") :
         closest_model = args.closest_species;
         evid_sources = ""
@@ -122,11 +122,11 @@ try:
             evid_sources = " -sources "+craig_home+"/models/"+model_name+".sources"
         elif args.model == 'ngscraig':
             closest_model += '-rna'
-            
+
         closest_model_path = craig_home+"/models/"+closest_model
         if not os.path.exists(closest_model_path+".template"):
             if not os.path.exists(closest_model_path+".features"):
-                raise ioutils.CraigUndefined("Cannot build template for closely-related species "+closest_model) 
+                raise ioutils.CraigUndefined("Cannot build template for closely-related species "+closest_model)
 
             shell_cmd = "buildCRAIGModelTemplate.pl -output-template "+closest_model_path+".template -input-model "+closest_model_path
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -134,13 +134,13 @@ try:
         shell_cmd = "buildCRAIGModelFilesFromTemplate.pl -input-template "+closest_model_path+".template -output-model "+model_prefix+" -extract-model-params "+chrannot_fn+evid_sources
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
         upd_length_limits = False
- 
+
     actual_model_name = model_name
 
     if not args.use_default_length_limits and upd_length_limits:
         shell_cmd = "buildCRAIGModelTemplate.pl -output-template "+out_file+".template -input-model "+model_prefix
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
-        
+
         actual_model_name = out_file+".adjusted"
         shell_cmd = "buildCRAIGModelFilesFromTemplate.pl -input-template "+out_file+".template -output-model "+actual_model_name+" -extract-model-params "+chrannot_fn
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -151,8 +151,8 @@ try:
     #generating either evidence or ab initio input files and features
     # pre_config_file contains information about sources of evidence
     # for rnaseq sources this is the header:
-    # evid_type(rnaseq|genepred)  subtype(rum|gsnap|epdb*) dataset_id sample_id filename stranded(N|F|R|FR|RF|FF|RR) wrapper_in
-    
+    # evid_type(rnaseq|genepred)  subtype(rum|gsnap|epdb*) dataset_id sample_id filename stranded(NN|N|F|R|FR|RF|FF|RR) wrapper_in
+
     prefix_genome = ""
     prefix_train = ""
     prefix_xvalfiles = ""
@@ -187,27 +187,27 @@ try:
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
                         shell_cmd = "sed 1,1d "+tokens[4]+"/junctions_high-quality.bed | perl -ne '@l = split(/\s+/, $_); $l[10] =~/([^\,]+)\,(\d+)/; $l[1] = $l[1] + $1 + 1; $l[2] = $l[2] - $2; print \"$l[0]\:$l[1]\-$l[2]\n\";' | sort > "+out_file+".2sorted"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                        shell_cmd = "join "+out_file+".2sorted "+out_file+".1sorted | junctions2weightedLocs.py --orientation "+tokens[5]+" --dataset-id "+ tokens[2] + " --sample-id "+tokens[3]+" --cut-off 1 --format rum > "+rsqfn2+".orig.locs"
+                        shell_cmd = "join "+out_file+".2sorted "+out_file+".1sorted | junctions2weightedLocs.py --orientation " + tokens[5] + " --dataset-id "+ tokens[2] + " --sample-id "+tokens[3]+" --cut-off 1 --format rum - " + rsqfn2 + ".orig.locs"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                        shell_cmd = "join -v2 "+out_file+".2sorted "+out_file+".1sorted | junctions2weightedLocs.py --dataset-id "+tokens[2] +" --sample-id "+tokens[3]+" --cut-off 2 --format "+tokens[1]+" >> "+rsqfn2+".orig.locs"
+                        shell_cmd = "join -v2 "+out_file+".2sorted "+out_file+".1sorted | junctions2weightedLocs.py --dataset-id " + tokens[2] + " --sample-id "+tokens[3] + " --cut-off 2 --format " + tokens[1] + " - - >> " + rsqfn2 + ".orig.locs"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
                         shell_cmd = "rm "+out_file+".1sorted "+out_file+".2sorted"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-                        logging.info('Processing coverage reads for '+tokens[4])       
+                        logging.info('Processing coverage reads for '+tokens[4])
 
                         # dealing with coverage
                         if tokens[5] == 'N' or tokens[5] == 'NN':
-                            shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum > "+rsqfn1+".chr.cov"
-# add contigs without coverage
+                            shell_cmd = "sed 1,1d "+tokens[4]+"/RUM_Unique.cov | coverage2filter.py --len-file="+chrlen_fn+" --format=rum - > "+rsqfn1+".chr.cov"
+
                             ioutils.log_and_exec(shell_cmd, my_env, log_file)
                         else:
                             cov_file = "RUM_Unique.plus.cov" if os.path.exists(tokens[4]+"/RUM_Unique.plus.cov") else "RUM_Unique_plus.cov"
-                            shell_cmd = "sed 1,1d "+tokens[4]+"/"+cov_file+" | coverage2filter.py --len-file="+chrlen_fn+" --format=rum | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //)> "+rsqfn1+".chr.plus.cov"
+                            shell_cmd = "sed 1,1d "+tokens[4]+"/"+cov_file+" | coverage2filter.py --len-file="+chrlen_fn+" --format=rum - | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //)> "+rsqfn1+".chr.plus.cov"
                             ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                             cov_file = "RUM_Unique.minus.cov" if os.path.exists(tokens[4]+"/RUM_Unique.minus.cov") else "RUM_Unique_minus.cov"
-                            shell_cmd = "sed 1,1d "+tokens[4]+"/"+cov_file+" | coverage2filter.py --len-file="+chrlen_fn+" --format=rum | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //) > "+rsqfn1+".chr.minus.1.cov"
+                            shell_cmd = "sed 1,1d "+tokens[4]+"/"+cov_file+" | coverage2filter.py --len-file="+chrlen_fn+" --format=rum - | (perl -ne '$counter++; if($_ =~ /^>/ && $counter > 1) { print \"//\n\", $_; } else { print $_;}' && echo //) > "+rsqfn1+".chr.minus.1.cov"
                             ioutils.log_and_exec(shell_cmd, my_env, log_file)
                             shell_cmd = "cat "+rsqfn1+".chr.minus.1.cov | moveScoreFilterToCompStrand.pl "+chrlen_fn +" > "+rsqfn1+".chr.minus.cov"
                             ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -223,18 +223,20 @@ try:
                             ioutils.log_and_exec(shell_cmd, my_env, log_file)
                             shell_cmd = "rm "+rsqfn1+".chr.minus.1.cov"
                             ioutils.log_and_exec(shell_cmd, my_env, log_file)
-# add contigs without coverage
+
+                        # add contigs without coverage
                         shell_cmd = "biodiff.py "+chrlen2_fn+" "+rsqfn1+".chr.cov -by ii >"+rsqfn1+".chr.cov.suppl ; cat "+rsqfn1+".chr.cov.suppl >> "+rsqfn1+".chr.cov"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                         shell_cmd = "touch "+rsqfn1+".chr.rnaseq_is_done"
-                        ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                 elif tokens[1] == 'gsnap':
                     if not os.path.exists(rsqfn1+".chr.rnaseq_is_done"):
+
                         #dealing with junctions
                         if not os.path.exists(tokens[4]+"/GSNAP.junction.locs"):
-                            shell_cmd = "cat "+tokens[4]+"/GSNAP.aln | junctions2weightedLocs.py --dataset-id "+tokens[2]+" --orientation "+tokens[5]+" --format gsnap | filterRepeatedGenes.pl > "+rsqfn2+".tmp.locs"
+                            shell_cmd = "cat "+tokens[4]+"/GSNAP.aln | junctions2weightedLocs.py --dataset-id "+tokens[2]+" --orientation "+tokens[5]+" --format gsnap - - | filterRepeatedGenes.pl "+rsqfn2+".tmp.locs"
                         else:
                             shell_cmd = "cp "+tokens[4]+"/GSNAP.junction.locs "+rsqfn2+".tmp.locs"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -247,18 +249,41 @@ try:
                             shell_cmd = "cat "+tokens[4]+"/GSNAP.aln | gsreads2covfilter.py --orientation "+tokens[5]+" --len-file "+chrlen_fn+" > "+rsqfn1+".chr.cov"
                         else:
                             shell_cmd = "cp "+tokens[4]+"/GSNAP.Unique.cov "+rsqfn1+".chr.cov"
-                        ioutils.log_and_exec(shell_cmd, my_env, log_file)    
+                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                         # add contigs without coverage
                         shell_cmd = "biodiff.py "+chrlen2_fn+" "+rsqfn1+".chr.cov -by ii >"+rsqfn1+".chr.cov.suppl ; cat "+rsqfn1+".chr.cov.suppl >> "+rsqfn1+".chr.cov"
                         ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                         shell_cmd = "touch "+rsqfn1+".chr.rnaseq_is_done"
-                        ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                elif tokens[1] == 'bam':
+                    if not os.path.exists(rsqfn1+".chr.rnaseq_is_done"):
 
+                        #dealing with junctions
+                        if not os.path.exists(rsqfn2+".locs"):
+                            shell_cmd = "junctions2weightedLocs.py --with-bed " + rsqfn2 + ".bed --orientation " + tokens[5] + " --dataset-id "+tokens[2]+" --format bam " + tokens[4] + " - | filterRepeatedGenes.pl > " + rsqfn2 + ".tmp.locs"
+                            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                            shell_cmd = "mv "+rsqfn2+".tmp.locs "+rsqfn2+".locs"
+                            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+
+                        #dealing with coverage
+                        if not os.path.exists(rsqfn1+".chr.cov"):
+                            shell_cmd = "coverage2filter.py --orientation " + tokens[5] + " --len-file "+chrlen_fn+" " + tokens[4] + " > "+rsqfn1+".tmp1.chr.cov"
+                            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                            # add contigs without coverage
+                            shell_cmd = "biodiff.py "+chrlen2_fn+" "+rsqfn1+".tmp1.chr.cov -by ii >"+rsqfn1+".tmp2.chr.cov"
+                            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                            shell_cmd = "cat "+rsqfn1+".tmp1.chr.cov "+rsqfn1+".tmp2.chr.cov > "+rsqfn1+".chr.cov"
+                            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+                            shell_cmd = "rm -f " + rsqfn1 + ".tmp1.chr.cov " + rsqfn1 + ".tmp2.chr.cov"
+                            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+
+                        shell_cmd = "touch "+rsqfn1+".chr.rnaseq_is_done"
+                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
                 else:
                     raise ioutils.CraigUndefined("format "+tokens[1]+" not recognized")
-            
+
                 # dealing with junctions in non-stranded rnaseq sets
                 logging.info('Processing junction reads strand information for '+tokens[4])
 
@@ -273,7 +298,7 @@ try:
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
                     shell_cmd = "biointers.py "+rsqfn2+".orig.comp.locs "+rsqfn2+".orig.fwd.locs | biodiff.py "+rsqfn2+".orig.comp.locs - >> "+rsqfn2+".locs"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                    
+
                 # compute junction.signal and .xsignal for rsqfn1+".chr" prefix
                 if not os.path.exists(rsqfn1+".chr.xsig_is_done"):
                     logging.info('Computing junction signal filter for '+tokens[4])
@@ -290,10 +315,10 @@ try:
                                                   my_env, log_file)
                     else:
                         shell_cmd = "get_covxsignals "+("--stranded" if stranded else "")+" --prefix-evidence="+rsqfn1+".chr --num-permutations="+str(args.num_permutations)+" --block-len=20 --chunk-size=30000 "+chrfasta_fn
-                        log_and_exec(shell_cmd, my_env, log_file) 
+                        ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                     shell_cmd = "touch "+rsqfn1+".chr.xsig_is_done"
-                    ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                 #compute junction.signal and .xsignal for rsqfn1+".chr.utr_only
                 #prefix
@@ -316,17 +341,17 @@ try:
                     if ioutils.log_and_exec(shell_cmd, my_env, log_file):
                         raise ioutils.CraigUndefined("Execution of joinSignalFilters.pl has failed. Either two different signals for one single position were found, or some unknown mistake")
                     # link utr_only model files
-                    shell_cmd = "ln -s "+rsqfn1+".chr.cov "+rsqfn1+".chr.utr_only.cov"
+                    shell_cmd = "ln -fs "+rsqfn1+".chr.cov "+rsqfn1+".chr.utr_only.cov"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                    shell_cmd = "ln -s "+rsqfn1+".chr.xsignal "+rsqfn1+".chr.utr_only.xsignal"
+                    shell_cmd = "ln -fs "+rsqfn1+".chr.xsignal "+rsqfn1+".chr.utr_only.xsignal"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                    shell_cmd = "ln -s "+rsqfn1+".chr.xsigscores "+rsqfn1+".chr.utr_only.xsigscores"
+                    shell_cmd = "ln -fs "+rsqfn1+".chr.xsigscores "+rsqfn1+".chr.utr_only.xsigscores"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                     shell_cmd = "touch "+rsqfn1+".chr.utr_only.xsig_is_done"
-                    ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-                # computing tentative subcontig regions and filters to 
+                # computing tentative subcontig regions and filters to
                 # extract single-gene sequences for training
                 logging.info('Computing subcontig regions and filters')
 
@@ -340,7 +365,7 @@ try:
                                                       rsqfn1+".chr",
                                                       args.djob_num_nodes,
                                                       args.djob_node_class,
-                                                      add_opts, 
+                                                      add_opts,
                                                       rsqfn1+".chr.locs",
                                                       my_env, log_file)
                     else:
@@ -352,18 +377,18 @@ try:
                                                        rsqfn1+".chr.locs",
                                                        rsqfn1, False, False,
                                                        my_env, log_file)
-                    
+
                     # compute subcontig filters
-                    ioutils.computeSubContigFilters(rsqfn1+".chr", rsqfn1, 
+                    ioutils.computeSubContigFilters(rsqfn1+".chr", rsqfn1,
                                                     args.djob_input,
                                                     args.djob_num_nodes,
                                                     args.djob_node_class,
                                                     args.num_permutations,
-                                                    stranded, 
+                                                    stranded,
                                                     my_env, log_file)
-                    
+
                     shell_cmd = "touch "+rsqfn1+".subcontig_is_done"
-                    ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
                 # compute utr_only filters for the subcontigs above
                 if not os.path.exists(rsqfn1+".utr_only.xsig_is_done"):
@@ -386,11 +411,11 @@ try:
                         raise ioutils.CraigUndefined("joinSignalFilters.pl has found two different signals for one single position in input")
 
                     shell_cmd = "touch "+rsqfn1+".utr_only.xsig_is_done"
-                    ioutils.log_and_exec(shell_cmd, my_env, log_file) 
+                    ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
             else:
                 raise ioutils.CraigUndefined("Unrecognized source type")
-    
+
     if not len(prefix_genome) and args.model == 'craig':
         # compute ab initio gene split of the annotation
         prefix_genome = out_file+"."+args.annot_tag+".abi"
@@ -414,10 +439,10 @@ try:
             shell_cmd = "biodiff.py "+prefix_genome+".tag "+prefix_genome+".defect.ids -by ii > "+prefix_genome+".final.tag"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
             shell_cmd = "touch "+prefix_genome+".final.subset_is_done"
-            ioutils.log_and_exec(shell_cmd, my_env, log_file)             
+            ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
         prefix_train = prefix_genome+".final"
-        
+
     elif not len(prefix_genome):
         raise ioutils.CraigUndefined("empty pre-configuration file or --model option undefined")
 
@@ -432,18 +457,18 @@ try:
                                               prefix_genome,
                                               args.djob_num_nodes,
                                               args.djob_node_class,
-                                              add_opts, 
+                                              add_opts,
                                               prefix_genome+".1.locs",
                                               my_env, log_file)
             else:
                 shell_cmd = "craigPredict --prefix-evidence="+prefix_genome+" --format=locs --DONOR-resource=RNAseq-signals --ACCEPTOR-resource=RNAseq-signals "+naive_rsq_parmodel+" "+prefix_genome+".fa > "+prefix_genome+".1.locs"
                 ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-            shell_cmd = "cat "+prefix_genome+".nutr.locs | grep -s -v \"<\" | grep -s -v -P \"\S>\" | filterOlapGenes.pl -v -o "+prefix_genome+".1.locs > "+prefix_genome+".2.locs"
+            shell_cmd = "cat "+prefix_genome+".nutr.locs | grep -s -v \"<\" | grep -E -s -v \"\S>\" | filterOlapGenes.pl -v -o "+prefix_genome+".1.locs > "+prefix_genome+".2.locs"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
             shell_cmd = "remove_suspect_transcripts --prefix-evidence="+prefix_genome+" "+prefix_genome+".fa "+prefix_genome+".nutr.locs "+prefix_genome+".2.locs | biointers.py -by ii "+prefix_genome+".nutr.locs - > "+prefix_genome+".3.locs"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
-            
+
             if not args.use_non_expressed_genes:
                 shell_cmd = "cat "+prefix_genome+".3.locs  | filterOlapGenes.pl -s --min-weight 2 -v -o "+prefix_genome+".junction.locs > "+prefix_genome+".4.locs"
             else:
@@ -451,8 +476,8 @@ try:
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
             shell_cmd = "touch "+prefix_genome+".trainingset_is_done"
-            ioutils.log_and_exec(shell_cmd, my_env, log_file) 
-        
+            ioutils.log_and_exec(shell_cmd, my_env, log_file)
+
         shell_cmd ="removeGenes.sh "+prefix_genome+".nutr.locs "+prefix_genome+".4.locs > "+prefix_genome+".naivPrCorr.noAS.locs"
         ioutils.log_and_exec(shell_cmd, my_env, log_file)
         shell_cmd = "cat "+prefix_genome+".naivPrCorr.noAS.locs"
@@ -473,23 +498,23 @@ try:
                 shell_cmd = "cat "+prefix_output+".1.igenics "+prefix_output+".2.igenics > "+prefix_output+".igenics"
                 ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-                ioutils.produceSubsetAnnotation(prefix_genome+".fa", 
+                ioutils.produceSubsetAnnotation(prefix_genome+".fa",
                                                 prefix_output+".igenics",
                                                 prefix_genome+".4.locs",
                                                 prefix_output,
                                                 my_env, log_file)
 
-                ioutils.computeSubContigFilters(prefix_genome, 
+                ioutils.computeSubContigFilters(prefix_genome,
                                                 prefix_output,
                                                 args.djob_input,
                                                 args.djob_num_nodes,
                                                 args.djob_node_class,
                                                 args.num_permutations,
-                                                stranded, 
-                                                my_env, log_file)        
+                                                stranded,
+                                                my_env, log_file)
 
                 shell_cmd = "touch "+prefix_output+".trainingset_is_done"
-                ioutils.log_and_exec(shell_cmd, my_env, log_file)             
+                ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
             prefix_train = prefix_genome+".naivPrCorr.noAS"
 
@@ -499,7 +524,7 @@ try:
                                  actual_model_name, stranded, my_env, log_file)
             shell_cmd = "touch "+prefix_genome+".training_utrannot_is_done"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
-        
+
 # for now we will proceed without alternative splicing filtering
 #        shell_cmd = "nohup report_rnaseq_asevents --prefix-evidence="+prefix_fil#es+" "+prefix_genome+".fa > "+prefix_genome+".ASreport"
 #        ioutils.log_and_exec(shell_cmd, my_env, log_file)
@@ -507,9 +532,9 @@ try:
 #        ioutils.log_and_exec(shell_cmd, my_env, log_file)
 #        shell_cmd = "grep -s \"exon skip\" "+prefix_genome+".ASreport | cut -f1 -d \" \" | cat - "+prefix_genome+".6.locs | sort -u | perl -ne 'print \">$_\";' | sort -u | biodiff.py "+prefix_genome+".naivPrCorr.locs - -by ci > "+prefix_genome+".naivPrCorr.noAS.locs"
 #        ioutils.log_and_exec(shell_cmd, my_env, log_file)
-                
+
         prefix_xvalfiles = prefix_genome+".naivPrCorr.noAS.utr"
-    
+
     elif args.model == 'ecraig':
         prefix_xvalfiles = prefix_genome
     elif args.model == 'craig':
@@ -518,11 +543,11 @@ try:
         raise ioutils.CraigUndefined("--model option undefined")
 
     if len(args.config_file):
-        ioutils.createSetup4Training(prefix_train, prefix_genome, 
+        ioutils.createSetup4Training(prefix_train, prefix_genome,
                                      prefix_xvalfiles,
-                                     actual_model_name, args.gc_classes, 
-                                     args.out_dir, args.config_file, 
+                                     actual_model_name, args.gc_classes,
+                                     args.out_dir, args.config_file,
                                      my_env, log_file)
-    
+
 except ioutils.CraigUndefined, msg:
     print msg
