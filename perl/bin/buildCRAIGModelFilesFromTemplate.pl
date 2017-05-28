@@ -36,7 +36,7 @@ if($sources ne "" && $model_prefix eq "") {
 	push(@ids, $1);
 	push(@paths, $2);
     }
-    
+
     close(SOURCES);
 
     $max = $#paths + 1 if !$max;
@@ -85,7 +85,7 @@ for(my $i = $min; $i <= $max; $i++) {
 	elsif($_ =~ /__LIST_MRID__(\S+)/) {
 	    my $line = $_;
 	    my $detail = $1;
-	    if($_ =~ /__N__LIST_MRID__\S+/) { 
+	    if($_ =~ /__N__LIST_MRID__\S+/) {
 		$line =~ s/__N/$i /;
 	    }
 
@@ -99,70 +99,71 @@ for(my $i = $min; $i <= $max; $i++) {
 	    print MODELF $line;
 	}
 	else {
-	    print MODELF $_; 
+	    print MODELF $_;
 	}
     }
     close(TEMPLATE);
-    close(MODELF);    
+    close(MODELF);
 
     my $tprefix = basename($template);
     if($tprefix =~ /(\S+)\.([^\.]+)/) {
 	$tprefix = $1;
     }
-    
+
     open(RESOURCES, $template);
     my $line;
     while(defined($line = <RESOURCES>)) {
-	if($line !~ /^\s*\#/ && $line =~ /\s*\~(\S+)\s*/) {
-	    my $aux_resfile = $1;
-	    my $cmd = dirname($template)."/".$tprefix.".$aux_resfile $mfile.$aux_resfile";
-	    $cmd = $aux_resfile !~ /.top$/ ? "ln -s ".$cmd : "cp ".$cmd;
-	    `$cmd` if !-e "$mfile.$aux_resfile";
-	}
+        if($line !~ /^\s*\#/ && $line =~ /\s*\~(\S+)\s*/) {
+            my $aux_resfile = $1;
+            my $cmd = dirname($template)."/".$tprefix.".$aux_resfile $mfile.$aux_resfile";
+            $cmd = $aux_resfile !~ /.top$/ ? "ln -s ".$cmd : "cp ".$cmd;
+            `$cmd` if !-e "$mfile.$aux_resfile";
+        }
     }
 
     close(RESOURCES);
 
     if($gene_locs ne "") {
-	my %cdsStLens = ();
-	my %numCPs = ();
-	my %cps = ();
-	my $partial_fsm = dirname($template)."/".$tprefix.".partial.top";
-	my $complete_fsm = dirname($template)."/".$tprefix.".complete.top";
-	my $has_lintron = 1 if `grep LONG_INTRON $partial_fsm` ne "";
+        my %cdsStLens = ();
+        my %numCPs = ();
+        my %cps = ();
+        my $partial_fsm = dirname($template)."/".$tprefix.".partial.top";
+        my $complete_fsm = dirname($template)."/".$tprefix.".complete.top";
+        my $has_lintron = 1 if `grep LONG_INTRON $partial_fsm` ne "";
 
-	HistogramUtils::initGenomicRegLengths(\%cdsStLens, \%numCPs, 64, 64,
-					      $has_lintron);
+        HistogramUtils::initGenomicRegLengths(\%cdsStLens, \%numCPs, 64, 64,
+                                              $has_lintron);
 
-	open(GENES, "$gene_locs") || die "Can't open $gene_locs for reading\n";
-	my %genes = % {&GenUtils::readLocsFormat(\*GENES)};
-	foreach my $id (keys %genes) {
-	    my $gene = $genes{$id};
-	    HistogramUtils::extractGenomicRegLengths(\%cdsStLens, 
-						     $gene->{'Exons'},
-						     $gene->{'Strand'},
-						     $has_lintron);
-	    
-	}
-	close(GENES);
+        open(GENES, "$gene_locs") || die "Can't open $gene_locs for reading\n";
+        my %genes = % {&GenUtils::readLocsFormat(\*GENES)};
+        foreach my $id (keys %genes) {
+            my $gene = $genes{$id};
+            HistogramUtils::extractGenomicRegLengths(\%cdsStLens,
+                                                     $gene->{'Exons'},
+                                                     $gene->{'Strand'},
+                                                     $has_lintron);
 
-	foreach my $keyw (keys %cdsStLens) {
-	    my $st_lens = $cdsStLens{$keyw};
-	    my $num_cps = $numCPs{$keyw};
-	    $cps{$keyw} = HistogramUtils::getLengthControlPoints($st_lens, $num_cps);
-	}
+        }
+        close(GENES);
 
-	HistogramUtils::createLengthModelParamsFile(\%cps, $partial_fsm,
-						    "$mfile.partial.top");
-	HistogramUtils::createLengthModelParamsFile(\%cps, $complete_fsm,
-						    "$mfile.complete.top");
+        foreach my $keyw (keys %cdsStLens) {
+            my $st_lens = $cdsStLens{$keyw};
+            my $num_cps = $numCPs{$keyw};
+            $cps{$keyw} = HistogramUtils::getLengthControlPoints($st_lens, $num_cps);
+        }
 
-	my %binning_subs = ();
-	HistogramUtils::computeBinningSizes(\%binning_subs, \%cps);
-	
-	foreach my $keyw (keys %binning_subs) {
-	    `sed -i \'s/$keyw/$binning_subs{$keyw}/g\' $mfile.features`;
-	}
+        HistogramUtils::createLengthModelParamsFile(\%cps, $partial_fsm,
+                                                    "$mfile.partial.top");
+        HistogramUtils::createLengthModelParamsFile(\%cps, $complete_fsm,
+                                                    "$mfile.complete.top");
+
+        my %binning_subs = ();
+        HistogramUtils::computeBinningSizes(\%binning_subs, \%cps);
+
+        foreach my $keyw (keys %binning_subs) {
+            `sed  \'s/$keyw/$binning_subs{$keyw}/g\' $mfile.features > $mfile.features.new`;
+            `mv $mfile.features.new $mfile.features`;
+        }
     }
 }
 
