@@ -25,23 +25,23 @@ try:
     my_env["PATH"] = os.environ['CRAIG_HOME']+"/perl/bin:" + \
         os.environ['CRAIG_HOME']+"/python/bin:" + \
         os.environ['CRAIG_HOME']+"/bin:" + my_env.get("PATH", '')
-    
+
     args = parser.parse_args(sys.argv[1:])
-    
+
     if os.path.exists(args.out_dir):
         shutil.rmtree(args.out_dir)
-        
+
     os.makedirs(args.out_dir)
 
     log_file = open(args.out_dir+"/"+"postprocessing.error.log", "a")
     logging.basicConfig(filename=args.out_dir+"/"+"postprocessing.master.log", level=logging.DEBUG)
     files = []
     if args.list_prefixes != ".":
-        files = args.list_prefixes.split(",") 
+        files = args.list_prefixes.split(",")
     elif args.file_prefixes == ".":
-        raise ioutils.CraigUndefined("Must provide a valid list of prefixes") 
+        raise ioutils.CraigUndefined("Must provide a valid list of prefixes")
     else:
-        files = open(args.file_prefixes,  "r").read().splitlines() 
+        files = open(args.file_prefixes,  "r").read().splitlines()
 
     denovo_files = files[:];
     for i in range(len(denovo_files)):
@@ -57,15 +57,19 @@ try:
         utronly_files[i] += ".gms" if args.use_gmscores else ""
         utronly_files[i] += ".locs"
 
-    ioutils.clusterAnnotations(args.out_dir+"/utr_only.cds", args.out_dir+"/denovo.cds.nomatching.locs", utronly_files, args.use_gmscores, my_env, log_file)
+    ioutils.clusterAnnotations(args.out_dir+"/utr_only.cds",
+                               args.out_dir+"/denovo.cds.nomatching.locs",
+                               utronly_files, args.use_gmscores, my_env,
+                               log_file)
 
-    shell_cmd = "cat "+args.out_dir+"/denovo.cds.matching.locs "+args.out_dir+"/utr_only.cds.matching.locs "+args.out_dir+"/utr_only.cds.nomatching.locs > "+args.out_dir+"/unionized.cds.chr.locs"
+    shell_cmd = "cat "+args.out_dir+"/denovo.cds.matching.locs "+args.out_dir+"/utr_only.cds.matching.locs "+args.out_dir+"/utr_only.cds.nomatching.locs > " + args.out_dir + "/utr_only.cds.chr.locs"
     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-    shell_cmd = "cat "+args.out_dir+"/utr_only.cds.nomatching.locs | locs2GTF.pl "+args.FASTA_FILE+" | cat "+args.out_dir+"/denovo.cds.matching.gtf "+args.out_dir+"/utr_only.cds.matching.gtf - | gtf2gff3.pl | sed 's/5UTR/UTR/g' | sed 's/3UTR/UTR/g' | sed 's/CRAIG/CRAIG_utr_only/g' > "+args.out_dir+"/unionized.final.gff3"
+    shell_cmd = "cat "+args.out_dir+"/utr_only.cds.nomatching.locs | locs2GTF.pl "+args.FASTA_FILE+" | cat "+args.out_dir+"/denovo.cds.matching.gtf "+args.out_dir+"/utr_only.cds.matching.gtf - | gtf2gff3.pl | sed 's/5UTR/UTR/g' | sed 's/3UTR/UTR/g' | sed 's/CRAIG/CRAIG_utr_only/g' > "+args.out_dir+"/utr_only.final.gff3"
     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 
-    ioutils.clusterAnnotations(args.out_dir+"/denovo", "", denovo_files, args.use_gmscores, my_env, log_file)
+    ioutils.clusterAnnotations(args.out_dir+"/denovo", "", denovo_files,
+                               args.use_gmscores, my_env, log_file)
     shell_cmd = "cat "+args.out_dir+"/denovo.matching.gtf | gtf2gff3.pl | sed 's/5UTR/UTR/g' | sed 's/3UTR/UTR/g' | sed 's/CRAIG/CRAIG_utr_only/g' > "+args.out_dir+"/denovo.final.gff3"
     ioutils.log_and_exec(shell_cmd, my_env, log_file)
 

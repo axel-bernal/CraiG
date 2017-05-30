@@ -222,7 +222,7 @@ try:
                                                output_file, True, True,
                                                my_env, log_file)
 
-            shell_cmd = "score_genes "+("--have-utrs " if args.model_utrs else "")+"--prefix-evidence="+prefix_genome+".chr "+mparams+" "+output_file+".fa "+output_file+"locs > "+output_file+".gms.locs"
+            shell_cmd = "score_genes "+("--have-utrs " if args.model_utrs else "")+"--prefix-evidence="+prefix_genome+".chr "+mparams+" "+output_file+".fa "+output_file+".locs > "+output_file+".gms.locs"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
             shell_cmd = "moveLocsToOrigContigs.pl "+output_file+".subcontigs < "+output_file+".gms.locs > "+output_file+".chr.gms.locs"
             ioutils.log_and_exec(shell_cmd, my_env, log_file)
