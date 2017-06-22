@@ -1,0 +1,37 @@
+#
+#Types of features
+#
+#
+#
+#
+#
+
+##############################################################################
+#                           NODE-RELATED FEATURES
+##############################################################################
+
+NodeSet ALL_NODES* = 14 INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B INTERGENIC_F INTERGENIC_B
+
+NodeSet CODING* = 8 INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B
+
+Feature           Intergenics-Bag               FeatureBag 1 ab-initio-model -> 2 INTERGENIC_F INTERGENIC_B
+Feature           Introns-Bag                   FeatureBag 3 ab-initio-model -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+Feature           Coding-Bag                    FeatureBag 3 ab-initio-model -> CODING*
+#Feature          All-Nodes-Bag                 FeatureBag 3 ab-initio-model -> ALL_NODES*
+Feature           Hidden-Stop-Sequence          HiddenSeq<int> 3 3 3 Stop-Signal 0
+
+##############################################################################
+#                           EDGE-RELATED FEATURES
+##############################################################################
+
+EdgeSet ALL_EDGES* = 12 START_F STOP_F DONOR_F ACCEPTOR_F SELF_INTRON_F SELF_INTERGENIC_F START_B STOP_B DONOR_B ACCEPTOR_B SELF_INTRON_B SELF_INTERGENIC_B
+EdgeSet ALL_PAREDGES* = 8 PAR_START_F PAR_STOP_F PAR_DONOR_F PAR_ACCEPTOR_F PAR_START_B PAR_STOP_B PAR_DONOR_B PAR_ACCEPTOR_B
+
+Feature           Starts-Bag                    FeatureBag 1 ab-initio-model -> 2 START_F START_B
+Feature           Stops-Bag                     FeatureBag 1 ab-initio-model -> 2 STOP_F STOP_B
+Feature           Donors-Bag                    FeatureBag 3 ab-initio-model -> 2 DONOR_F DONOR_B
+Feature           Acceptors-Bag                 FeatureBag 3 ab-initio-model -> 2 ACCEPTOR_F ACCEPTOR_B
+#Feature           All-Edges-Bag                 FeatureBag 3 ab-initio-model -> ALL_EDGES*
+Feature           All-ParEdges-Bag              FeatureBag 1 ab-initio-model -> ALL_PAREDGES*
+Feature           SignalP-Score                 FeatureBag 1 signalp-score-model -> 2 START_F START_B
+//

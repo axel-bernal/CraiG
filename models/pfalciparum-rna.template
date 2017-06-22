@@ -1,0 +1,231 @@
+__RESOURCE_FILE__
+Resource    dna-alpha               DNASigma
+Resource    mask-alpha              Sigma 2 ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource    aa-alpha                AASigma
+Resource    intron-model            ContextIMM false ~intron.cimm 1 dna-alpha
+Resource    intergenic-model        ContextIMM false ~intergenic.cimm 1 dna-alpha
+Resource    exon-model              ContextIMM false ~exon.cimm 1 dna-alpha
+Resource    complete                FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial                 FSM ~partial.top 100 BOTH_STRANDS
+Resource    ev-signals-alpha      Sigma 7 -STDAXZ -STDAXZ - S T D A X Z
+
+Resource    RNAseq-coverage       File EXTENDED_LDSCORE  PREFIX_EVIDENCE.cov true false
+
+Resource    RNAseq-signals  File XFASTA PREFIX_EVIDENCE.junction.signal ev-signals-alpha true false
+Resource    RNAseq-edges    File EDGEANNOT_FASTA PREFIX_EVIDENCE.junction.signal ev-signals-alpha true false
+
+Resource    RNAseq-xsignals File XFASTA PREFIX_EVIDENCE.xsignal ev-signals-alpha true false
+Resource    RNAseq-xsigscores  File EXTENDED_MULTI_INTSCORE PREFIX_EVIDENCE.xsigscores true false 3
+
+//
+__FILTER_FILE__
+Filter      GC-Content            Context GCgc 0 1 100
+Filter      Intron-Score          ImmScore 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 0 GC-Content exon-model
+Filter      1-gram                Gram<UCHAR> 1 dna-alpha
+Filter      2-gram                Gram<UCHAR> 2 dna-alpha
+Filter      3-gram                Gram<UCHAR> 3 dna-alpha
+Filter      5-gram                Gram<UCHAR> 5 dna-alpha
+Filter      6-gram                Gram<USHORT> 6 dna-alpha
+Filter      Start-Signal          EdgeInst START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst DONOR dna-alpha 1 GT
+Filter      Acceptor-Signal       EdgeInst ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 1 0 mask-alpha 1
+Filter          TSS-Signal               EdgeInst TSS ev-signals-alpha 1 X
+Filter          TSS-Signal-input         FastaxFilter<char,EdgeInst> RNAseq-xsig
+nals TSS-Signal
+Filter          PAS-Signal               EdgeInst PAS ev-signals-alpha 1 Z
+Filter          PAS-Signal-input         FastaxFilter<char,EdgeInst> RNAseq-xsignals PAS-Signal
+
+MultiFilter(RNAseq-xsigscores)           XSig-Score-$$ ScoreFile<int*,int> RNAseq-xsigscores $$
+
+Filter  RNAseq-Coverage                  ScoreFile<double,double> RNAseq-coverage 0
+LazyFilter      RNASeq-Edges             EdgeAligner false
+Filter          RNASeq-Edges-input       FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges RNASeq-Edges
+Filter          AccTotCoverage           Coverage<double> 1 0 RNAseq-Coverage RNASeq-Edges
+
+log(Filter)     Log-RNAseq-Coverage      ScoreFile<double,double> RNAseq-coverage 0
+log(Filter)     Log-RNAseq-AccCoverage   ScoreFile<double,double> RNAseq-coverage 1
+LazyFilter      Log-RNASeq-Edges         EdgeAligner false
+log(Filter)     Log-RNASeq-Edges-input   FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges Log-RNASeq-Edges
+Filter          Log-AccTotCoverage       Coverage<double> 1 0 Log-RNAseq-Coverage Log-RNASeq-Edges
+
+Filter          Xcript-Rates             Coverage<double> 0 1000 Log-RNAseq-Cove
+rage Log-RNASeq-Edges
+
+
+# Extra stuff
+Filter          RNAseq-Coverage                 ScoreFile<double,double> RNAseq-coverage 0
+LazyFilter      RNASeq-Edges                    EdgeAligner false
+Filter          RNASeq-Edges-input              FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges RNASeq-Edges
+Filter          Norm-RNAseq-Coverage            NormalizedScoreFile<double,double> RNAseq-coverage 1
+LazyFilter      Norm-RNASeq-Edges               EdgeAligner true
+Filter          Norm-RNASeq-Edges-input         FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges Norm-RNASeq-Edges
+//
+__FEATURE_FILE__
+PreComputeTo  0     3     true
+PreComputeTo  1     3     true
+PreComputeTo  2     3     true
+PreComputeTo  3     3     true
+PreComputeTo  4     3     true
+PreComputeTo  5     3     true
+PreComputeTo  6     3     true
+PreComputeTo  7     3     true
+PreComputeTo  8     3     true
+@define TagSet CDS_INTRONS* 2 INTRON_F INTRON_B
+@define TagSet CODING* 8 INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B
+Feature		Intergenic-Background           StateBackground 1 10000 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Intron-Background               StateBackground 3 10000 -> 2 INTRON_F INTRON_B
+Feature		Coding-Exon-Background          StateBackground 3 10000 -> CODING*
+Feature		Intron/Igenic-Ratio             RatioSegment 3 Intron-Score 1 Intergenic-Score 1 -> 2 INTRON_F INTRON_B
+Feature		Intron/Exon-Ratio               RatioSegment 3 Intron-Score 1 Coding-Score 3
+Feature		Intron-Seg-Score                ScoringSegment<double> 3 Intron-Score 1 0 true -> 2 INTRON_F INTRON_B
+Feature		Igenic/Intron-Ratio             RatioSegment 3 Intergenic-Score 1 Intron-Score 1 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Igenic/Exon-Ratio               RatioSegment 3 Intergenic-Score 1 Coding-Score 3
+Feature		Intergenic-Seg-Score            ScoringSegment<double> 1 Intergenic-Score 1 0 true -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Exon/Intron-Ratio               RatioSegment 3 Coding-Score 3 Intron-Score 1
+Feature		Coding-Seg-Score                ScoringSegment<double> 3 Coding-Score 3 -1.34938786 true -> CODING*
+Feature		Coding-Differential             CodingDifferential Coding-Score -> CODING*
+Feature		Segment-Length                  LengthSegment 3
+Feature           LinearBin4-IntronLength         LinearFitBin<int> null INTRON_NUMBINS INTRON_LOGBASE 80 INTRON_BINSIZE
+Feature           LinearBin4-InterExonLength      LinearFitBin<int> null INTERNAL_EXON_NUMBINS INTERNAL_EXON_LOGBASE 0 INTERNAL_EXON_BINSIZE
+Feature           LinearBin4-SingleExonLength     LinearFitBin<int> null SINGLE_EXON_NUMBINS SINGLE_EXON_LOGBASE 100 SINGLE_EXON_BINSIZE
+Feature           LinearBin4-InitExonLength       LinearFitBin<int> null INIT_EXON_NUMBINS INIT_EXON_LOGBASE 0 INIT_EXON_BINSIZE
+Feature           LinearBin4-TermExonLength       LinearFitBin<int> null LAST_EXON_NUMBINS LAST_EXON_LOGBASE 0 LAST_EXON_BINSIZE
+Feature		Codon-Usage-1st-Frame           PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 0 false 1 -> CODING* @ 1
+Feature		Codon-Usage-2nd-Frame           PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 1 false 1 -> CODING* @ 2
+Feature		Codon-Usage-3rd-Frame           PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 2 false 1 -> CODING* @ 3
+Feature		6GRAM-Coding-1st-Frame          PeriodicCountingSegment<USHORT> 3 6-gram 0 3 0 false 1 -> CODING* @ 4
+Feature		6GRAM-Coding-2nd-Frame          PeriodicCountingSegment<USHORT> 3 6-gram 0 3 1 false 1 -> CODING* @ 5
+Feature		6GRAM-Coding-3rd-Frame          PeriodicCountingSegment<USHORT> 3 6-gram 0 3 2 false 1 -> CODING* @ 6
+Feature		Hidden-Stop-Sequence            HiddenSeq 3 3 3 3 TGA TAG TAA dna-alpha 3 Codon-Usage-1st-Frame Codon-Usage-2nd-Frame Codon-Usage-3rd-Frame -> 2 INTRON_F INTRON_B
+Feature           Mask-Content-Score              ScoringSegment<int> 1 Mask-Counts 1 0.5 true
+Feature           LinearBin4-MaskingContent       LinearFitBin<double> null 3 0 0 0.5
+Feature           Test-Is-Masked                  FeatureOFeature<double> Mask-Content-Score LinearBin4-MaskingContent -> CODING*
+PreComputeTo  9     0     false
+PreComputeTo  10    0     false
+PreComputeTo  11    0     false
+PreComputeTo  12    0     false
+@define	TagSet	ACCEPTOR*	2 ACCEPTOR_F ACCEPTOR_B @ 9, 2 UTR_ACCEPTOR_F UTR_ACCEPTOR_B @ 10
+@define	TagSet	DONOR*	2 DONOR_F DONOR_B @ 9, 2 UTR_DONOR_F UTR_DONOR_B @ 10
+Feature		PartGene-Start-Background       Edge<int> 1 null 1 -> 2 PAR_START_F PAR_START_B
+Feature		PartGene-Stop-Background        Edge<int> 1 null 1 -> 2 PAR_STOP_F PAR_STOP_B
+Feature		PartGene-Donor-Background       Edge<int> 1 null 1 -> 2 PAR_DONOR_F PAR_DONOR_B
+Feature		PartGene-Acceptor-Background    Edge<int> 1 null 1 -> 2 PAR_ACCEPTOR_F PAR_ACCEPTOR_B
+Feature		Start-Background                Edge<int> 1 Start-Signal 1 -> 2 START_F START_B @ 12
+Feature		Stop-Background                 Edge<int> 1 Stop-Signal 1 -> 2 STOP_F STOP_B @ 12
+Feature		Donor-Background                Edge<int> 3 Donor-Signal 1 -> DONOR*
+Feature	Acceptor-Background	Edge<int>	3 Acceptor-Signal 1 -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-Phase-Bias             EdgePhase 3 Acceptor-Signal 3 -> ACCEPTOR*
+Feature		Donor-Phase-Bias                EdgePhase 3 Donor-Signal 3
+Feature		Igenic-to-Non-Igenic@Start      EdgeContent<double> Start-Signal 0 Intergenic-Seg-Score 48 48 -> 2 START_F START_B @ 12
+Feature		Intron-to-Non-Intron@Acceptor   EdgeContent<double> Acceptor-Signal 2 Intron-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Non-Intron-to-Intron@Donor      EdgeContent<double> Donor-Signal 0 Intron-Seg-Score 48 48 -> DONOR*
+Feature		Non-Igenic-to-Igenic@Stop       EdgeContent<double> Stop-Signal 0 Intergenic-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+Feature		Non-Coding-to-Coding@Start      EdgeContent<double> Start-Signal 0 Coding-Seg-Score 48 48 -> 2 START_F START_B @ 12
+Feature		Non-Coding-to-Coding@Acceptor   EdgeContent<double> Acceptor-Signal 2 Coding-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Coding-to-Non-Coding@Donor      EdgeContent<double> Donor-Signal 0 Coding-Seg-Score 48 48 -> DONOR*
+Feature		Coding-to-Non-Coding@Stop       EdgeContent<double> Stop-Signal 0 Coding-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+Feature		Start-Gram-WWAM                 GramWWAM<UCHAR,UCHAR> 1 Start-Signal -20 15 1 5 3-gram -> 2 START_F START_B @ 12
+Feature		Start-PWM                       GramPWM<UCHAR,UCHAR> 1 Start-Signal -4 11 1 1-gram -> 2 START_F START_B @ 12
+Feature		Start-PWMxPWM                   PWMxPWM<UCHAR> Start-PWM Start-PWM -> 2 START_F START_B @ 12
+Feature		Start-Peptide-WWAM              PeptideWWAM<UCHAR,UCHAR> 1 Start-Signal 6 36 12 12 3-gram -> 2 START_F START_B @ 12
+Feature		Stop-PWM                        GramPWM<UCHAR,UCHAR> 1 Stop-Signal -1 7 1 1-gram -> 2 STOP_F STOP_B @ 12
+Feature		Stop-Gram-WWAM                  GramWWAM<UCHAR,UCHAR> 1 Stop-Signal 6 15 1 5 3-gram -> 2 STOP_F STOP_B @ 12
+Feature		Donor-5P-Gram-WWAM              GramWWAM<UCHAR,UCHAR> 1 Donor-Signal -6 2 1 5 3-gram  -> DONOR*
+Feature		Donor-PWM                       GramPWM<UCHAR,UCHAR> 3 Donor-Signal -3 11 1 1-gram -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-PWMxPWM                   PWMxPWM<UCHAR> Donor-PWM Donor-PWM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-3P-Gram-WWAM              GramWWAM<UCHAR,UCHAR> 3 Donor-Signal 8 12 1 5 3-gram -> DONOR*
+Feature		Acceptor-5P-Gram-WWAM           GramWWAM<UCHAR,UCHAR> 3 Acceptor-Signal -36 28 1 5 3-gram -> ACCEPTOR*
+Feature		Acceptor-PWM                    GramPWM<UCHAR,UCHAR> 3 Acceptor-Signal -7 12 1 1-gram -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-PWMxPWM                PWMxPWM<UCHAR> Acceptor-PWM Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+
+PreComputeTo  13    0     false
+
+@define TagSet TAPERED_UTRS* 8 5INIT_UTR_F 5INIT_UTR_B 3LAST_UTR_B 3LAST_UTR_F 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 
+@define TagSet UNIFORM_UTRS* 8 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 3INIT_UTR_F 3INIT_UTR_B
+@define TagSet ALL_UTRS* 16 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 3LAST_UTR_F 3LAST_UTR_B 5INIT_UTR_F 5INIT_UTR_B 3INIT_UTR_B 3INIT_UTR_F 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 
+
+@define TagSet 5UTR_EXONS* 8 5INIT_UTR_F 5INIT_UTR_B 5INTERNAL_UTR_F 5INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 5SINGLE_UTR_F 5SINGLE_UTR_B 
+@define TagSet 3UTR_EXONS* 8 3INIT_UTR_F 3INIT_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 3LAST_UTR_F 3LAST_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 
+@define TagSet UTR_INTRONS* 4 5UTR_INTRON_F 5UTR_INTRON_B 3UTR_INTRON_F 3UTR_INTRON_B
+
+
+#
+# RNASeq Introns
+#
+Feature         Log-RNASeq-Introns-AlignType            AlignmentType 1 Log-RNASeq-Edges
+Feature         Log-RNASeq-Introns-AlignWeight  AlignmentWeight 1 Log-RNASeq-Edges
+Feature         LinearBin4Log-RNASeq-Weights            LinearFitBin<double> Log-RNASeq-Introns-AlignWeight 5 1.25 0 1
+
+PerTagFeature   LinearBin4xLog-RNASeq-IntronWeight      FeatureXFeature<UCHAR,double> Log-RNASeq-Introns-AlignType LinearBin4Log-RNASeq-Weights -> CDS_INTRONS*, 2 INTERGENIC_F INTERGENIC_B, UTR_INTRONS*
+
+#
+#RNASeq Coverage
+#
+Feature         LinearBin4-Log-RNAseq-Coverage  LinearFitBin<double> null 5 1.25 0 1
+
+Feature         Log-Segment-Coverage    ScoringSegment<double> 3 Log-RNAseq-AccCoverage 1 3 true
+
+PerTagFeature   LinearBin4xLog-Day3Coverage     FeatureOFeature<double> Log-Segment-Coverage LinearBin4-Log-RNAseq-Coverage -> CODING*, CDS_INTRONS*, 2 INTERGENIC_F INTERGENIC_B, ALL_UTRS*, UTR_INTRONS*
+
+#
+#TR rates conjunctions with RNASeq
+#
+Feature         Transcript-Rates                FilterWrapper<double> Xcript-Rates
+Feature         LinearBin4Transcript-Rates      LinearFitBin<double> Transcript-Rates 3 0 0 3
+
+
+
+#
+# UTR Transcript background features
+#
+Feature         3UTR-Intron-Background          StateBackground 3 10000 -> 2 3UTR_INTRON_F 3UTR_INTRON_B
+Feature         3UTR-Exon-Background            StateBackground 3 10000 -> 3UTR_EXONS*
+Feature         5UTR-Intron-Background          StateBackground 3 10000 -> 2 5UTR_INTRON_F 5UTR_INTRON_B
+Feature         5UTR-Exon-Background            StateBackground 3 10000 -> 5UTR_EXONS*
+
+Feature         UTR-Intron-Length               FeatureOFeature<int> Segment-Length LinearBin4-IntronLength -> UTR_INTRONS*
+Feature         UTR-Init-Exon-Length            FeatureOFeature<int> Segment-Length LinearBin4-InitExonLength -> 4 5INIT_UTR_F 5INIT_UTR_B 3INIT_UTR_F 3INIT_UTR_B
+Feature         UTR-Internal-Exon-Length        FeatureOFeature<int> Segment-Length LinearBin4-InterExonLength -> 4 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B
+Feature         UTR-Last-Exon-Length            FeatureOFeature<int> Segment-Length LinearBin4-TermExonLength -> 4 5LAST_UTR_F 5LAST_UTR_B 3LAST_UTR_F 3LAST_UTR_B
+Feature         UTR-Single-Exon-Length          FeatureOFeature<int> Segment-Length LinearBin4-SingleExonLength -> 4 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B
+
+Feature         TSS-Background                  Edge<int> 1 Start-Signal 1 -> 2 TSS_F TSS_B @ 13
+Feature         PAS-Background                  Edge<int> 1 Start-Signal 1 -> 2 PAS_F PAS_B @ 13
+Feature         UtrDonor-Background             Edge<int> 3 Donor-Signal 1 -> 2 UTR_DONOR_F UTR_DONOR_B @ 10
+Feature         UtrAcceptor-Background          Edge<int> 3 Acceptor-Signal 1 -> 2 UTR_ACCEPTOR_F UTR_ACCEPTOR_B @ 10
+
+#
+# UTR RNA-Seq Edge features
+#
+#Feature                XSignal-LeftScore               MeanScoringSegment<double> 1 Log-AccTotCoverage 1 XSig-Score-0 XSig-Score-1
+#Feature                XSignal-RightScore              MeanScoringSegment<double> 1 Log-AccTotCoverage 1 XSig-Score-1 XSig-Score-2
+
+# these are second order features
+#Feature                XSignal-LeftScore               MeanScoringSignal<double> 1 Log-AccTotCoverage 1 left
+#Feature                XSignal-RightScore              MeanScoringSignal<double> 1 Log-AccTotCoverage 1 right
+#Feature                XSigScore-NLinCorr              MultiBin<double> 1 2 XSignal-LeftScore LinearBin4Log-RNASeq-Weights XSignal-RightScore LinearBin4Log-RNASeq-Weights
+#Feature                TSS-CorrScore                   EdgeFeature<double> 1 TSS-Signal XSigScore-NLinCorr -> 2 TSS_F TSS_B
+#Feature                PAS-CorrScore                   EdgeFeature<double> 1 PAS-Signal XSigScore-NLinCorr -> 2 PAS_F PAS_B
+
+Feature                 XSignal-RampOnsetScore          RampScoringSignal<double> 1 AccTotCoverage 1 true
+Feature                 XSignal-RampOffsetScore         RampScoringSignal<double> 1 AccTotCoverage 1 false
+
+Feature                 LinearBin4-RampScore            LinearFitBin<double> null 7 3 0 8
+
+Feature                 XSigScore-RampOnset             FeatureOFeature<double> 
+XSignal-RampOnsetScore LinearBin4-RampScore
+Feature                 XSigScore-RampOffset            FeatureOFeature<double> 
+XSignal-RampOffsetScore LinearBin4-RampScore
+Feature                 TSS-RampScore                   EdgeFeature<double> 1 TSS-Signal XSigScore-RampOnset -> 2 TSS_F TSS_B
+Feature                 PAS-RampScore                   EdgeFeature<double> 1 PAS-Signal XSigScore-RampOffset -> 2 PAS_F PAS_B
+
+Feature                 TR-RatesXRampOnsets-NLinCorr    MultiBin<double> 1 2 Transcript-Rates LinearBin4Transcript-Rates  XSignal-RampOnsetScore LinearBin4-RampScore
+Feature                 TR-RatesXRampOffsets-NLinCorr   MultiBin<double> 1 2 Transcript-Rates LinearBin4Transcript-Rates  XSignal-RampOffsetScore LinearBin4-RampScore
+
+Feature                 TR-RatesxRampOnsets             EdgeFeature<double> 1 TSS-Signal TR-RatesXRampOnsets-NLinCorr -> 2 TSS_F TSS_B
+Feature                 TR-RatesxRampOffsets            EdgeFeature<double> 1 PAS-Signal TR-RatesXRampOffsets-NLinCorr -> 2 PAS_F PAS_B
+//

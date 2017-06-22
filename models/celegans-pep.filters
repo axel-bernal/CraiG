@@ -1,0 +1,32 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Content            Context 0 GCgc 0 1 100
+Filter      Short-Intron-Score    ImmScore 2 1 0 GC-Content short-intron-model
+Filter      Intron-Score          ImmScore 3 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 4 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 5 3 0 GC-Content exon-model
+Filter      1-gram                Gram 6 1 false dna-alpha
+Filter      2-gram                Gram 7 2 false dna-alpha
+Filter      3-gram                Gram 8 3 false dna-alpha
+Filter      6-gram                Gram 11 6 false dna-alpha
+Filter      Start-Signal          EdgeInst 12 START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst 12 STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst 12 DONOR dna-alpha 1 GT
+Filter      Acceptor-Signal       EdgeInst 12 ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 13 1 0 mask-alpha 1
+Filter      SignalP-Score         ScoreFile<double> 14 signalp-scores
+#Filter      Pfam-Score            ScoreFile<double> 13 pfam-scores 3
+#Filter      PolyA-DB-Score-FS     MotifScore 14 1 0 0 polya-softmatch-db-fs
+#Filter      PolyA-DB-Score-BS     MotifScore 15 1 0 0 polya-softmatch-db-bs
+#Filter      A+U-Counts            CountingScore 16 1 0 au-alpha 1
+#Filter      G+C-Counts            CountingScore 17 1 0 au-alpha 0
+#Filter      PolyA-DB-Score        MotifScore 18 1 0 0 polya-softmatch-db
+#Filter      TATA_CAP-Score        MotifScore 94 1 0 0.5 tata-transfac 0.5 cap-transfac 10 30
+#Filter      PolyA_Cleav-Score     MotifScore 20 1 0 4.7 polya-transfac 0.5 cleavage-transfac 5 25
+//

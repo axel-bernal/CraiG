@@ -1,0 +1,17 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+Resource    homol-alpha             Sigma 3 012 012 0 1 2
+Resource    dna-alpha               DNASigma
+Resource    mask-alpha              Sigma 2 ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource    aa-alpha                AASigma
+Resource    intron-model            ContextIMM false ~intron.cimm 4 dna-alpha
+Resource    intergenic-model        ContextIMM false ~intergenic.cimm 4 dna-alpha
+Resource    exon-model              ContextIMM false ~exon.cimm 4 dna-alpha
+Resource    donor-softmatch-db      DBSoftMatchMotif dna-alpha true ~splicesites 101 10
+Resource    acceptor-softmatch-db   DBSoftMatchMotif dna-alpha true ~splicesites 183 12
+Resource    complete                FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial                 FSM ~partial.top 100 BOTH_STRANDS
+//

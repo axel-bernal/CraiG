@@ -1,0 +1,104 @@
+
+Feature		GS-Start-PWM                    GramPWM 1 Start-Signal 0 1 1 GS-1-gram-sig
+Feature		GS-Stop-PWM                     GramPWM 1 Stop-Signal 0 1 1 GS-1-gram-sig
+Feature		GS-Donor-PWM                    GramPWM 3 Donor-Signal 0 1 1 GS-1-gram-sig
+Feature		GS-Acceptor-PWM                 GramPWM 3 Acceptor-Signal 0 1 1 GS-1-gram-sig
+
+Feature		GCxGS-1-gram-Start              FilterXFeature<int> GC-Content GS-Start-PWM -> 2 START_F START_B @ 9
+Feature		GCxGS-1-gram-Stop               FilterXFeature<int> GC-Content GS-Stop-PWM -> 2 STOP_F STOP_B @ 9
+Feature		GCxGS-1-gram-Donor              FilterXFeature<int> GC-Content GS-Donor-PWM -> 2 DONOR_F DONOR_B @ 11
+Feature		GCxGS-1-gram-Acceptor           FilterXFeature<int> GC-Content GS-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 11
+
+Feature		GS-Exon-SpurSignals             TrimmedCountingSegment 3 GS-1-gram-sig 1 0 1 1 -> CODING* @ 12
+Feature		GS-Intron-SpurSignals           TrimmedCountingSegment 3 GS-1-gram-sig 1 0 1 3 -> 2 INTRON_F INTRON_B @ 13
+Feature		GS-LongIntron-SpurSignals       TrimmedCountingSegment 3 GS-1-gram-sig 1 0 1 3 -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+Feature		GS-Intergenic-SpurSignals       TrimmedCountingSegment 1 GS-1-gram-sig 1 0 1 1 -> 2 INTERGENIC_F INTERGENIC_B @ 15
+
+Feature		GZ-Start-PWM                    GramPWM 1 Start-Signal 0 1 1 GZ-1-gram-sig
+Feature		GZ-Stop-PWM                     GramPWM 1 Stop-Signal 0 1 1 GZ-1-gram-sig
+Feature		GZ-Donor-PWM                    GramPWM 3 Donor-Signal 0 1 1 GZ-1-gram-sig
+Feature		GZ-Acceptor-PWM                 GramPWM 3 Acceptor-Signal 0 1 1 GZ-1-gram-sig
+
+Feature		GCxGZ-1-gram-Start              FilterXFeature<int> GC-Content GZ-Start-PWM -> 2 START_F START_B @ 9
+Feature		GCxGZ-1-gram-Stop               FilterXFeature<int> GC-Content GZ-Stop-PWM -> 2 STOP_F STOP_B @ 9
+Feature		GCxGZ-1-gram-Donor              FilterXFeature<int> GC-Content GZ-Donor-PWM -> 2 DONOR_F DONOR_B @ 11
+Feature		GCxGZ-1-gram-Acceptor           FilterXFeature<int> GC-Content GZ-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 11
+
+Feature		GZ-Exon-SpurSignals             TrimmedCountingSegment 3 GZ-1-gram-sig 1 0 1 1 -> CODING* @ 12
+Feature		GZ-Intron-SpurSignals           TrimmedCountingSegment 3 GZ-1-gram-sig 1 0 1 3 -> 2 INTRON_F INTRON_B @ 13
+Feature		GZ-LongIntron-SpurSignals       TrimmedCountingSegment 3 GZ-1-gram-sig 1 0 1 3 -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+Feature		GZ-Intergenic-SpurSignals       TrimmedCountingSegment 1 GZ-1-gram-sig 1 0 1 1 -> 2 INTERGENIC_F INTERGENIC_B @ 15
+
+Feature		AU-Start-PWM                    GramPWM 1 Start-Signal 0 1 1 AU-1-gram-sig
+Feature		AU-Stop-PWM                     GramPWM 1 Stop-Signal 0 1 1 AU-1-gram-sig
+Feature		AU-Donor-PWM                    GramPWM 3 Donor-Signal 0 1 1 AU-1-gram-sig
+Feature		AU-Acceptor-PWM                 GramPWM 3 Acceptor-Signal 0 1 1 AU-1-gram-sig
+
+Feature		GCxAU-1-gram-Start              FilterXFeature<int> GC-Content AU-Start-PWM -> 2 START_F START_B @ 9
+Feature		GCxAU-1-gram-Stop               FilterXFeature<int> GC-Content AU-Stop-PWM -> 2 STOP_F STOP_B @ 9
+Feature		GCxAU-1-gram-Donor              FilterXFeature<int> GC-Content AU-Donor-PWM -> 2 DONOR_F DONOR_B @ 11
+Feature		GCxAU-1-gram-Acceptor           FilterXFeature<int> GC-Content AU-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 11
+
+Feature		AU-Exon-SpurSignals             TrimmedCountingSegment 3 AU-1-gram-sig 1 0 1 1 -> CODING* @ 12
+Feature		AU-Intron-SpurSignals           TrimmedCountingSegment 3 AU-1-gram-sig 1 0 1 3 -> 2 INTRON_F INTRON_B @ 13
+Feature		AU-LongIntron-SpurSignals       TrimmedCountingSegment 3 AU-1-gram-sig 1 0 1 3 -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+Feature		AU-Intergenic-SpurSignals       TrimmedCountingSegment 1 AU-1-gram-sig 1 0 1 1 -> 2 INTERGENIC_F INTERGENIC_B @ 15
+
+Feature		TS-Start-PWM                    GramPWM 1 Start-Signal 0 1 1 TS-1-gram-sig
+Feature		TS-Stop-PWM                     GramPWM 1 Stop-Signal 0 1 1 TS-1-gram-sig
+Feature		TS-Donor-PWM                    GramPWM 3 Donor-Signal 0 1 1 TS-1-gram-sig
+Feature		TS-Acceptor-PWM                 GramPWM 3 Acceptor-Signal 0 1 1 TS-1-gram-sig
+
+Feature		GCxTS-1-gram-Start              FilterXFeature<int> GC-Content TS-Start-PWM -> 2 START_F START_B @ 9
+Feature		GCxTS-1-gram-Stop               FilterXFeature<int> GC-Content TS-Stop-PWM -> 2 STOP_F STOP_B @ 9
+Feature		GCxTS-1-gram-Donor              FilterXFeature<int> GC-Content TS-Donor-PWM -> 2 DONOR_F DONOR_B @ 11
+Feature		GCxTS-1-gram-Acceptor           FilterXFeature<int> GC-Content TS-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 11
+
+Feature		TS-Exon-SpurSignals             TrimmedCountingSegment 3 TS-1-gram-sig 1 0 1 1 -> CODING* @ 12
+Feature		TS-Intron-SpurSignals           TrimmedCountingSegment 3 TS-1-gram-sig 1 0 1 3 -> 2 INTRON_F INTRON_B @ 13
+Feature		TS-LongIntron-SpurSignals       TrimmedCountingSegment 3 TS-1-gram-sig 1 0 1 3 -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+Feature		TS-Intergenic-SpurSignals       TrimmedCountingSegment 1 TS-1-gram-sig 1 0 1 1 -> 2 INTERGENIC_F INTERGENIC_B @ 15
+
+Feature		CR-Start-PWM                    GramPWM 1 Start-Signal 0 1 1 CR-1-gram-sig
+Feature		CR-Stop-PWM                     GramPWM 1 Stop-Signal 0 1 1 CR-1-gram-sig
+Feature		CR-Donor-PWM                    GramPWM 3 Donor-Signal 0 1 1 CR-1-gram-sig
+Feature		CR-Acceptor-PWM                 GramPWM 3 Acceptor-Signal 0 1 1 CR-1-gram-sig
+
+Feature		GCxCR-1-gram-Start              FilterXFeature<int> GC-Content CR-Start-PWM -> 2 START_F START_B @ 9
+Feature		GCxCR-1-gram-Stop               FilterXFeature<int> GC-Content CR-Stop-PWM -> 2 STOP_F STOP_B @ 9
+Feature		GCxCR-1-gram-Donor              FilterXFeature<int> GC-Content CR-Donor-PWM -> 2 DONOR_F DONOR_B @ 11
+Feature		GCxCR-1-gram-Acceptor           FilterXFeature<int> GC-Content CR-Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 11
+
+Feature		CR-Exon-SpurSignals             TrimmedCountingSegment 3 CR-1-gram-sig 1 0 1 1 -> CODING* @ 12
+Feature		CR-Intron-SpurSignals           TrimmedCountingSegment 3 CR-1-gram-sig 1 0 1 3 -> 2 INTRON_F INTRON_B @ 13
+Feature		CR-LongIntron-SpurSignals       TrimmedCountingSegment 3 CR-1-gram-sig 1 0 1 3 -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+Feature		CR-Intergenic-SpurSignals       TrimmedCountingSegment 1 CR-1-gram-sig 1 0 1 1 -> 2 INTERGENIC_F INTERGENIC_B @ 15
+
+FeatureSet        PredictionFeats  prefix filter
+Feature		prefix-Start-PWM                GramPWM 1 Start-Signal 0 1 1 filter
+Feature		prefix-Stop-PWM                 GramPWM 1 Stop-Signal 0 1 1 filter
+Feature		prefix-Donor-PWM                GramPWM 1 Donor-Signal 0 1 1 filter
+Feature		prefix-Acceptor-PWM             GramPWM 1 Acceptor-Signal 0 1 1 filter
+
+Feature		prefix-GCxStart-PWM             FilterXFeature<int> GC-Content Start-PWM -> 2 START_F START_B @ 9
+Feature		prefix-GCxStop-PWM              FilterXFeature<int> GC-Content Stop-PWM -> 2 STOP_F STOP_B @ 9
+Feature		prefix-GCxDonor-PWM             FilterXFeature<int> GC-Content Donor-PWM -> 2 DONOR_F DONOR_B @ 11
+Feature		prefix-GCxAcceptor-PWM          FilterXFeature<int> GC-Content Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 11
+
+Feature		prefix-Exon-SpurSignals         TrimmedCountingSegment 3 filter 1 0 1 1 -> CODING* @ 12
+Feature		prefix-Intron-SpurSignals       TrimmedCountingSegment 3 filter 1 0 1 3 -> 2 INTRON_F INTRON_B @ 13
+Feature		prefix-LongIntron-SpurSignals   TrimmedCountingSegment 3 filter 1 0 1 3 -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+Feature		prefix-Intergenic-SpurSignals   TrimmedCountingSegment 1 filter 1 0 1 1 -> 2 INTERGENIC_F INTERGENIC_B @ 15
+
+#Feature		prefix-GCxExon-SpurSig          FilterXFeature<int> GC-Content prefix-Exon-SpurSignals -> CODING* @ 12
+#Feature		prefix-GCxIntron-SpurSig        FilterXFeature<int> GC-Content prefix-Intron-SpurSignals -> 2 INTRON_F INTRON_B @ 13
+#Feature		prefix-GCxLongIntron-SpurSig    FilterXFeature<int> GC-Content prefix-LongIntron-SpurSignals -> 2 LONG_INTRON_F LONG_INTRON_B @ 14
+#Feature		prefix-GCx-Intergenic-SpurSig   FilterXFeature<int> GC-Content prefix-Intergenic-SpurSignals -> 2 INTERGENIC_F INTERGENIC_B @ 15
+EndFeatureSet
+
+PredictionFeats GS GS-1-gram-sig
+PredictionFeats GZ GZ-1-gram-sig
+PredictionFeats TS TS-1-gram-sig
+PredictionFeats AU AU-1-gram-sig
+PredictionFeats CR CR-1-gram-sig
+

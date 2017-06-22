@@ -1,0 +1,46 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+
+Resource	dna-alpha	DNASigma
+Resource	mask-alpha	Sigma 2 TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource	aa-alpha  	AASigma
+Resource    complete           	FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial          	FSM ~partial.top 100 BOTH_STRANDS
+
+Resource    ev-states-alpha     Sigma 4 .-_ilnIELSCAO .-_ilnIELSCAO   . iln -_ SIELCAO
+Resource    ev-xstates-alpha    Sigma 7 .-_ilnIELSCAO .-_ilnIELSCAO   . iln -_ S I L ECAO
+Resource    ev-signals-alpha    Sigma 5 -STDA -STDA - S T D A
+##PREFIX_EVIDENCE for paper testing is /home/abernal/Data/Athaliana/Combiner/final
+Resource	GL-ev-states	File XFASTA PREFIX_EVIDENCE.glimmerA-gm.state ev-states-alpha true false 1
+Resource	GL2-ev-states	File XFASTA PREFIX_EVIDENCE.glimmerm-gm.state ev-states-alpha true false 1
+Resource	GS-ev-states	File XFASTA PREFIX_EVIDENCE.genscan-gm.state ev-states-alpha true false 1
+Resource	TS-ev-states	File XFASTA PREFIX_EVIDENCE.twinscan2-gm.state ev-states-alpha true false 1
+Resource	GM-ev-states	File XFASTA PREFIX_EVIDENCE.genemarkHMM-gm.state ev-states-alpha true false 1
+Resource	G2-ev-states	File XFASTA PREFIX_EVIDENCE.gap2-0.state ev-states-alpha true false 1
+Resource	NR-ev-states	File XFASTA PREFIX_EVIDENCE.nraa-0.state ev-states-alpha true false 1
+Resource	1mer-ev-colstates	FastaFileCollapser<UCHAR> null false 1 7 GL-ev-states GL2-ev-states GS-ev-states GM-ev-states TS-ev-states G2-ev-states NR-ev-states
+Resource	1mer-ev-colxstates	FastaFileCollapser<UCHAR> ev-xstates-alpha false 1 7 GL-ev-states GL2-ev-states GS-ev-states GM-ev-states TS-ev-states G2-ev-states NR-ev-states
+Resource	2mer-ev-colstates	FastaFileCollapser<UCHAR> null false 2 7 GL-ev-states GL2-ev-states GS-ev-states GM-ev-states TS-ev-states G2-ev-states NR-ev-states
+Resource	2mer-ev-colxstates	FastaFileCollapser<UCHAR> ev-xstates-alpha false 2 7 GL-ev-states GL2-ev-states GS-ev-states GM-ev-states TS-ev-states G2-ev-states NR-ev-states
+Resource	GL-ev-signals	File XFASTA PREFIX_EVIDENCE.glimmerA-gm.signal ev-signals-alpha true false 1
+Resource	GL2-ev-signals	File XFASTA PREFIX_EVIDENCE.glimmerm-gm.signal ev-signals-alpha true false 1
+Resource	GS-ev-signals	File XFASTA PREFIX_EVIDENCE.genscan-gm.signal ev-signals-alpha true false 1
+Resource	GM-ev-signals	File XFASTA PREFIX_EVIDENCE.genemarkHMM-gm.signal ev-signals-alpha true false 1
+Resource	TS-ev-signals	File XFASTA PREFIX_EVIDENCE.twinscan2-gm.signal ev-signals-alpha true false 1
+Resource	G2-ev-signals	File XFASTA PREFIX_EVIDENCE.gap2-0.signal ev-signals-alpha true false 1
+Resource	G2-ev-addsignals	File XFASTA PREFIX_EVIDENCE.gap2-0.addsignal ev-signals-alpha true false 1
+Resource	NR-ev-signals	File XFASTA PREFIX_EVIDENCE.nraa-0.signal ev-signals-alpha true false 1
+Resource	NR-ev-addsignals	File XFASTA PREFIX_EVIDENCE.nraa-0.addsignal ev-signals-alpha true false 1
+Resource	ev-signals-all	FileMerger null false - 9 GL-ev-signals GL2-ev-signals GS-ev-signals GM-ev-signals TS-ev-signals G2-ev-signals NR-ev-signals G2-ev-addsignals NR-ev-addsignals
+Resource	G2-ev-sigscores.0	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.gap2-0.norm.sigscores true false 2
+Resource	G2-ev-stscores.0	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.gap2-0.norm.stscores true false 2
+Resource	G2-ev-sigscores.1	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.gap2-1.norm.sigscores true false 2
+Resource	G2-ev-stscores.1	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.gap2-1.norm.stscores true false 2
+Resource	NR-ev-sigscores.0	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.nraa-0.norm.sigscores true false 2
+Resource	NR-ev-stscores.0	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.nraa-0.norm.stscores true false 2
+Resource	NR-ev-sigscores.1	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.nraa-1.norm.sigscores true false 2
+Resource	NR-ev-stscores.1	File EXTENDED_MULTI_LDSCORE PREFIX_EVIDENCE.nraa-1.norm.stscores true false 2
+//

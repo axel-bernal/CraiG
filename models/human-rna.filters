@@ -1,0 +1,44 @@
+Filter      GC-Content            Context GCgc 0 4 43 51 57 100
+Filter      Intron-Score          ImmScore 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 0 GC-Content exon-model
+Filter      1-gram                Gram<UCHAR> 1 dna-alpha
+Filter      2-gram                Gram<UCHAR> 2 dna-alpha
+Filter      3-gram                Gram<UCHAR> 3 dna-alpha
+Filter      5-gram                Gram<UCHAR> 5 dna-alpha
+Filter      6-gram                Gram<USHORT> 6 dna-alpha
+Filter      Start-Signal          EdgeInst START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst DONOR dna-alpha 1 GT
+Filter      Acceptor-Signal       EdgeInst ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 1 0 mask-alpha 1
+Filter      GC-Content2           Context GCgc 0 2 51 100
+Filter          TSS-Signal               EdgeInst TSS ev-signals-alpha 1 X
+Filter          TSS-Signal-input         FastaxFilter<char,EdgeInst> RNAseq-xsignals TSS-Signal
+Filter          PAS-Signal               EdgeInst PAS ev-signals-alpha 1 Z
+Filter          PAS-Signal-input         FastaxFilter<char,EdgeInst> RNAseq-xsignals PAS-Signal
+
+MultiFilter(RNAseq-xsigscores)           XSig-Score-$$ ScoreFile<int*,int> RNAseq-xsigscores $$
+
+Filter  RNAseq-Coverage                  ScoreFile<double,double> RNAseq-coverage 0
+LazyFilter      RNASeq-Edges             EdgeAligner false
+Filter          RNASeq-Edges-input       FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges RNASeq-Edges
+Filter          AccTotCoverage           Coverage<double> 1 0 RNAseq-Coverage RNASeq-Edges
+
+log(Filter)     Log-RNAseq-Coverage      ScoreFile<double,double> RNAseq-coverage 0
+log(Filter)     Log-RNAseq-AccCoverage   ScoreFile<double,double> RNAseq-coverage 1
+LazyFilter      Log-RNASeq-Edges         EdgeAligner false
+log(Filter)     Log-RNASeq-Edges-input   FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges Log-RNASeq-Edges
+Filter          Log-AccTotCoverage       Coverage<double> 1 0 Log-RNAseq-Coverage Log-RNASeq-Edges
+
+Filter          Xcript-Rates             Coverage<double> 0 1000 Log-RNAseq-Coverage Log-RNASeq-Edges
+
+
+# Extra stuff
+Filter          RNAseq-Coverage                 ScoreFile<double,double> RNAseq-coverage 0
+LazyFilter      RNASeq-Edges                    EdgeAligner false
+Filter          RNASeq-Edges-input              FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges RNASeq-Edges
+Filter          Norm-RNAseq-Coverage            NormalizedScoreFile<double,double> RNAseq-coverage 1
+LazyFilter      Norm-RNASeq-Edges               EdgeAligner true
+Filter          Norm-RNASeq-Edges-input         FastaxFilter<EdgeAlignment,EdgeAlignment> RNAseq-edges Norm-RNASeq-Edges
+//

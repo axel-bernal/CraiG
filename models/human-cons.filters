@@ -1,0 +1,44 @@
+# Types fo filters:
+# GCContent Id ArrayId Name [isComputable=true isLoadable=false keepInMemory=false]
+# ImmScore Id ArrayId Name BioStateId Period Accumulate SmoothWSize '
+# Gram  Id ArrayId Name alphabet[dna|aa|hom] Order isComplete '
+# EdgeInst Id ArrayId Name SignalId alphabet[dna|aa|hom] @patterns '
+#
+#
+
+Filter      GC-Percent            Content<UCHAR> GCgc 0
+Filter      GC-Content            Context GCgc 0 4 43 51 57 100
+Filter      Intron-Score          ImmScore 1 0 GC-Content intron-model
+Filter      Intergenic-Score      ImmScore 1 0 GC-Content intergenic-model
+Filter      Coding-Score          ImmScore 3 0 GC-Content exon-model
+Filter      1-gram                Gram<UCHAR> 1 dna-alpha
+Filter      2-gram                Gram<UCHAR> 2 dna-alpha
+Filter      3-gram                Gram<UCHAR> 3 dna-alpha
+Filter      5-gram                Gram<UCHAR> 5 dna-alpha
+Filter      6-gram                Gram<USHORT> 6 dna-alpha
+Filter      Start-Signal          EdgeInst START dna-alpha 1 ATG
+Filter      Stop-Signal           EdgeInst STOP dna-alpha 3 TGA TAG TAA
+Filter      Donor-Signal          EdgeInst DONOR dna-alpha 2 GT GC
+Filter      Acceptor-Signal       EdgeInst ACCEPTOR dna-alpha 1 AG
+Filter      Mask-Counts           CountingScore 1 0 mask-alpha 1
+#Filter      GC-Content2          Context GCgc 2 51 100
+
+@define FilterSet InformantFilters species
+LazyFilter  1-species-gram    	  ConsGram<UCHAR> 1 dna-alpha gap-alpha .
+Filter      species-Multiz-Input  FastaxFilter<char,UCHAR> species-multiz-file 1-species-gram
+LazyFilter  3-species-gram        ConsGram<UCHAR> 3 dna-alpha gap-alpha .
+Filter      species-Multiz-Input  FastaxFilter<char,UCHAR> species-multiz-file 3-species-gram
+@end FilterSet
+
+InformantFilters mm8
+InformantFilters rheMac2
+InformantFilters rn4
+InformantFilters oryCun1
+InformantFilters canFam2
+InformantFilters bosTau3
+InformantFilters dasNov1
+InformantFilters loxAfr1
+InformantFilters echTel1
+InformantFilters monDom4
+InformantFilters galGal3
+//

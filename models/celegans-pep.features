@@ -1,0 +1,202 @@
+#
+#Types of features
+#
+#
+#
+#
+#
+
+
+##############################################################################
+#                           NODE-RELATED FEATURES
+##############################################################################
+
+#
+# Defining PreComputeTod entries for these features
+PreComputeTo  0     3     true
+PreComputeTo  1     3     true
+PreComputeTo  2     3     true
+PreComputeTo  3     3     true
+PreComputeTo  4     3     true
+PreComputeTo  5     3     true
+PreComputeTo  6     3     true
+PreComputeTo  7     3     true
+PreComputeTo  8     3     true
+
+
+NodeSet CODING* = 12 INIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F INIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B PEPSINGLE_EXON_F PEPSINGLE_EXON_B PEPINIT_EXON_F PEPINIT_EXON_B
+
+#
+#State Background Features
+#
+Feature		Intergenic-Background           StateBackground 1 1000 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Intron-Background               StateBackground 3 100 -> 2 INTRON_F INTRON_B
+Feature		Long-Intron-Background          StateBackground 3 500 -> 2 LONG_INTRON_F LONG_INTRON_B
+Feature		Multi-Exon-Background           StateBackground 3 200 -> 8 INTERNAL_EXON_F INTERNAL_EXON_B INIT_EXON_F INIT_EXON_B LAST_EXON_F LAST_EXON_B PEPINIT_EXON_F PEPINIT_EXON_B
+Feature		Single-Exon-Background          StateBackground 3 300 -> 4 SINGLE_EXON_F SINGLE_EXON_B PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+
+#
+# Length Features
+#
+Feature		Segment-Length                  LengthSegment 3
+Feature		Intron-Length                   Bin<int> Segment-Length 200 20 200 -> 2 INTRON_F INTRON_B
+#Feature		Intron-Length                   Bin<double> Intron-Background 200 0.2 200 -> 2 INTRON_F INTRON_B
+#Feature		Intron-Length                   LogScaledBin<int> Segment-Length 2000 40 2000 2.0 -> 2 INTRON_F INTRON_B
+#Feature		Intron-Length                   HarmonicSTerm Segment-Length 240.0 -> 2 INTRON_F INTRON_B
+#Feature		Long-Intron-Length              HarmonicSTerm Segment-Length 980.0 -> 2 LONG_INTRON_F LONG_INTRON_B
+Feature		Long-Intron-Length              LogScaledBin<int> Segment-Length 200 120 200 3.0 -> 2 LONG_INTRON_F LONG_INTRON_B
+#Feature		Long-Intron-Length              LogScaledBin<double> Long-Intron-Background 200 0.24 200 3.0 -> 2 LONG_INTRON_F LONG_INTRON_B
+Feature		Init-Exon-Length                Bin<int> Segment-Length 200 90 200 -> 4 INIT_EXON_F INIT_EXON_B PEPINIT_EXON_F PEPINIT_EXON_B
+Feature		Internal-Exon-Length            Bin<int> Segment-Length 200 90 200 -> 2 INTERNAL_EXON_F INTERNAL_EXON_B
+Feature		Last-Exon-Length                Bin<int> Segment-Length 200 90 200 -> 2 LAST_EXON_F LAST_EXON_B
+Feature		Single-Exon-Length              Bin<int> Segment-Length 200 90 200 -> 4 SINGLE_EXON_F SINGLE_EXON_B PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+#Feature		Init-Exon-Length                Bin<double> Multi-Exon-Background 200 0.45 200 -> 2 INIT_EXON_F INIT_EXON_B
+#Feature		Internal-Exon-Length            Bin<double> Multi-Exon-Background 200 0.45 200 -> 2 INTERNAL_EXON_F INTERNAL_EXON_B
+#Feature		Last-Exon-Length                Bin<double> Multi-Exon-Background 200 0.45 200 -> 2 LAST_EXON_F LAST_EXON_B
+#Feature		Single-Exon-Length              Bin<double> Single-Exon-Background 200 0.33 200 -> 2 SINGLE_EXON_F SINGLE_EXON_B
+
+#
+#Ratio/Score Features
+#
+Feature		Intron/Igenic-Ratio             RatioSegment 3 Intron-Score Intergenic-Score 1 1 -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+Feature		Short-Intron-Seg-Score          ScoringSegment<double> 3 Short-Intron-Score 10 1 -36.7 true -> 2 INTRON_F INTRON_B
+Feature		Intron-Seg-Score                ScoringSegment<double> 3 Intron-Score 10 1 0 true -> 2 LONG_INTRON_F LONG_INTRON_B
+Feature		Igenic/Intron-Ratio             RatioSegment 3 Intergenic-Score Intron-Score 1 1 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Intergenic-Seg-Score            ScoringSegment<double> 1 Intergenic-Score 10 1 -38.6 true -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Coding-Seg-Score                ScoringSegment<double> 3 Coding-Score 10 3 -13.75 true -> CODING*
+Feature		Coding-Differential             CodingDifferential Coding-Score -> CODING*
+
+#
+#Content Features
+#
+#Feature		Initial-Pattern-1st-Frame       PeriodicCountingSegmentWUpperLimit 3 3-gram 0 3 0 false 1 15 -> 4 INIT_EXON_F SINGLE_EXON_F INIT_EXON_B SINGLE_EXON_B @ 0
+#Feature		Initial-Pattern-2nd-Frame       PeriodicCountingSegmentWUpperLimit 3 3-gram 0 3 1 false 1 15 -> 4 INIT_EXON_F SINGLE_EXON_F INIT_EXON_B SINGLE_EXON_B @ 1
+#Feature		Initial-Pattern-3rd-Frame       PeriodicCountingSegmentWUpperLimit 3 3-gram 0 3 2 false 1 15 -> 4 INIT_EXON_F SINGLE_EXON_F INIT_EXON_B SINGLE_EXON_B @ 2
+Feature		Codon-Usage-1st-Frame           PeriodicCountingSegment 3 3-gram 0 3 0 false 1
+Feature		GCxCodon-Usage-1st-Frame        FilterXFeature<int> GC-Content Codon-Usage-1st-Frame -> CODING* @ 3
+Feature		Codon-Usage-2nd-Frame           PeriodicCountingSegment 3 3-gram 0 3 1 false 1
+Feature		GCxCodon-Usage-2nd-Frame        FilterXFeature<int> GC-Content Codon-Usage-2nd-Frame -> CODING* @ 4
+Feature		Codon-Usage-3rd-Frame           PeriodicCountingSegment 3 3-gram 0 3 2 false 1
+Feature		GCxCodon-Usage-3rd-Frame        FilterXFeature<int> GC-Content Codon-Usage-3rd-Frame -> CODING* @ 5
+Feature		6GRAM-Coding-1st-Frame          PeriodicCountingSegment 3 6-gram 0 3 0 false 1 -> CODING* @ 6
+Feature		6GRAM-Coding-2nd-Frame          PeriodicCountingSegment 3 6-gram 0 3 1 false 1 -> CODING* @ 7
+Feature		6GRAM-Coding-3rd-Frame          PeriodicCountingSegment 3 6-gram 0 3 2 false 1 -> CODING* @ 8
+
+Feature		Hidden-Stop-Sequence            HiddenSeq 3 3 3 3 TGA TAG TAA dna-alpha 3 GCxCodon-Usage-1st-Frame GCxCodon-Usage-2nd-Frame GCxCodon-Usage-3rd-Frame -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+Feature           Test-Is-Masked                  ScoringSegment<int> 1 Mask-Counts 10 1 6 true -> CODING*
+#Feature		PolyA-Score-Ratio               RatioSegment 3 PolyA-DB-Score-FS PolyA-DB-Score-BS 1 1 -> 4 INTRON_F INTRON_B LONG_INTRON_F LONG_INTRON_B
+#Feature           A+U-Content-Score               ScoringSegment<int> 1 A+U-Counts 10 1 7 true -> CODING*
+#Feature           G+C-Content-Score               ScoringSegment<int> 1 G+C-Counts 10 1 5 true -> 4 LONG_INTRON_F LONG_INTRON_B INTRON_F INTRON_B
+#Feature           PolyA-Seg-Score                 ScoringSegment<double> 1 PolyA-DB-Score 1 1 0.5 false
+#Feature           PolyA_Cleav-Seg-Score           ScoringSegment<double> 1 PolyA_Cleav-Score 1 1 4.7 false
+#Feature           TATA_CAP-Seg-Score              ScoringSegment<double> 1 TATA_CAP-Score 1 1 0.5 false
+#Feature           Coding-Is-Masked                  GreaterThan<int> 1 0.5 10 Mask-Content-Score -> CODING*
+#Feature           Coding-Is-A+U-Rich-E              GreaterThan<int> 1 0.6 10 A+U-Content-Score -> CODING*
+#Feature           Intron-Is-G+C-Rich-I              GreaterThan<int> 1 0.4 10 G+C-Content-Score -> 4 LONG_INTRON_F LONG_INTRON_B INTRON_F INTRON_B
+#Feature           Coding-Has-PolyA                  GreaterThan<int> 1 4.7 1 PolyA_Cleav-Seg-Score -> CODING*
+#Bin<int> Mask-Content-Score 4 0.26 0 -> CODING*
+
+##############################################################################
+#                           EDGE-RELATED FEATURES
+##############################################################################
+
+PreComputeTo  9     0     false
+PreComputeTo  12    0     false
+PreComputeTo  13    0     false
+
+EdgeSet ACCEPTOR* = 2 ACCEPTOR_F ACCEPTOR_B @ 9
+EdgeSet DONOR* = 2 DONOR_F DONOR_B @ 9
+EdgeSet START* = 2 START_F START_B @ 12, 2 PEPSTART_F PEPSTART_B @ 13
+
+#Counting Features
+Feature		PartGene-Start-Background       Edge<int> 1 null 1 -> 2 PAR_START_F PAR_START_B
+Feature		PartGene-Stop-Background        Edge<int> 1 null 1 -> 2 PAR_STOP_F PAR_STOP_B
+Feature		PartGene-Donor-Background       Edge<int> 1 null 1 -> 2 PAR_DONOR_F PAR_DONOR_B
+Feature		PartGene-Acceptor-Background    Edge<int> 1 null 1 -> 2 PAR_ACCEPTOR_F PAR_ACCEPTOR_B
+Feature		Start-Background                Edge<int> 1 Start-Signal 1 -> 2 START_F START_B @ 12
+Feature		Stop-Background                 Edge<int> 1 Stop-Signal 1 -> 2 STOP_F STOP_B @ 12
+Feature		Donor-Background                Edge<int> 3 Donor-Signal 1 -> DONOR*
+Feature		Acceptor-Background             Edge<int> 3 Acceptor-Signal 1 -> ACCEPTOR*
+Feature		Splice-Frame-Bias               EdgePhase 3 Acceptor-Signal 3 -> ACCEPTOR*
+
+#
+# Edge Content Features
+#
+#Feature		TATA-to-Non-TATA@Start          EdgeContent<double> Start-Signal 0 TATA_CAP-Seg-Score 1000 50 -> 2 START_F START_B @ 12
+Feature		Igenic-to-Non-Igenic@Start      EdgeContent<double> Start-Signal 0 Intergenic-Seg-Score 48 48 -> 2 START_F START_B @ 12
+Feature		Intron-to-Non-Intron@Acceptor   EdgeContent<double> Acceptor-Signal 2 Intron-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Non-Intron-to-Intron@Donor      EdgeContent<double> Donor-Signal 0 Intron-Seg-Score 48 48 -> DONOR*
+Feature		Non-Igenic-to-Igenic@Stop       EdgeContent<double> Stop-Signal 0 Intergenic-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+Feature		Non-Coding-to-Coding@Start      EdgeContent<double> Start-Signal 0 Coding-Seg-Score 48 48 -> START*
+Feature		Non-Coding-to-Coding@Acceptor   EdgeContent<double> Acceptor-Signal 2 Coding-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Coding-to-Non-Coding@Donor      EdgeContent<double> Donor-Signal 0 Coding-Seg-Score 48 48 -> DONOR*
+Feature		Coding-to-Non-Coding@Stop       EdgeContent<double> Stop-Signal 0 Coding-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+#Feature		PolyA@Stop                      EdgeContent<double> Stop-Signal 0 PolyA_Cleav-Seg-Score 0 1000
+#Feature           Stop-Has-PolyA-DS               GreaterThan<int> 1 9.0 1 PolyA@Stop -> 2 STOP_F STOP_B @ 12
+
+#
+#                           Edge-Position-Counting Features
+#
+
+#
+# Start Edge WWAM-based Features
+#
+Feature		Start-Gram-WWAM                 GramWWAM 1 Start-Signal 30 -6 1 5 3-gram -> 2 START_F START_B @ 12
+Feature		Start-PWM                       GramPWM 1 Start-Signal 4 5 1 1-gram -> 2 START_F START_B @ 12
+Feature		Start-Cons-PWM                  ConsensusPWM 1 Start-Signal  4 5 1 1-gram AAAAATGRM -> 2 START_F START_B @ 12
+Feature		Start-PWMxPWM                   PWMxPWM Start-PWM Start-PWM -> 2 START_F START_B @ 12
+Feature		Start-Peptide-WWAM              PeptideWWAM 1 Start-Signal -6 39 15 15 3-gram -> 2 START_F START_B @ 12
+
+#
+#Stop Edge WWAM-based Features
+#
+#Feature		Stop-Gram-WWAM                  GramWWAM 1 Stop-Signal 20 -3 1 5 3-gram -> 2 STOP_F STOP_B @ 12
+Feature		Stop-PWM                        GramPWM 1 Stop-Signal 2 5 1 1-gram -> 2 STOP_F STOP_B @ 12
+Feature		Stop-Cons-PWM                   ConsensusPWM 1 Stop-Signal 2 5 1 1-gram WYTAAWT -> 2 START_F START_B @ 12
+#Feature		Stop-PWMxPWM                    PWMxPWM Stop-Cons-PWM Stop-PWM -> 2 STOP_F STOP_B @ 12
+Feature		Stop-Gram-WWAM                  GramWWAM 1 Stop-Signal -6 20 1 5 3-gram -> 2 STOP_F STOP_B @ 12
+
+#
+#Donor Edge WWAM-based Features
+#
+Feature		Donor-5P-Cons-WWAM              GramWWAM 1 Donor-Signal 6 -5 1 5 3-gram
+Feature		PhasexDonor-5P-WWAM             FeatureXFeature<int> Splice-Frame-Bias Donor-5P-Cons-WWAM -> DONOR*
+Feature		Donor-PWM                       GramPWM 3 Donor-Signal 3 7 1 1-gram -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-Cons-PWM                  ConsensusPWM 3 Donor-Signal 3 7 1 1-gram WAGGTRAGTT -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-PWMxPWM                   PWMxPWM Donor-PWM Donor-PWM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-Cons-PWMxPWM              PWMxPWM Donor-Cons-PWM Donor-PWM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-3P-Gram-WWAM              GramWWAM 3 Donor-Signal -8 20 1 5 3-gram -> DONOR*
+
+#
+# Acceptor Edge WWAM-based Features
+#
+Feature		Branch-Point-Gram-WWAM          GramWWAM 3 Acceptor-Signal 20 -13 1 5 3-gram -> ACCEPTOR*
+Feature		Branch-Point-Cons-WWAM ConsensusWWAM 3 Acceptor-Signal 17 -16 1 5 1-gram AAAAA -> ACCEPTOR*
+Feature		Acceptor-Cons-PWM               ConsensusPWM 3 Acceptor-Signal 5 4 1 1-gram TTTTCAGAT -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-PWM                    GramPWM 3 Acceptor-Signal  13 4 1 1-gram -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-Cons-PWMxPWM           PWMxPWM Acceptor-Cons-PWM Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-PWMxPWM                PWMxPWM Acceptor-PWM Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+
+#
+#External features: Look-Up Sums in external tables
+#
+#Donors
+#Feature		Bin-Donor-ExactMatch            LogScaledBin<int> null 20 1 0 2.0
+#Feature		Bin-Donor-SoftMatch-HD=1        LogScaledBin<int> null 20 1 0 2.0
+#Feature		Donor-Match-Counts              SoftMatchWordCounter<int> 3 Donor-Signal 3 7 donor-softmatch-db 1-gram 2 0 Bin-Donor-ExactMatch 1 Bin-Donor-SoftMatch-HD=1 -> DONOR*
+#Acceptors
+#Feature		Bin-Acceptor-ExactMatch         LogScaledBin<int> null 20 1 0 2.0
+#Feature		Bin-Acceptor-SoftMatch-HD=1     LogScaledBin<int> null 20 1 0 2.0
+#Feature		Acceptor-Match-Counts           SoftMatchWordCounter<int> 3 Acceptor-Signal 7 5 acceptor-softmatch-db 1-gram 2 0 Bin-Acceptor-ExactMatch 1 Bin-Acceptor-SoftMatch-HD=1 -> ACCEPTOR*
+
+#Feature           Bin4-SignalP-Scores             CustomBin<double> null 4 0.75 0.9 0.99
+#Feature           LinearBin4-SignalP-Scores       CustomRBin<double> null 4 0.75 0.9 0.99
+#Feature           TP-Binned-SignalP-Score         FilterOFeature<double> SignalP-Score Bin4-SignalP-Scores -> 2 PEPSTART_F PEPSTART_B
+#Feature           TP-LinearFit-SignalP-Score      FilterOFeature<double> SignalP-Score LinearBin4-SignalP-Scores -> 2 PEPSTART_F PEPSTART_B
+# Freezing all parameters up to this point.
+Freeze all
+Feature		PepStart-Background             Edge<int> 1 Start-Signal 1 -> 2 PEPSTART_F PEPSTART_B @ 13
+Feature		PepStart-Peptide-WWAM           PeptideWWAM 1 Start-Signal -6 39 15 15 3-gram -> 2 PEPSTART_F PEPSTART_B @ 13
+Feature           LinearBin4-SignalP-Scores        LinearFitCustomBin<double> null 7 0 0.5 0.75 0.9 0.99 1.0
+Feature           TP-LinearFit-SignalP-Score       FilterOFeature<double> SignalP-Score LinearBin4-SignalP-Scores -> 2 PEPSTART_F PEPSTART_B
+//

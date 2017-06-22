@@ -1,0 +1,70 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+
+Resource	dna-alpha	DNASigma
+Resource	mask-alpha	Sigma 2 TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource	aa-alpha  	AASigma
+Resource    complete           	FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial          	FSM ~partial.top 100 BOTH_STRANDS
+
+Resource    ev-states-alpha     Sigma 4 .-_ilnIELSCAO .-_ilnIELSCAO   . iln _- SIELCAO
+Resource    ev-xstates-alpha    Sigma 8 .-_ilnIELSCAO .-_ilnIELSCAO   . i ln _- S I L ECAO
+Resource    ev-signals-alpha    Sigma 5 -STDA -STDA - S T D A
+##PREFIX_EVIDENCE for paper testing is /home/abernal/Data/Celegans/nGASP/Combiner/longest.test or longest.train.onegene
+Resource	FGENESH++_cat3_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.FGENESH++_validated.gff3.1.Fgenesh_plus.state ev-states-alpha true false 1
+Resource	AUGUSTUS_cat3_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.AUGUSTUS_validated.gff3.2.AUGUSTUS_cat3_ver1.state ev-states-alpha true false 1
+Resource	MGENE_cat3_ver3-ev-states	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat3_ver3.state ev-states-alpha true false 1
+Resource	MGENE_cat3_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat3_ver1.state ev-states-alpha true false 1
+Resource	MGENE_cat2_ver1a-ev-states	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat2_ver1a.state ev-states-alpha true false 1
+Resource	Eugene_cat3_ver2-ev-states	File XFASTA PREFIX_EVIDENCE.SCHIEX_EUGENE_CAT3_V2.state ev-states-alpha true false 1
+Resource	MGENE_cat1_ver0-ev-states	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat1_ver0.state ev-states-alpha true false 1
+Resource	MGENE_cat1_ver2-ev-states	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat1_ver2.state ev-states-alpha true false 1
+Resource	FGENESH_cat1_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.FGENESH_validated.gff3.1.Fgenesh.state ev-states-alpha true false 1
+Resource	Eugene_cat2_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.SCHIEX_EUGENE_CAT2_V1.state ev-states-alpha true false 1
+Resource	AUGUSTUS_cat1_ver2-ev-states	File XFASTA PREFIX_EVIDENCE.AUGUSTUS_validated.gff3.2.AUGUSTUS_cat1_ver2.state ev-states-alpha true false 1
+Resource	Eugene_cat1_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.SCHIEX_EUGENE_CAT1_V1.state ev-states-alpha true false 1
+Resource	glimmer.hmm_cat1_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.GLIMMERHMM_validated.gff3.2.GlimmerHMM.state ev-states-alpha true false 1
+Resource	exonhunter_cat3_ver2-ev-states	File XFASTA PREFIX_EVIDENCE.EXONHUNTER_validated.gff3.2.exonhunter_cat3_ver2.state ev-states-alpha true false 1
+Resource	GRAMENE_cat3_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.GRAMENE_validated.gff3.1.ENSEMBL_cat3_ver1.state ev-states-alpha true false 1
+Resource	GRAMENE_cat3_ver2-ev-states	File XFASTA PREFIX_EVIDENCE.GRAMENE_validated.gff3.1.ENSEMBL_cat3_ver2.state ev-states-alpha true false 1
+Resource	Craig_cat1_v1-ev-states	File XFASTA PREFIX_EVIDENCE.CRAIG_validated.gff3.1.CRAIG.state ev-states-alpha true false 1
+Resource	exonhunter_cat3_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.EXONHUNTER_validated.gff3.2.exonhunter_cat3_ver1.state ev-states-alpha true false 1
+Resource	MAKER_cat3_ver2-ev-states	File XFASTA PREFIX_EVIDENCE.MAKER_validated.gff3.1.maker_cat3_ver2.state ev-states-alpha true false 1
+Resource	NSCAN_cat2_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.NSCAN_validated.gff3.3.NSCAN.state ev-states-alpha true false 1
+Resource	genemark.hmm_cat1_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.GENEMARKHMM_validated.gff3.3.GeneMark.hmm.state ev-states-alpha true false 1
+Resource	GENEID_cat1_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.CAMARA_GENEID_CAT1_V1.state ev-states-alpha true false 1
+Resource	SGP2_cat2_ver1-ev-states	File XFASTA PREFIX_EVIDENCE.SGP2_validated.gff3.sgp2.state ev-states-alpha true false 1
+Resource	1mer-ev-colstates	SparseFastaFileCollapser<UCHAR> null false 1 24 AUGUSTUS_cat1_ver2-ev-states Craig_cat1_v1-ev-states FGENESH_cat1_ver1-ev-states MGENE_cat1_ver0-ev-states MGENE_cat1_ver2-ev-states Eugene_cat2_ver1-ev-states MGENE_cat2_ver1a-ev-states Eugene_cat2_ver1-ev-states NSCAN_cat2_ver1-ev-states AUGUSTUS_cat3_ver1-ev-states Eugene_cat3_ver2-ev-states exonhunter_cat3_ver2-ev-states FGENESH++_cat3_ver1-ev-states GRAMENE_cat3_ver1-ev-states GRAMENE_cat3_ver2-ev-states MAKER_cat3_ver2-ev-states MGENE_cat3_ver1-ev-states MGENE_cat3_ver3-ev-states Eugene_cat1_ver1-ev-states GENEID_cat1_ver1-ev-states genemark.hmm_cat1_ver1-ev-states glimmer.hmm_cat1_ver1-ev-states SGP2_cat2_ver1-ev-states exonhunter_cat3_ver1-ev-states
+Resource	1mer-ev-colxstates	SparseFastaFileCollapser<UCHAR> ev-xstates-alpha false 1 24 AUGUSTUS_cat1_ver2-ev-states Craig_cat1_v1-ev-states FGENESH_cat1_ver1-ev-states MGENE_cat1_ver0-ev-states MGENE_cat1_ver2-ev-states Eugene_cat2_ver1-ev-states MGENE_cat2_ver1a-ev-states Eugene_cat2_ver1-ev-states NSCAN_cat2_ver1-ev-states AUGUSTUS_cat3_ver1-ev-states Eugene_cat3_ver2-ev-states exonhunter_cat3_ver2-ev-states FGENESH++_cat3_ver1-ev-states GRAMENE_cat3_ver1-ev-states GRAMENE_cat3_ver2-ev-states MAKER_cat3_ver2-ev-states MGENE_cat3_ver1-ev-states MGENE_cat3_ver3-ev-states Eugene_cat1_ver1-ev-states GENEID_cat1_ver1-ev-states genemark.hmm_cat1_ver1-ev-states glimmer.hmm_cat1_ver1-ev-states SGP2_cat2_ver1-ev-states exonhunter_cat3_ver1-ev-states
+Resource	2mer-ev-colstates	SparseFastaFileCollapser<UCHAR> null false 2 24 AUGUSTUS_cat1_ver2-ev-states Craig_cat1_v1-ev-states FGENESH_cat1_ver1-ev-states MGENE_cat1_ver0-ev-states MGENE_cat1_ver2-ev-states Eugene_cat2_ver1-ev-states MGENE_cat2_ver1a-ev-states Eugene_cat2_ver1-ev-states NSCAN_cat2_ver1-ev-states AUGUSTUS_cat3_ver1-ev-states Eugene_cat3_ver2-ev-states exonhunter_cat3_ver2-ev-states FGENESH++_cat3_ver1-ev-states GRAMENE_cat3_ver1-ev-states GRAMENE_cat3_ver2-ev-states MAKER_cat3_ver2-ev-states MGENE_cat3_ver1-ev-states MGENE_cat3_ver3-ev-states Eugene_cat1_ver1-ev-states GENEID_cat1_ver1-ev-states genemark.hmm_cat1_ver1-ev-states glimmer.hmm_cat1_ver1-ev-states SGP2_cat2_ver1-ev-states exonhunter_cat3_ver1-ev-states
+Resource	2mer-ev-colxstates	SparseFastaFileCollapser<UCHAR> ev-xstates-alpha false 2 24 AUGUSTUS_cat1_ver2-ev-states Craig_cat1_v1-ev-states FGENESH_cat1_ver1-ev-states MGENE_cat1_ver0-ev-states MGENE_cat1_ver2-ev-states Eugene_cat2_ver1-ev-states MGENE_cat2_ver1a-ev-states Eugene_cat2_ver1-ev-states NSCAN_cat2_ver1-ev-states AUGUSTUS_cat3_ver1-ev-states Eugene_cat3_ver2-ev-states exonhunter_cat3_ver2-ev-states FGENESH++_cat3_ver1-ev-states GRAMENE_cat3_ver1-ev-states GRAMENE_cat3_ver2-ev-states MAKER_cat3_ver2-ev-states MGENE_cat3_ver1-ev-states MGENE_cat3_ver3-ev-states Eugene_cat1_ver1-ev-states GENEID_cat1_ver1-ev-states genemark.hmm_cat1_ver1-ev-states glimmer.hmm_cat1_ver1-ev-states SGP2_cat2_ver1-ev-states exonhunter_cat3_ver1-ev-states
+Resource	FGENESH++_cat3_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.FGENESH++_validated.gff3.1.Fgenesh_plus.signal ev-signals-alpha true false 1
+Resource	AUGUSTUS_cat3_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.AUGUSTUS_validated.gff3.2.AUGUSTUS_cat3_ver1.signal ev-signals-alpha true false 1
+Resource	MGENE_cat3_ver3-ev-signals	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat3_ver3.signal ev-signals-alpha true false 1
+Resource	MGENE_cat3_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat3_ver1.signal ev-signals-alpha true false 1
+Resource	MGENE_cat2_ver1a-ev-signals	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat2_ver1a.signal ev-signals-alpha true false 1
+Resource	Eugene_cat3_ver2-ev-signals	File XFASTA PREFIX_EVIDENCE.SCHIEX_EUGENE_CAT3_V2.signal ev-signals-alpha true false 1
+Resource	MGENE_cat1_ver0-ev-signals	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat1_ver0.signal ev-signals-alpha true false 1
+Resource	MGENE_cat1_ver2-ev-signals	File XFASTA PREFIX_EVIDENCE.MGENE_validated.gff3.1.G3A_cat1_ver2.signal ev-signals-alpha true false 1
+Resource	FGENESH_cat1_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.FGENESH_validated.gff3.1.Fgenesh.signal ev-signals-alpha true false 1
+Resource	Eugene_cat2_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.SCHIEX_EUGENE_CAT2_V1.signal ev-signals-alpha true false 1
+Resource	AUGUSTUS_cat1_ver2-ev-signals	File XFASTA PREFIX_EVIDENCE.AUGUSTUS_validated.gff3.2.AUGUSTUS_cat1_ver2.signal ev-signals-alpha true false 1
+Resource	Eugene_cat1_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.SCHIEX_EUGENE_CAT1_V1.signal ev-signals-alpha true false 1
+Resource	glimmer.hmm_cat1_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.GLIMMERHMM_validated.gff3.2.GlimmerHMM.signal ev-signals-alpha true false 1
+Resource	exonhunter_cat3_ver2-ev-signals	File XFASTA PREFIX_EVIDENCE.EXONHUNTER_validated.gff3.2.exonhunter_cat3_ver2.signal ev-signals-alpha true false 1
+Resource	GRAMENE_cat3_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.GRAMENE_validated.gff3.1.ENSEMBL_cat3_ver1.signal ev-signals-alpha true false 1
+Resource	GRAMENE_cat3_ver2-ev-signals	File XFASTA PREFIX_EVIDENCE.GRAMENE_validated.gff3.1.ENSEMBL_cat3_ver2.signal ev-signals-alpha true false 1
+Resource	Craig_cat1_v1-ev-signals	File XFASTA PREFIX_EVIDENCE.CRAIG_validated.gff3.1.CRAIG.signal ev-signals-alpha true false 1
+Resource	exonhunter_cat3_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.EXONHUNTER_validated.gff3.2.exonhunter_cat3_ver1.signal ev-signals-alpha true false 1
+Resource	MAKER_cat3_ver2-ev-signals	File XFASTA PREFIX_EVIDENCE.MAKER_validated.gff3.1.maker_cat3_ver2.signal ev-signals-alpha true false 1
+Resource	NSCAN_cat2_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.NSCAN_validated.gff3.3.NSCAN.signal ev-signals-alpha true false 1
+Resource	genemark.hmm_cat1_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.GENEMARKHMM_validated.gff3.3.GeneMark.hmm.signal ev-signals-alpha true false 1
+Resource	SGP2_cat2_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.SGP2_validated.gff3.sgp2.signal ev-signals-alpha true false 1
+Resource	GENEID_cat1_ver1-ev-signals	File XFASTA PREFIX_EVIDENCE.CAMARA_GENEID_CAT1_V1.signal ev-signals-alpha true false 1
+Resource	ev-signals-all	FileMerger null false - 24 AUGUSTUS_cat1_ver2-ev-signals Craig_cat1_v1-ev-signals FGENESH_cat1_ver1-ev-signals MGENE_cat1_ver0-ev-signals MGENE_cat1_ver2-ev-signals Eugene_cat2_ver1-ev-signals MGENE_cat2_ver1a-ev-signals Eugene_cat2_ver1-ev-signals NSCAN_cat2_ver1-ev-signals AUGUSTUS_cat3_ver1-ev-signals Eugene_cat3_ver2-ev-signals exonhunter_cat3_ver2-ev-signals FGENESH++_cat3_ver1-ev-signals GRAMENE_cat3_ver1-ev-signals GRAMENE_cat3_ver2-ev-signals MAKER_cat3_ver2-ev-signals MGENE_cat3_ver1-ev-signals MGENE_cat3_ver3-ev-signals Eugene_cat1_ver1-ev-signals GENEID_cat1_ver1-ev-signals genemark.hmm_cat1_ver1-ev-signals glimmer.hmm_cat1_ver1-ev-signals SGP2_cat2_ver1-ev-signals exonhunter_cat3_ver1-ev-signals
+//
+
+

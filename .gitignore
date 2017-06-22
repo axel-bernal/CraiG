@@ -1,0 +1,13 @@
+/**/.ipynb_checkpoints/
+/**/.settings/
+/**/target/
+
+/**/*.o
+/**/*.in
+/**/*.pyc
+/**/.classpath
+/**/.cproject
+/**/.DS_Store
+/**/.idea
+/**/.project
+/**/.pydevproject

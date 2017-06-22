@@ -1,0 +1,19 @@
+
+Feature           ParseScore                          ParseScore -> 2 SEQTAG_F SEQTAG_B
+
+#
+# External Evidence Node Features
+#
+
+#
+# Signal Peptide features
+#
+
+Feature           LinearBin4-SignalP-Scores           LinearFitBin<double> null 5 0 0 0.25
+Feature           TP-LinearFit-SignalP-Score          FilterOFeature<double,double> SignalP-Score LinearBin4-SignalP-Scores -> 2 PEPSTART_F PEPSTART_B
+
+#Feature           TP-LinearFit-SignalP-RerankScore    FilterOFeature<double,double>  SignalP-RelScore LinearBin4-SignalP-Scores -> 2 START_F START_B
+#Feature           TP-LinearFit-SignalP-Offset         FilterOFeature<double,double>  SignalP-RelOffset LinearBin4-SignalP-Offsets -> 2 START_F START_B
+
+#Feature		Pfam-Seg-Score                      ScoringSegment<double> 3 Pfam-Score 1 3 -1 true -> CODING*
+//

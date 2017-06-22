@@ -1,0 +1,24 @@
+/advance_backward.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/advance_forward.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/and.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/apply.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/arg.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/basic_bind.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/bind.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/fold_backward_impl.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/fold_impl.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/full_lambda.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/iter_fold_backward_impl.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/iter_fold_if_impl.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/iter_fold_impl.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/lambda_helper.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/lambda_no_ctps.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/list.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/list_c.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/or.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/placeholders.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/quote.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/template_arity.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/vector.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+/vector_c.hpp/1.1.1.1/Mon Jun 25 18:56:43 2007//
+D

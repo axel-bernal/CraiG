@@ -1,0 +1,33 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+Resource    homol-alpha             Sigma 3 012 012 0 1 2
+Resource    dna-alpha               DNASigma
+Resource    mask-alpha              Sigma 2 ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource    aa-alpha                AASigma
+Resource    intron-model            ContextIMM false ~intron.cimm 4 dna-alpha
+Resource    intergenic-model        ContextIMM false ~intergenic.cimm 4 dna-alpha
+Resource    exon-model              ContextIMM false ~exon.cimm 4 dna-alpha
+Resource    donor-softmatch-db      DBSoftMatchMotif dna-alpha true ~splicesites 101 10
+Resource    acceptor-softmatch-db   DBSoftMatchMotif dna-alpha true ~splicesites 183 12
+Resource    complete                FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial                 FSM ~partial.top 100 BOTH_STRANDS
+Resource    ev-signals-alpha        Sigma 5 -STDA -STDA - S T D A
+Resource    signalp-scores          File EXTENDED_LDSCORE  /home/abernal/Projects/CRAIG/Data/Human/Chromo/Vega/Uniprot/SPP.run.0/SPP.4train.signalP true false
+Resource    ab-initio-model         ParamModel /home/abernal/Projects/devcraig/models/human.params ~ false true
+Resource    signalp-score-model     ParamModel null /home/abernal/Projects/devcraig/models/human-mp-bag. true true
+#
+# Signal Peptide Features
+#
+Feature           Bin4-SignalP-Scores             Bin<double> null 4 0.9 1
+Feature           Binned-SignalP-Score            FilterOFeature<double> SignalP-Score Bin4-SignalP-Scores -> 2 START_F START_B
+//
+model=
+2
+0	0	-0.0150349
+0	1	0.0121037
+//
+#Resource    ev-signals-genscan      File XFASTA /home/abernal/Projects/CRAIG/Data/Human/Chromo/Vega/Uniprot/SPP.run.0/SPP.genscan.4train.signals ev-signals-alpha true true
+//

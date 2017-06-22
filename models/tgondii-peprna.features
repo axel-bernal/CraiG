@@ -1,0 +1,260 @@
+#
+#Types of features
+#
+#
+#
+#
+#
+
+
+##############################################################################
+#                           NODE-RELATED FEATURES
+##############################################################################
+
+#
+# Defining PreComputeTod entries for these features
+PreComputeTo  0     3     true
+PreComputeTo  1     3     true
+PreComputeTo  2     3     true
+PreComputeTo  3     3     true
+PreComputeTo  4     3     true
+PreComputeTo  5     3     true
+PreComputeTo  6     3     true
+PreComputeTo  7     3     true
+PreComputeTo  8     3     true
+
+@define TagSet CDS_INTRONS* 2 INTRON_F INTRON_B
+@define TagSet CODING* 12 INIT_EXON_F PEPINIT_EXON_F LAST_EXON_F INTERNAL_EXON_F SINGLE_EXON_F PEPSINGLE_EXON_F INIT_EXON_B PEPINIT_EXON_B LAST_EXON_B INTERNAL_EXON_B SINGLE_EXON_B PEPSINGLE_EXON_B
+@define TagSet CODEXONS* 4 INIT_EXON_F INIT_EXON_B PEPINIT_EXON_F PEPINIT_EXON_B, 2 LAST_EXON_F LAST_EXON_B, 2 INTERNAL_EXON_F INTERNAL_EXON_B, 4 SINGLE_EXON_F SINGLE_EXON_B PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+@define TagSet WHOLE_UTRS* 8 5INIT_UTR_F 5INIT_UTR_B 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B 3LAST_UTR_F 3LAST_UTR_B
+@define TagSet TRUNC_UTRS* 8 5LAST_UTR_F 5LAST_UTR_B 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 3LAST_UTR_F 3LAST_UTR_B
+@define TagSet 5UTR_EXONS* 8 5INIT_UTR_F 5INIT_UTR_B 5INTERNAL_UTR_F 5INTERNAL_UTR_B 5LAST_UTR_F 5LAST_UTR_B 5SINGLE_UTR_F 5SINGLE_UTR_B 
+@define TagSet 3UTR_EXONS* 8 3INTERNAL_UTR_F 3INTERNAL_UTR_B 3LAST_UTR_F 3LAST_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B 3LAST_UTR_F 3LAST_UTR_B
+@define TagSet UTR_INTRONS* 4 5UTR_INTRON_F 5UTR_INTRON_B 3UTR_INTRON_F 3UTR_INTRON_B
+
+#CDS State Background Features
+#
+
+Feature		Intergenic-Background           StateBackground 1 10000 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Intron-Background               StateBackground 3 10000 -> 2 INTRON_F INTRON_B
+Feature		Coding-Exon-Background          StateBackground 3 10000 -> CODING*
+Feature		3UTR-Intron-Background          StateBackground 3 10000 -> 2 3UTR_INTRON_F 3UTR_INTRON_B
+Feature		3UTR-Exon-Background          	StateBackground 3 10000 -> 3UTR_EXONS*
+Feature		5UTR-Intron-Background          StateBackground 3 10000 -> 2 5UTR_INTRON_F 5UTR_INTRON_B
+Feature		5UTR-Exon-Background          	StateBackground 3 10000 -> 5UTR_EXONS*
+
+#
+#CDS Ratio/Score Features
+#
+Feature		Intron/Igenic-Ratio             RatioSegment 3 Intron-Score 1 Intergenic-Score 1 -> 2 INTRON_F INTRON_B
+Feature		Intron/Exon-Ratio               RatioSegment 3 Intron-Score 1 Coding-Score 3
+Feature		Intron-Seg-Score                ScoringSegment<double> 3 Intron-Score 1 0 true -> 2 INTRON_F INTRON_B
+
+Feature		Igenic/Intron-Ratio             RatioSegment 3 Intergenic-Score 1 Intron-Score 1 -> 2 INTERGENIC_F INTERGENIC_B
+Feature		Igenic/Exon-Ratio               RatioSegment 3 Intergenic-Score 1 Coding-Score 3
+Feature		Intergenic-Seg-Score            ScoringSegment<double> 1 Intergenic-Score 1 0 true -> 2 INTERGENIC_F INTERGENIC_B
+
+Feature		Exon/Intron-Ratio               RatioSegment 3 Coding-Score 3 Intron-Score 1
+Feature		Coding-Seg-Score                ScoringSegment<double> 3 Coding-Score 3 -1.34938786 true -> CODING*
+Feature		Coding-Differential             CodingDifferential Coding-Score -> CODING*
+
+#
+# CDS Length Features
+#
+Feature		Segment-Length                  LengthSegment 3
+Feature        	LinearBin4-IntronLength         LinearFitBin<int> null 7 0 80 80
+Feature       	LinearBin4-InterExonLength      LinearFitBin<int> null 7 0 0 50
+Feature        	LinearBin4-SingleExonLength     LinearFitBin<int> null 30 0 100 180
+Feature       	LinearBin4-InitExonLength       LinearFitBin<int> null 20 0 0 70
+Feature       	LinearBin4-TermExonLength       LinearFitBin<int> null 25 0 0 80
+
+Feature		Intron-Length                 	  FeatureOFeature<int> Segment-Length LinearBin4-IntronLength -> 2 INTRON_F INTRON_B
+Feature		Init-Exon-Length          	  FeatureOFeature<int> Segment-Length LinearBin4-InitExonLength -> 4 INIT_EXON_F INIT_EXON_B PEPINIT_EXON_F PEPINIT_EXON_B
+Feature		Internal-Exon-Length      	  FeatureOFeature<int> Segment-Length LinearBin4-InterExonLength -> 2 INTERNAL_EXON_F INTERNAL_EXON_B
+Feature		Last-Exon-Length          	  FeatureOFeature<int> Segment-Length LinearBin4-TermExonLength -> 2 LAST_EXON_F LAST_EXON_B
+Feature		Single-Exon-Length        	  FeatureOFeature<int> Segment-Length LinearBin4-SingleExonLength -> 4 SINGLE_EXON_F SINGLE_EXON_B PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+
+#
+#CDS Content Features
+#
+Feature		Codon-Usage-1st-Frame           PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 0 false 1 -> CODING* @ 1
+Feature		Codon-Usage-2nd-Frame           PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 1 false 1 -> CODING* @ 2
+Feature		Codon-Usage-3rd-Frame           PeriodicCountingSegment<UCHAR> 3 3-gram 0 3 2 false 1 -> CODING* @ 3
+Feature		6GRAM-Coding-1st-Frame          PeriodicCountingSegment<USHORT> 3 6-gram 0 3 0 false 1 -> CODING* @ 4
+Feature		6GRAM-Coding-2nd-Frame          PeriodicCountingSegment<USHORT> 3 6-gram 0 3 1 false 1 -> CODING* @ 5
+Feature		6GRAM-Coding-3rd-Frame          PeriodicCountingSegment<USHORT> 3 6-gram 0 3 2 false 1 -> CODING* @ 6
+Feature		Hidden-Stop-Sequence            HiddenSeq 3 3 3 3 TGA TAG TAA dna-alpha 3 Codon-Usage-1st-Frame Codon-Usage-2nd-Frame Codon-Usage-3rd-Frame -> 2 INTRON_F INTRON_B
+
+Feature           Mask-Content-Score              ScoringSegment<int> 1 Mask-Counts 1 0.5 true
+Feature           LinearBin4-MaskingContent       LinearFitBin<double> null 3 0 0 0.5
+Feature           Test-Is-Masked                  FeatureOFeature<double> Mask-Content-Score LinearBin4-MaskingContent -> CODING*
+
+#
+# CDS RNASeq Introns
+#
+Feature		Log-RNASeqD3-Introns-AlignType		AlignmentType 1 Log-RNASeqD3-Edges
+Feature		Log-RNASeqD3-Introns-AlignWeight	AlignmentWeight 1 Log-RNASeqD3-Edges
+Feature         LinearBin4Log-RNASeqD3-Weights		LinearFitBin<double> Log-RNASeqD3-Introns-AlignWeight 5 1.25 0 1
+
+PerTagFeature	LinearBin4xLog-RNASeqD3-IntronWeight	FeatureXFeature<UCHAR,double> Log-RNASeqD3-Introns-AlignType LinearBin4Log-RNASeqD3-Weights -> 2 INTRON_F INTRON_B, 2 INTERGENIC_F INTERGENIC_B
+
+#
+#CDS RNASeq Coverage
+#
+Feature		LinearBin4-Log-Coverage	LinearFitBin<double> null 5 1.25 0 1
+Feature		Log-Day3-Segment-Coverage	ScoringSegment<double> 3 Log-Day3-AccCoverage 1 3 true
+
+PerTagFeature	LinearBin4xLog-Day3Coverage	FeatureOFeature<double> Log-Day3-Segment-Coverage LinearBin4-Log-Coverage -> CODEXONS*, 2 INTRON_F INTRON_B, 2 INTERGENIC_F INTERGENIC_B
+
+##############################################################################
+#                           EDGE-RELATED FEATURES
+##############################################################################
+
+PreComputeTo  9     0     false
+PreComputeTo  10    0     false
+PreComputeTo  11    0     false
+PreComputeTo  12    0     false
+PreComputeTo  13    0     false
+PreComputeTo  14    0     false
+
+@define TagSet ACCEPTOR* 2 ACCEPTOR_F ACCEPTOR_B @ 9, 2 UTR_ACCEPTOR_F UTR_ACCEPTOR_B @ 10
+@define TagSet DONOR* 2 DONOR_F DONOR_B @ 9, 2 UTR_DONOR_F UTR_DONOR_B @ 10
+@define TagSet PEPSTART* 2 PEPSTART_F PEPSTART_B @ 14
+#
+#Counting Features
+#
+Feature		PartGene-Start-Background       Edge<int> 1 null 1 -> 2 PAR_START_F PAR_START_B
+Feature		PartGene-Stop-Background        Edge<int> 1 null 1 -> 2 PAR_STOP_F PAR_STOP_B
+Feature		PartGene-Donor-Background       Edge<int> 1 null 1 -> 2 PAR_DONOR_F PAR_DONOR_B
+Feature		PartGene-Acceptor-Background    Edge<int> 1 null 1 -> 2 PAR_ACCEPTOR_F PAR_ACCEPTOR_B
+Feature		Start-Background                Edge<int> 1 Start-Signal 1 -> 2 START_F START_B @ 12, PEPSTART*
+Feature		Stop-Background                 Edge<int> 1 Stop-Signal 1 -> 2 STOP_F STOP_B @ 12
+Feature		Donor-Background                Edge<int> 3 Donor-Signal 1 -> 2 DONOR_F DONOR_B @ 9
+Feature		Acceptor-Background             Edge<int> 3 Acceptor-Signal 1 -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-Phase-Bias             EdgePhase 3 Acceptor-Signal 3 -> ACCEPTOR*
+Feature		Donor-Phase-Bias                EdgePhase 3 Donor-Signal 3
+
+#
+# Edge Content Features
+#
+Feature		Igenic-to-Non-Igenic@Start      EdgeContent<double> Start-Signal 0 Intergenic-Seg-Score 48 48 -> 2 START_F START_B @ 12, PEPSTART*
+Feature		Intron-to-Non-Intron@Acceptor   EdgeContent<double> Acceptor-Signal 2 Intron-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Non-Intron-to-Intron@Donor      EdgeContent<double> Donor-Signal 0 Intron-Seg-Score 48 48 -> DONOR*
+Feature		Non-Igenic-to-Igenic@Stop       EdgeContent<double> Stop-Signal 0 Intergenic-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+Feature		Non-Coding-to-Coding@Start      EdgeContent<double> Start-Signal 0 Coding-Seg-Score 48 48 -> 2 START_F START_B @ 12, PEPSTART*
+Feature		Non-Coding-to-Coding@Acceptor   EdgeContent<double> Acceptor-Signal 2 Coding-Seg-Score 48 48 -> ACCEPTOR*
+Feature		Coding-to-Non-Coding@Donor      EdgeContent<double> Donor-Signal 0 Coding-Seg-Score 48 48 -> DONOR*
+Feature		Coding-to-Non-Coding@Stop       EdgeContent<double> Stop-Signal 0 Coding-Seg-Score 48 48 -> 2 STOP_F STOP_B @ 12
+
+
+#
+#                           Edge-Position-Counting Features
+#
+
+#
+# Start Edge WWAM-based Features
+#
+Feature		Start-Gram-WWAM                 GramWWAM<UCHAR,UCHAR> 1 Start-Signal -20 15 1 5 3-gram -> 2 START_F START_B @ 12, PEPSTART*
+Feature		Start-PWM                       GramPWM<UCHAR,UCHAR> 1 Start-Signal -4 11 1 1-gram -> 2 START_F START_B @ 12, PEPSTART*
+Feature		Start-PWMxPWM                   PWMxPWM<UCHAR> Start-PWM Start-PWM -> 2 START_F START_B @ 12, PEPSTART*
+Feature		Start-Peptide-WWAM              PeptideWWAM<UCHAR,UCHAR> 1 Start-Signal 6 36 12 12 3-gram -> 2 START_F START_B @ 12, PEPSTART*
+
+#
+#Stop Edge WWAM-based Features
+#
+Feature		Stop-PWM                        GramPWM<UCHAR,UCHAR> 1 Stop-Signal -5 10 1 1-gram -> 2 STOP_F STOP_B @ 12
+Feature		Stop-Gram-WWAM                  GramWWAM<UCHAR,UCHAR> 1 Stop-Signal 6 15 1 5 3-gram -> 2 STOP_F STOP_B @ 12
+
+#
+#Donor Edge WWAM-based Features
+#
+Feature		Donor-5P-Gram-WWAM              GramWWAM<UCHAR,UCHAR> 1 Donor-Signal -6 2 1 5 3-gram  -> DONOR*
+#Feature           PhasexDonor-5P-WWAM           FeatureXFeature<UCHAR,UCHAR> Donor-Phase-Bias Donor-5P-Gram-WWAM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-PWM                       GramPWM<UCHAR,UCHAR> 3 Donor-Signal -3 11 1 1-gram -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-PWMxPWM                   PWMxPWM<UCHAR> Donor-PWM Donor-PWM -> 2 DONOR_F DONOR_B @ 9
+Feature		Donor-3P-Gram-WWAM              GramWWAM<UCHAR,UCHAR> 3 Donor-Signal 8 12 1 5 3-gram -> DONOR*
+
+#
+# Acceptor Edge WWAM-based Features
+#
+Feature		Acceptor-5P-Gram-WWAM           GramWWAM<UCHAR,UCHAR> 3 Acceptor-Signal -36 28 1 5 3-gram -> ACCEPTOR*
+Feature		Acceptor-PWM                    GramPWM<UCHAR,UCHAR> 3 Acceptor-Signal -7 12 1 1-gram -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+Feature		Acceptor-PWMxPWM                PWMxPWM<UCHAR> Acceptor-PWM Acceptor-PWM -> 2 ACCEPTOR_F ACCEPTOR_B @ 9
+
+
+##############################################################################
+#                           SIGNAL PEPTIDE-RELATED FEATURES
+##############################################################################
+
+Feature           LinearBin4-PepExonLength   		LinearFitBin<double> null 3 3 0 70
+
+Feature 	  Smean-Scores-Wr			FilterWrapper<double> Smean-Score
+Feature           LinearBin4-Smean-Scores           	LinearFitBin<double> null 11 0 0 0.1
+Feature           LinearFit4-Smean-Score-Start      	FilterOFeature<double,double> Smean-Score LinearBin4-Smean-Scores
+Feature           PepStart-Smean-Score-Start 	    	EdgeFeature<double> 1 Start-Signal LinearFit4-Smean-Score-Start -> PEPSTART*
+
+
+Feature 	  SPhmm-Scores-Wr			FilterWrapper<double> SPhmm-Score
+Feature           LinearBin4-SPhmm-Scores           	LinearFitBin<double> null 11 0 0 0.1
+Feature           LinearFit4-SPhmm-Score-Start      	FilterOFeature<double,double> SPhmm-Score LinearBin4-SPhmm-Scores
+Feature           PepStart-SPhmm-Score-Start 	    	EdgeFeature<double> 1 Start-Signal LinearFit4-SPhmm-Score-Start -> PEPSTART*
+PerTagFeature           LinearFit4-SPhmm-Score        	FilterOFeature<double,double> SPhmm-Score LinearBin4-SPhmm-Scores -> 2 PEPINIT_EXON_F PEPINIT_EXON_B, 2 PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+Feature		  SPhmm-ScorexPepExon-Length          	MultiBin<double> 1 2 Segment-Length LinearBin4-PepExonLength SPhmm-Scores-Wr LinearBin4-SPhmm-Scores -> 2 PEPINIT_EXON_F PEPINIT_EXON_B
+
+Feature 	  D-Scores-Wr				FilterWrapper<double> D-Score
+Feature           LinearBin4-D-Scores           	LinearFitBin<double> null 11 0 0 0.1
+Feature           LinearFit4-D-Score-Start      	FilterOFeature<double,double> D-Score LinearBin4-D-Scores
+Feature           PepStart-D-Score-Start 		EdgeFeature<double> 1 Start-Signal LinearFit4-D-Score-Start -> PEPSTART*
+PerTagFeature           LinearFit4-D-Score        	FilterOFeature<double,double> D-Score LinearBin4-D-Scores -> 2 PEPINIT_EXON_F PEPINIT_EXON_B, 2 PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+#Feature		  D-ScorexPepExon-Length        MultiBin<double> 1 2 Segment-Length LinearBin4-PepExonLength D-Scores-Wr LinearBin4-D-Scores -> 2 PEPINIT_EXON_F PEPINIT_EXON_B
+
+Feature		  SPhmmxD-Scores          		MultiBin<double> 1 2 SPhmm-Scores-Wr LinearBin4-SPhmm-Scores D-Scores-Wr LinearBin4-D-Scores
+Feature           PepStart-SPhmmxD-Scores 		EdgeFeature<double> 1 Start-Signal SPhmmxD-Scores -> PEPSTART*
+
+#PerTagFeature		  SPhmmxD-ScoresxLength		MultiBin<double> 1 3 Segment-Length LinearBin4-PepExonLength SPhmm-Scores-Wr LinearBin4-SPhmm-Scores D-Scores-Wr LinearBin4-D-Scores -> 2 PEPINIT_EXON_F PEPINIT_EXON_B, 2 PEPSINGLE_EXON_F PEPSINGLE_EXON_B
+
+##############################################################################
+#                           UTR-RELATED FEATURES
+##############################################################################
+
+#
+# UTR Transcript background features
+#
+Feature		3UTR-Intron-Background          StateBackground 3 10000 -> 2 3UTR_INTRON_F 3UTR_INTRON_B
+Feature		3UTR-Exon-Background          	StateBackground 3 10000 -> 3UTR_EXONS*
+Feature		5UTR-Intron-Background          StateBackground 3 10000 -> 2 5UTR_INTRON_F 5UTR_INTRON_B
+Feature		5UTR-Exon-Background          	StateBackground 3 10000 -> 5UTR_EXONS*
+
+#
+# UTR Length Features
+#
+Feature		UTR-Intron-Length            	FeatureOFeature<int> Segment-Length LinearBin4-IntronLength -> UTR_INTRONS*
+Feature		UTR-Init-Exon-Length        	FeatureOFeature<int> Segment-Length LinearBin4-InitExonLength -> 4 5INIT_UTR_F 5INIT_UTR_B 3INIT_UTR_F 3INIT_UTR_B
+Feature		UTR-Internal-Exon-Length    	FeatureOFeature<int> Segment-Length LinearBin4-InterExonLength -> 4 5INTERNAL_UTR_F 5INTERNAL_UTR_B 3INTERNAL_UTR_F 3INTERNAL_UTR_B
+Feature		UTR-Last-Exon-Length        	FeatureOFeature<int> Segment-Length LinearBin4-TermExonLength -> 4 5LAST_UTR_F 5LAST_UTR_B 3LAST_UTR_F 3LAST_UTR_B
+Feature		UTR-Single-Exon-Length      	FeatureOFeature<int> Segment-Length LinearBin4-SingleExonLength -> 4 5SINGLE_UTR_F 5SINGLE_UTR_B 3SINGLE_UTR_F 3SINGLE_UTR_B
+
+Feature		TSS-Background                Edge<int> 1 Start-Signal 1 -> 2 TSS_F TSS_B @ 13
+Feature		PAS-Background                Edge<int> 1 Start-Signal 1 -> 2 PAS_F PAS_B @ 13
+Feature         UtrDonor-Background             Edge<int> 3 Donor-Signal 1 -> 2 UTR_DONOR_F UTR_DONOR_B @ 10
+Feature         UtrAcceptor-Background          Edge<int> 3 Acceptor-Signal 1 -> 2 UTR_ACCEPTOR_F UTR_ACCEPTOR_B @ 10
+
+# UTR RNASeq Introns
+Feature		LinearBin4xLog-RNASeqD3-IntronWeight	FeatureXFeature<UCHAR,double> Log-RNASeqD3-Introns-AlignType LinearBin4Log-RNASeqD3-Weights -> UTR_INTRONS*
+
+#
+#UTR RNASeq Coverage
+#
+Feature		LinearBin4xLog-Day3Coverage	FeatureOFeature<double> Log-Day3-Segment-Coverage LinearBin4-Log-Coverage -> WHOLE_UTRS*, TRUNC_UTRS*
+
+#
+# UTR RNA-Seq Edge features
+#
+Feature		Day3-XSignal-LeftScore  MeanScoringSegment<double> 1 Log-Day3-AccTotCoverage 1 Day3-XSig-Score-0 Day3-XSig-Score-1
+Feature		Day3-XSignal-RightScore  MeanScoringSegment<double> 1 Log-Day3-AccTotCoverage 1 Day3-XSig-Score-1 Day3-XSig-Score-2
+
+Feature		Day3-XSigScore-NLinCorr		   MultiBin<double> 1 2 Day3-XSignal-LeftScore LinearBin4Log-RNASeqD3-Weights Day3-XSignal-RightScore LinearBin4Log-RNASeqD3-Weights
+
+Feature		Day3-TSS-Score 			   EdgeFeature<double> 1 TSS-Signal Day3-XSigScore-NLinCorr -> 2 TSS_F TSS_B
+Feature		Day3-PAS-Score 			   EdgeFeature<double> 1 PAS-Signal Day3-XSigScore-NLinCorr -> 2 PAS_F PAS_B
+//

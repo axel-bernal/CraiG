@@ -1,0 +1,38 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+
+Resource	dna-alpha	DNASigma
+Resource	mask-alpha	Sigma 2 TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource	aa-alpha  	AASigma
+Resource    complete           	FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial          	FSM ~partial.top 100 BOTH_STRANDS
+
+Resource    ev-states-alpha     Sigma 4 .-_ilnIELSCAO .-_ilnIELSCAO   . iln -_ SIELCAO
+Resource    ev-xstates-alpha    Sigma 7 .-_ilnIELSCAO .-_ilnIELSCAO   . iln -_ S I L ECAO
+Resource    ev-signals-alpha    Sigma 5 -STDA -STDA - S T D A
+
+Resource    FP-ev-states      File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/fullphat.longest.db+pip.state ev-states-alpha true false
+Resource    GF-ev-states      File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/genefinder.longest.db+pip.state ev-states-alpha true false
+Resource    GL-ev-states      File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/glimmer.longest.db+pip.state ev-states-alpha true false
+Resource    CR-ev-states      File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/craig.longest.db+pip.state ev-states-alpha true false
+Resource    GI-ev-states      File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/geneid.longest.db+pip.state ev-states-alpha true false
+Resource    AU-ev-states      File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/augustus.longest.db+pip.state ev-states-alpha true false
+
+Resource	1mer-ev-colstates	FastaFileCollapser<UCHAR> null false 1 6 FP-ev-states GF-ev-states CR-ev-states GL-ev-states AU-ev-states GI-ev-states 
+Resource	1mer-ev-colxstates	FastaFileCollapser<UCHAR> ev-xstates-alpha false 1 6 FP-ev-states GF-ev-states CR-ev-states GL-ev-states AU-ev-states GI-ev-states 
+
+Resource	2mer-ev-colstates	FastaFileCollapser<UCHAR> null false 2 6 FP-ev-states GF-ev-states CR-ev-states GL-ev-states AU-ev-states GI-ev-states 
+Resource	2mer-ev-colxstates	FastaFileCollapser<UCHAR> ev-xstates-alpha false 2 6 FP-ev-states GF-ev-states CR-ev-states GL-ev-states AU-ev-states GI-ev-states
+
+Resource    FP-ev-signals     File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/fullphat.longest.db+pip.signal ev-signals-alpha true false
+Resource    GF-ev-signals     File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/genefinder.longest.db+pip.signal ev-signals-alpha true false
+Resource    CR-ev-signals     File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/craig.longest.db+pip.signal ev-signals-alpha true false
+Resource    GL-ev-signals     File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/glimmer.longest.db+pip.signal ev-signals-alpha true false
+Resource    GI-ev-signals     File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/geneid.longest.db+pip.signal ev-signals-alpha true false
+Resource    AU-ev-signals     File XFASTA /home/abernal/Data/plasmo55v2.back/Combiner.db+pip/augustus.longest.db+pip.signal ev-signals-alpha true false
+
+Resource	ev-signals-all	    	FileMerger null false - 6 FP-ev-signals GF-ev-signals CR-ev-signals GL-ev-signals AU-ev-signals GI-ev-signals
+//

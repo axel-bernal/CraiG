@@ -1,0 +1,71 @@
+#
+# Resource file
+# ~ is a reserved symbol and represents the complete path leading to
+# the model being loaded.
+#
+Resource    homol-alpha             Sigma 3 012 012 0 1 2
+Resource    dna-alpha               DNASigma
+Resource    mask-alpha              Sigma 2 ACGTMRWSYKBDHVNXacgtmrwsykbdhvnx TGCAKYWSRMVHDBNXtgcakywsrmvhdbnx ACGTMRWSYKBDHVNX acgtmrwsykbdhvnx
+Resource    aa-alpha                AASigma
+Resource    intron-model            ContextIMM false ~intron.cimm 4 dna-alpha
+Resource    intergenic-model        ContextIMM false ~intergenic.cimm 4 dna-alpha
+Resource    exon-model              ContextIMM false ~exon.cimm 4 dna-alpha
+Resource    donor-softmatch-db      DBSoftMatchMotif dna-alpha true ~splicesites 101 10
+Resource    acceptor-softmatch-db   DBSoftMatchMotif dna-alpha true ~splicesites 183 12
+Resource    complete                FSM ~complete.top 100 BOTH_STRANDS
+Resource    partial                 FSM ~partial.top 100 BOTH_STRANDS
+Resource    mp-acc-scores           File EXTENDED_LDSCORE /home/abernal/Projects/CRAIG/Data/Human/Encode07/encode_4train.split.acc.sig true true
+Resource    mp-don-scores           File EXTENDED_LDSCORE /home/abernal/Projects/CRAIG/Data/Human/Encode07/encode_4train.split.don.sig true true
+#Resource    mp-acc-scores          File EXTENDED_LDSCORE /home/abernal/Projects/CRAIG/Data/Human/MPlank/all_4train_acc.sig true true
+#Resource    mp-don-scores          File EXTENDED_LDSCORE /home/abernal/Projects/CRAIG/Data/Human/MPlank/all_4train_don.sig true true
+Resource    ab-initio-model         ParamModel /home/abernal/Projects/devcraig/models/human.params ~ false true
+Resource    donor-score-model       ParamModel null /home/abernal/Projects/devcraig/models/human-mp-bag. true true
+#
+# Donor Score features
+#
+
+Feature           Bin4-Splice-Scores                  Bin<double> null 4 0.5 1
+Feature           Bin4-Splice-Scores                  Bin<double> null 4 0.5 1
+Feature           LinearBin4-Splice-Scores            Bin<double> null 4 0.5 1 false
+#Feature           MP-Donor-SVM-Score                 Score 1 MP-Donor-Score 0 -> 2 DONOR_F DONOR_B
+Feature           MP-Donor-SVM-Score                  FilterOFeature<double> MP-Donor-Score Bin4-Splice-Scores -> 2 DONOR_F DONOR_B
+Feature           MP-Donor-LinearFit-SVM-Score        FilterOFeature<double> MP-Donor-Score LinearBin4-Splice-Scores -> 2 DONOR_F DONOR_B
+//
+model=
+MP-Donor-SVM-Score -1
+-0.00131654
+0.0256281
+-0.0161933
+-0.00342623
+MP-Donor-LinearFit-SVM-Score -1
+0.0120905
+0.0179264
+0.0346604
+0.00389419
+//
+Resource    acceptor-score-model    ParamModel null /home/abernal/Projects/devcraig/models/human-mp-bag. true true
+#
+# Acceptor Score features
+#
+
+Feature           Bin4-Splice-Scores                  Bin<double> null 4 0.5 1
+Feature           LinearBin4-Splice-Scores            Bin<double> null 4 0.5 1 false
+#Feature           MP-Acceptor-SVM-Score               Score 1 MP-Acceptor-Score 0 -> 2 ACCEPTOR_F ACCEPTOR_B
+Feature           MP-Acceptor-SVM-Score               FilterOFeature<double> MP-Acceptor-Score Bin4-Splice-Scores -> 2 ACCEPTOR_F ACCEPTOR_B
+Feature           MP-Acceptor-LinearFit-SVM-Score     FilterOFeature<double> MP-Acceptor-Score LinearBin4-Splice-Scores -> 2 ACCEPTOR_F ACCEPTOR_B
+//
+model=
+MP-Acceptor-SVM-Score -1
+-0.00154944
+0.0248175
+-0.022366
+-0.000562456
+MP-Acceptor-LinearFit-SVM-Score -1
+0.0152405
+0.0235191
+0.0323307
+0.00555434
+//
+#Resource    mp-acc-scores           File EXTENDED_LDSCORE /home/abernal/Projects/CRAIG/Data/Human/MPlank/gs_4train_acc.sig true true
+#Resource    mp-don-scores           File EXTENDED_LDSCORE /home/abernal/Projects/CRAIG/Data/Human/MPlank/gs_4train_don.sig true true
+//
