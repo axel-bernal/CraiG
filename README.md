@@ -1,9 +1,9 @@
 # CraiG
 CRf-based Automated Gene Curator and Annotator
 
-1.  Introduction
+  Introduction
     ============
-1.1 Summary
+## Summary
     CRAIG is a suite of programs for discriminative learning and prediction of biological sequence structures. The structures can be genes and non-coding RNAs as of now and depending on the evidence source used to define the model features, the models can be ab initio, de novo or ensemble. The latter category in particular, uses features defined on external evidence sources which can be third-party genefinder program predictions, protein alignments and/or RNA-Seq coverage and junction information among others.
 
     CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
@@ -199,7 +199,6 @@ Usage: craigPreprocess.py [-h] [--config-file CONFIG_FILE] [-v]
       "rnaseq  gsnap   me49-9.0  brady_sibley.day0     /gpfs/fs121/h/abernal/GUS/project_home/DJob/gsnap_test/brad_sibley_input/master/mainresult      F"
 
 3.1.2 Additional Notes
-      ----------------
       There are a few available gene models that were included along the distribution. These models were carefully studied and their feature sets optimized to fit the genome organization in each case. These models are H. sapiens ab initio (human) and H. sapiens ensemble (human-evid), C. elegans ab initio (celegans) and C. elegans ensemble (celegans-evid), A. thaliana ab initio (athaliana) and A. thaliana ensemble (athaliana-evid), T. gondii ab initio(tgondii) and T. gondii RNA-Seq (tgondii-rna), and P. falciparum ab initio (pfalciparum). An automated method to select the closest SPECIES rather than having it as a parameter is feasible using mutual information measures, but it only makes sense when the pool of learned models is larger than what it is right now.
 
       There are also some restrictions on what types of evidence can be combined. For example, the RNA-Seq based models can freely combine RNA-Seq data with other types of evidence; however, each learnt model can only integrate a single RNA-Seq sample. The reason for this restriction is that the RNA-Seq evidence is stage-specific and different samples will contain contradictory transcriptional evidence about the same genomic locus. 
