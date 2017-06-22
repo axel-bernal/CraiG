@@ -14,23 +14,18 @@ CRf-based Automated Gene Curator and Annotator
 ### Supporting Publications
     CRAIG is a suite of tools that use an underlying semi markov CRF model for performing learning and prediction on structured biological sequences. For more information refer to:
  
-   #### Global Discriminative Training for Higher-Accuracy Computational Gene
-      Prediction
-      Bernal A, Crammer K, Hatzigeorgiou A, Pereira F.
-      PLoS Comput Biol 3(3):e54. 2007 
+   #### Global Discriminative Training for Higher-Accuracy Computational Gene Prediction. Bernal A, Crammer K, Hatzigeorgiou A, Pereira F. PLoS Comput Biol 3(3):e54. 2007 
+   #### Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
 
-   #### Automated Gene-Model Curation using Global Discriminative Learning
-      Bioinformatics (2012) 28(12): 1571-1578
-
-1.3 Vendor Software 
+### Vendor Software 
     The following is a list of third party software installed with the main distribution:
     google sparse hash and vector implementations
     boost regex libraries
     eval software package
 
-2.  Building and Installing
+##  Building and Installing
     =======================
-2.1 Main Software Requirements
+### Main Software Requirements
     python v2.7.3 or higher
     gcc version v4.4.2 20091027 (Red Hat 4.4.2-7) (GCC)
     libtools v2.2 or higher
@@ -41,15 +36,16 @@ CRf-based Automated Gene Curator and Annotator
     alignments
     doxygen for generating the documentation
 
-2.2 Step-by-step Installation Instructions
-   a. tar xvf craig-VERSION.tgz | gunzip 
-
-   b. cd craig-VERSION
-
-   c. Run ./autogen.sh to setup the environment (the autoconf
+### Step-by-step Installation Instructions
+   #### a
+   tar xvf craig-VERSION.tgz | gunzip
+   #### b
+   cd craig-VERSION
+   #### c
+   Run ./autogen.sh to setup the environment (the autoconf
       tools are needed for doing this)
-
-   d. Run ./configure [options]
+   #### d
+   Run ./configure 
       By default configure does not turn on debug information. If you 
       want to turn on this info, run 'configure' with command line 
       option --enable-opt=no
@@ -80,8 +76,8 @@ CRf-based Automated Gene Curator and Annotator
       for spliting the training data and merging the resulting parameters in
       each case. Performance of the mpi vertion will vary but will usually 
       stay competitive when compared to the single processor version.
-      
-   e. The environment variable CRAIG_HOME needs to be set permanently 
+    #### e  
+     The environment variable CRAIG_HOME needs to be set permanently 
       to the root directory of the installation directory. To do this the
       .bashrc or .bash_profile files located in the $HOME directory need
        to be edited.
@@ -93,14 +89,15 @@ CRf-based Automated Gene Curator and Annotator
       This is needed so that craigTrain and other applications know exactly 
       where to look for model parameters for training and learned gene models
        for predicting. See next section for more information on this issue. 
-
-   f. Run command:
+    #### f
+    Run command:
       
       make
       
       This should build all objects files, libraries and executable binaries.
 
-   g. [Skip this step if you don't have Doxygen installed in your system]
+   #### g
+   (Skip this step if you don't have Doxygen installed in your system)
       Optionally the following command could be run 
       
       make doc
@@ -109,7 +106,8 @@ CRf-based Automated Gene Curator and Annotator
       work if doxygen has been installed. See section 5 for more details and
       requirements.      
 
-   h. For installation, run commands:
+   #### h
+    For installation, run commands:
 
       make install; make installcheck
       
@@ -121,48 +119,58 @@ CRf-based Automated Gene Curator and Annotator
       This step will also test the instalation to make sure the built 
       programs have no errors.
 
-   i. The following directories will also need to be added to the PATH 
+   #### i
+   The following directories will also need to be added to the PATH 
       variable:
             $CRAIG_HOME/bin
       	    $CRAIG_HOME/perl/bin
       	    $CRAIG_HOME/python/bin
 
-   j. The python library numpy needs to be installed as it is not part of
+   #### j
+   The python library numpy needs to be installed as it is not part of
       the python standard library. The comand "yum install numpy" would do
       this if yum is used as install manager
 
-   k. Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
+   #### k
+   Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
       variable. A command like this in the .bashrc or .bash_profile would
       do that:
       
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
 
 
-3.  Using the program(s)
-    ====================
+##  Using the program(s)
 
-3.1 Preprocessing Stage
-3.1.1 The craigPreprocess.py Script
+### Preprocessing Stage
+#### The craigPreprocess.py Script
       There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
 
-Usage: craigPreprocess.py [-h] [--config-file CONFIG_FILE] [-v]
-                          [--out-dir OUT_DIR]
-                          [--pre-config-file PRE_CONFIG_FILE] [--model MODEL]
-                          [--annot-fmt ANNOT_FMT] [--contig-fmt CONTIG_FMT]
-                          [-l] [-nx] [--annot-tag ANNOT_TAG]
-                          [--transcript-tag TR_TAG] [--cds-tag CDS_TAG]
-                          [--model-utrs] [-n] [--fasta-wrapper FASTA_WRAPPER]
-                          [--annot-wrapper ANNOT_WRAPPER]
-                          [--gc-classes GC_CLASSES]
-                          [--min-coverage MIN_COVERAGE]
-                          [--smooth-window SMOOTH_WINDOW]
-                          [--num-permutations NUM_PERMUTATIONS]
-                          [--closest-species CLOSEST_SPECIES]
-                          [--block-length BLOCK_LENGTH]
-                          [--djob-num-nodes DJOB_NUM_NODES]
-                          [--djob-input DJOB_INPUT]
-                          [--djob-node-class DJOB_NODE_CLASS]
-                          SPECIES ANNOT_FILE FASTA_FILE
+Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
+| Option | function |
+|-h | Print help |
+| --config-file CONFIG_FILE |
+                          | -v|
+                          |--out-dir OUT_DIR|
+                          |--pre-config-file PRE_CONFIG_FILE |
+			  | --model MODEL|
+                          |--annot-fmt ANNOT_FMT|
+			  | --contig-fmt CONTIG_FMT|
+			  | --annot-tag ANNOT_TAG|
+                          |--transcript-tag TR_TAG |
+			  | --cds-tag CDS_TAG|
+                          |--model-utrs |
+			  | --fasta-wrapper FASTA_WRAPPER|
+                          |--annot-wrapper ANNOT_WRAPPER|
+                          |--gc-classes GC_CLASSES|
+                          |--min-coverage MIN_COVERAGE|
+                          |--smooth-window SMOOTH_WINDOW|
+                          |--num-permutations NUM_PERMUTATIONS|
+                          |--closest-species CLOSEST_SPECIES|
+                          |--block-length BLOCK_LENGTH|
+                          |--djob-num-nodes DJOB_NUM_NODES|
+                          |--djob-input DJOB_INPUT|
+                          |--djob-node-class DJOB_NODE_CLASS|
+                          
 
       If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
 
@@ -251,18 +259,18 @@ Doxygen was used to generate documentation from the source, in the style of Java
 
 a) Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
 
-usage : /gpfs/fs121/h/abernal/Projects/craig-1.1//perl/bin/buildDJobPropFiles4Craig.pl [Options]
-      --rsq-type RSQ_TYPE       Either gsnap or rum [rum]
-      --rsq-orientation 	[N|F|R|FR|RF|NN]
-      --species			SPECIES
-      --prefix-propdir		PREFIX_PROPDIR
-      --dataset-id		DATASET_ID
-      --sample-id		SAMPLE_ID
-      --rsq-inputdir		RSQ_INPUTDIR
-      --prefix-craig-output	PREFIX_CRAIG_OUTPUT
-      --fasta-file		FASTA_FILE
-      --annot-file		ANNOT_FILE
-      --closest-species		CLOSEST_SPECIES
+usage : /gpfs/fs121/h/abernal/Projects/craig-1.1//perl/bin/buildDJobPropFiles4Craig.pl with the following options:
+      |--rsq-type | RSQ_TYPE either bam rum |
+      |--rsq-orientation 	|one of  N,F,R,FR,RF,NN|
+      |--species			|SPECIES|
+      |--prefix-propdir		|PREFIX_PROPDIR|
+      |--dataset-id		|DATASET_ID|
+      |--sample-id		|SAMPLE_ID|
+      |--rsq-inputdir		|RSQ_INPUTDIR|
+      |--prefix-craig-output	|PREFIX_CRAIG_OUTPUT|
+      |--fasta-file		|FASTA_FILE|
+      |--annot-file		|ANNOT_FILE|
+      |--closest-species		|CLOSEST_SPECIES|
 
 For the example at hand the following command would suffice -- provided the RNA-Seq data has been aligned with rum (and not gsnap):
 
