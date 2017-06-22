@@ -35,7 +35,7 @@ CRf-based Automated Gene Curator and Annotator
     doxygen for generating the documentation
 
 ### Step-by-step Installation Instructions
-..*  tar xvf craig-VERSION.tgz | gunzip
+..* tar xvf craig-VERSION.tgz | gunzip
    #### b
    cd craig-VERSION
    #### c
