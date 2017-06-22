@@ -13,7 +13,6 @@ CRf-based Automated Gene Curator and Annotator
    
 ### Supporting Publications
     CRAIG is a suite of tools that use an underlying semi markov CRF model for performing learning and prediction on structured biological sequences. For more information refer to:
- 
    #### Global Discriminative Training for Higher-Accuracy Computational Gene Prediction. Bernal A, Crammer K, Hatzigeorgiou A, Pereira F. PLoS Comput Biol 3(3):e54. 2007 
    #### Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
 
@@ -24,7 +23,6 @@ CRf-based Automated Gene Curator and Annotator
     eval software package
 
 ##  Building and Installing
-    =======================
 ### Main Software Requirements
     python v2.7.3 or higher
     gcc version v4.4.2 20091027 (Red Hat 4.4.2-7) (GCC)
@@ -37,8 +35,7 @@ CRf-based Automated Gene Curator and Annotator
     doxygen for generating the documentation
 
 ### Step-by-step Installation Instructions
-   #### a
-   tar xvf craig-VERSION.tgz | gunzip
+..*  tar xvf craig-VERSION.tgz | gunzip
    #### b
    cd craig-VERSION
    #### c
@@ -233,8 +230,8 @@ Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
     Maximum Number of Transitions = 2^6
 
 
-4. Using RNA-Seq to Improve Whole-Genome Annotation
-   ================================================
+## Using RNA-Seq to Improve Whole-Genome Annotation
+
 
    With the advent of RNA-Seq data, there is an urgent need of revising/improving existing gene models most of which were curated, revised or predicted before the availability of RNA-Seq data and the wealth of transcriptional evidence that it provides.
 
@@ -244,20 +241,19 @@ Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
 
    After computing gene models for different RNA-Seq libraries/stages, a merge procedure is necessary to report all available gene predictions in a sound manner. This procedure is called using craigPostprocess.py. This script reports stage-specific alternative splicing events and selects either the best scoring (Default) or the longest UTR call for gene predictions with identical CDS.
 
-5. Class Documentation
-   ===================
+## Class Documentation
 
 Documentation for the library classes and other programs is provided in the doc directory. There are two files: refman.html.tar.gz and latex/refman.pdf which contain the reference manual documentation for craig and its supporting library llessin html and pdf format.
 Doxygen was used to generate documentation from the source, in the style of Javadoc. The documentation is mostly complete, but it needs improvement. We plan to keep working on it in next versions of craig.
   You can execute make doc from the top directory of the installation to generate the doxygen documentation on your own. You need to install doxygen, pdflatex, tar and gzip utilities in order to do this.
  There is a small User's manual with a brief explanation of the main classes of lless and craig and give an overview on the how to build a training environment for a new organism. For more detailed information refer to the files locatd in the doc subdirectory.
 
-6. Examples
-   ========
+## Examples
 
-6.1 Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
+### Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
 
-a) Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
+#### a
+Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
 
 usage : /gpfs/fs121/h/abernal/Projects/craig-1.1//perl/bin/buildDJobPropFiles4Craig.pl with the following options:
       |--rsq-type | RSQ_TYPE either bam rum |
@@ -283,7 +279,8 @@ Comments:
   a.3) The option rsq-orientation can have N,F,R, FR, RF values. The latter two values are for paired reads; R,F stand for the strand orientation, reverse or forward, and N stands for non-stranded samples.
   a.4) Directories CRAIGOUTPUT_DIR.preproc CRAIGOUTPUT_DIR.model CRAIGOUTPUT_DIR.test  will contain the processing data, learned models/predictions and temporary data respectively.
   a.5) If no model files exist for the target, the option --closet-species must be specified
-b) Run the distribjob command:
+#### b
+Run the distribjob command:
 cd PROP_DIR_input && nohup distribjob --propFile controller.prop --numNodes 1 --memoryPerNode 20.0;
 
 Comments: 
@@ -291,7 +288,8 @@ Comments:
   b.2)  Make sure you are running this in the directory where controller.prop is located. 
   b.3)  Also, make sure to erase the master subdirectory if something seriously wrong happened in the last distribjob run and a run from scratch is needed.
 
-c) Obtaining the output predictions.
+####c
+Obtaining the output predictions.
 The paths for the generated gff3 files with the CRAIG gene models are 
  CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.denovo.chr.gff3 for full CDS and UTR denovo predictions.
 b) CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.utr_only.chr.gff3 for UTR only prediction, i.e. only UTR regions are predicted, while the input annotation's CDS is preserved.
@@ -303,10 +301,9 @@ craigPostprocess.py --use-model-scores --out-dir SUMMARY --list-prefixes CRAIGOU
 Comments:
   d.1) The path for the final summarized(merged output) w/o alt splicing is SUMMARY/unionized.final.gff3. This file contains the best possible gene model predictions that use all RNA-Seq libraries to predict UTRs and the input gene annotations to predict CDS. This file has no stage-specific alternative splicing however. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the either UTR.
 
-  d.2) The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
-  d.3) The list of prefixes for each RNA-Seq library can be specified in a file if there are many libraries involved.
+  The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
+   The list of prefixes for each RNA-Seq library can be specified in a file if there are many libraries involved.
 
-7. TODO
-   ====
-   a) The integration of RNA-Seq and ensemble-type evidence sources has not been fully tested. It does not occur in practice too often.
-   b) The human RNA-Seq model has not been fully tested either. The chance never came to be. This is something that is almost ready, but there needs to be some real testing data.
+## TODO
+    The integration of RNA-Seq and ensemble-type evidence sources has not been fully tested. It does not occur in practice too often.
+   The human RNA-Seq model has not been fully tested either. The chance never came to be. This is something that is almost ready, but there needs to be some real testing data.
