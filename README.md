@@ -132,30 +132,6 @@ CRf-based Automated Gene Curator and Annotator
       There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
 
 Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
-| Option |
-| --config-file CONFIG_FILE |
-|--out-dir OUT_DIR|
-|--pre-config-file PRE_CONFIG_FILE |
-| --model MODEL|
-                          |--annot-fmt ANNOT_FMT|
-			  | --contig-fmt CONTIG_FMT|
-			  | --annot-tag ANNOT_TAG|
-                          |--transcript-tag TR_TAG |
-			  | --cds-tag CDS_TAG|
-                          |--model-utrs |
-			  | --fasta-wrapper FASTA_WRAPPER|
-                          |--annot-wrapper ANNOT_WRAPPER|
-                          |--gc-classes GC_CLASSES|
-                          |--min-coverage MIN_COVERAGE|
-                          |--smooth-window SMOOTH_WINDOW|
-                          |--num-permutations NUM_PERMUTATIONS|
-                          |--closest-species CLOSEST_SPECIES|
-                          |--block-length BLOCK_LENGTH|
-                          |--djob-num-nodes DJOB_NUM_NODES|
-                          |--djob-input DJOB_INPUT|
-                          |--djob-node-class DJOB_NODE_CLASS|
-                          
-
       If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
 
         ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
@@ -189,26 +165,26 @@ Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
       An example of how to specify a RNA-Seq evidence source follows:
       "rnaseq  gsnap   me49-9.0  brady_sibley.day0     /gpfs/fs121/h/abernal/GUS/project_home/DJob/gsnap_test/brad_sibley_input/master/mainresult      F"
 
-3.1.2 Additional Notes
+#### Additional Notes
       There are a few available gene models that were included along the distribution. These models were carefully studied and their feature sets optimized to fit the genome organization in each case. These models are H. sapiens ab initio (human) and H. sapiens ensemble (human-evid), C. elegans ab initio (celegans) and C. elegans ensemble (celegans-evid), A. thaliana ab initio (athaliana) and A. thaliana ensemble (athaliana-evid), T. gondii ab initio(tgondii) and T. gondii RNA-Seq (tgondii-rna), and P. falciparum ab initio (pfalciparum). An automated method to select the closest SPECIES rather than having it as a parameter is feasible using mutual information measures, but it only makes sense when the pool of learned models is larger than what it is right now.
 
       There are also some restrictions on what types of evidence can be combined. For example, the RNA-Seq based models can freely combine RNA-Seq data with other types of evidence; however, each learnt model can only integrate a single RNA-Seq sample. The reason for this restriction is that the RNA-Seq evidence is stage-specific and different samples will contain contradictory transcriptional evidence about the same genomic locus. 
 
       An important requirement to learn gene models that integrate RNA-Seq information is that a suitable ab initio model for the target organism must be provided to obtain a good training data set out of the existing input annotations. This ab initio model is assumed to exist in path $CRAIG_HOME/models/SPECIES.params by default, where SPECIES is defined in the previous section. If the model does not exist, the program will check for $CRAIG_HOME/models/CLOSEST_SPECIES.params with CLOSEST_SPECIES is as defined in the previous section. The output from this ab initio model is used together with the set of input gene annotations and the existing RNA-Seq evidence to compute a training set for the final model
 
-3.2 Learning Gene Models
+### Learning Gene Models
     The configuration file CONFIG_FILE, defined in the previous section, contains all the information needed to start the learning process. FASTA_FILE_FOR_VALIDATION_SET and  FASTA_FILE_FOR_TRAINING_SET are the file names of the input sequence files for training and validation respectively, they should be in fasta format. The files TAGS_FOR_VALIDATION_SET and TAGS_FOR_TRAINING_SET contain the Tag labelings which should be provided for each input sequence. These latter tag files can be computed from *gff3 or *gtf input annotation files by using a sequence of perl scripts provided in the $CRAIG_HOME/perl/bin. This sequence is performed automatically using the craigPreprocess.py script
 
    For more information related to this point one can refer to craigTrain's API obtained by executing craigTrain -h and/or section 4 in which a pipeline for improving annotation on whole genomes is described in detail.
 
-3.3 Predicting Gene Structures
+### Predicting Gene Structures
     Executing craigPredict -h will display a detailed help on how to run the command. The main requirement is to have a trained gene model ready. 
 
     For predicting genes using ab initio models, having ready an ab initio model parameter file and the input DNA sequences to predict genes is sufficient.
     For predicting genes using models that integrate external evidence, all the transcriptional evidence for an input set of sequences need to be formatted and organised using craigPreprocess.py. The preprocessing step is explained in detail in 3.1. The option --prefix-evidence=PREFIX_EVIDENCE must be set with the appropiate value, typically specified in the configuration file as PrefixGenomeFiles when trying to re-annotate the whole genome (see Section 4).
   
 
-3.4 Range Limits of Important Input Parameters
+### Range Limits of Important Input Parameters
     Maximum Number of Exons : = 2^8
     Maximum Number of Alternative Splices = 2^8
     Maximum Number of State Phases = 2^2
@@ -239,56 +215,40 @@ Doxygen was used to generate documentation from the source, in the style of Java
 
 ### Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
 
-#### a
-Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
-
-usage : /gpfs/fs121/h/abernal/Projects/craig-1.1//perl/bin/buildDJobPropFiles4Craig.pl with the following options:
-      |--rsq-type | RSQ_TYPE either bam rum |
-      |--rsq-orientation 	|one of  N,F,R,FR,RF,NN|
-      |--species			|SPECIES|
-      |--prefix-propdir		|PREFIX_PROPDIR|
-      |--dataset-id		|DATASET_ID|
-      |--sample-id		|SAMPLE_ID|
-      |--rsq-inputdir		|RSQ_INPUTDIR|
-      |--prefix-craig-output	|PREFIX_CRAIG_OUTPUT|
-      |--fasta-file		|FASTA_FILE|
-      |--annot-file		|ANNOT_FILE|
-      |--closest-species		|CLOSEST_SPECIES|
-
+  * Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
 For the example at hand the following command would suffice -- provided the RNA-Seq data has been aligned with rum (and not gsnap):
 
 buildDJobPropFiles4Craig.pl --rsq-type rum --species tgondii --rsq-inputdir RNASEQ-DIR --rsq-orientation N --dataset-id tqz_reid --sample-id day4 --prefix-propdir PROP_DIR --prefix-craig-output CRAIGOUTPUT_DIR --fasta-file FASTA_FILE --annot-file GFF3_FILE
 
 Comments: 
-  a.0) All File Paths above should be absolute paths, not relative
-  a.1) Make sure reads have been mapped and are present in directory RNASEQ-DIR
-  a.2) Also make sure that the output directories for --prefix-propdir --prefix-craig-output exist. 
-  a.3) The option rsq-orientation can have N,F,R, FR, RF values. The latter two values are for paired reads; R,F stand for the strand orientation, reverse or forward, and N stands for non-stranded samples.
-  a.4) Directories CRAIGOUTPUT_DIR.preproc CRAIGOUTPUT_DIR.model CRAIGOUTPUT_DIR.test  will contain the processing data, learned models/predictions and temporary data respectively.
-  a.5) If no model files exist for the target, the option --closet-species must be specified
-#### b
-Run the distribjob command:
+  - All File Paths above should be absolute paths, not relative
+  - Make sure reads have been mapped and are present in directory RNASEQ-DIR
+  - Also make sure that the output directories for --prefix-propdir --prefix-craig-output exist. 
+  - The option rsq-orientation can have N,F,R, FR, RF values. The latter two values are for paired reads; R,F stand for the strand orientation, reverse or forward, and N stands for non-stranded samples.
+  - Directories CRAIGOUTPUT_DIR.preproc CRAIGOUTPUT_DIR.model CRAIGOUTPUT_DIR.test  will contain the processing data, learned models/predictions and temporary data respectively.
+  - If no model files exist for the target, the option --closet-species must be specified
+
+  * Run the distribjob command:
 cd PROP_DIR_input && nohup distribjob --propFile controller.prop --numNodes 1 --memoryPerNode 20.0;
 
 Comments: 
-  b.1) The memory requirements of 20Gb are only needed for the initialization node only. Please do not use  a smaller size as this could result in insufficient memory problems.
-  b.2)  Make sure you are running this in the directory where controller.prop is located. 
-  b.3)  Also, make sure to erase the master subdirectory if something seriously wrong happened in the last distribjob run and a run from scratch is needed.
+  - The memory requirements of 20Gb are only needed for the initialization node only. Please do not use  a smaller size as this could result in insufficient memory problems.
+  -  Make sure you are running this in the directory where controller.prop is located. 
+  -  Also, make sure to erase the master subdirectory if something seriously wrong happened in the last distribjob run and a run from scratch is needed.
 
-####c
-Obtaining the output predictions.
+  * Obtaining the output predictions.
 The paths for the generated gff3 files with the CRAIG gene models are 
  CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.denovo.chr.gff3 for full CDS and UTR denovo predictions.
-b) CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.utr_only.chr.gff3 for UTR only prediction, i.e. only UTR regions are predicted, while the input annotation's CDS is preserved.
+  * CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.utr_only.chr.gff3 for UTR only prediction, i.e. only UTR regions are predicted, while the input annotation's CDS is preserved.
 
-d) Running a postprocessing step for Reid's day 3 and day4 libraries. 
+  * Running a postprocessing step for Reid's day 3 and day4 libraries. 
    Run post processing command
 craigPostprocess.py --use-model-scores --out-dir SUMMARY --list-prefixes CRAIGOUTPUT_DIR_FOR_DAY4.model/tgondii-rna.tqz_reid.day4,CRAIGOUTPUT_DIR_FOR_DAY3.model/tgondii-rna.tqz_reid.day3 CRAIGOUTPUT_DIR_FOR_DAY4.preproc/tgondii-rna.chr.locs CRAIGOUTPUT_DIR_FOR_DAY4..preproc/tgondii-rna.chr.fa
 
 Comments:
-  d.1) The path for the final summarized(merged output) w/o alt splicing is SUMMARY/unionized.final.gff3. This file contains the best possible gene model predictions that use all RNA-Seq libraries to predict UTRs and the input gene annotations to predict CDS. This file has no stage-specific alternative splicing however. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the either UTR.
+  - The path for the final summarized(merged output) w/o alt splicing is SUMMARY/unionized.final.gff3. This file contains the best possible gene model predictions that use all RNA-Seq libraries to predict UTRs and the input gene annotations to predict CDS. This file has no stage-specific alternative splicing however. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the either UTR.
 
-  The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
+  - The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
    The list of prefixes for each RNA-Seq library can be specified in a file if there are many libraries involved.
 
 ## TODO
