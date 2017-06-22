@@ -3,7 +3,7 @@ CRf-based Automated Gene Curator and Annotator
 
   Introduction
     ============
-## Summary
+### Summary
     CRAIG is a suite of programs for discriminative learning and prediction of biological sequence structures. The structures can be genes and non-coding RNAs as of now and depending on the evidence source used to define the model features, the models can be ab initio, de novo or ensemble. The latter category in particular, uses features defined on external evidence sources which can be third-party genefinder program predictions, protein alignments and/or RNA-Seq coverage and junction information among others.
 
     CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
