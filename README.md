@@ -35,14 +35,11 @@ CRf-based Automated Gene Curator and Annotator
     doxygen for generating the documentation
 
 ### Step-by-step Installation Instructions
-..* tar xvf craig-VERSION.tgz | gunzip
-   #### b
-   cd craig-VERSION
-   #### c
-   Run ./autogen.sh to setup the environment (the autoconf
+  * tar xvf craig-VERSION.tgz | gunzip
+  * cd craig-VERSION
+  * Run ./autogen.sh to setup the environment (the autoconf
       tools are needed for doing this)
-   #### d
-   Run ./configure 
+  * Run ./configure 
       By default configure does not turn on debug information. If you 
       want to turn on this info, run 'configure' with command line 
       option --enable-opt=no
@@ -73,8 +70,8 @@ CRf-based Automated Gene Curator and Annotator
       for spliting the training data and merging the resulting parameters in
       each case. Performance of the mpi vertion will vary but will usually 
       stay competitive when compared to the single processor version.
-    #### e  
-     The environment variable CRAIG_HOME needs to be set permanently 
+
+  * The environment variable CRAIG_HOME needs to be set permanently 
       to the root directory of the installation directory. To do this the
       .bashrc or .bash_profile files located in the $HOME directory need
        to be edited.
@@ -86,15 +83,12 @@ CRf-based Automated Gene Curator and Annotator
       This is needed so that craigTrain and other applications know exactly 
       where to look for model parameters for training and learned gene models
        for predicting. See next section for more information on this issue. 
-    #### f
-    Run command:
-      
+  * Run command:
       make
       
       This should build all objects files, libraries and executable binaries.
 
-   #### g
-   (Skip this step if you don't have Doxygen installed in your system)
+  * Skip this step if you don't have Doxygen installed in your system
       Optionally the following command could be run 
       
       make doc
@@ -103,8 +97,7 @@ CRf-based Automated Gene Curator and Annotator
       work if doxygen has been installed. See section 5 for more details and
       requirements.      
 
-   #### h
-    For installation, run commands:
+  * For installation, run commands:
 
       make install; make installcheck
       
@@ -116,20 +109,16 @@ CRf-based Automated Gene Curator and Annotator
       This step will also test the instalation to make sure the built 
       programs have no errors.
 
-   #### i
-   The following directories will also need to be added to the PATH 
-      variable:
+  *   The following directories will also need to be added to the PATH variable:
             $CRAIG_HOME/bin
       	    $CRAIG_HOME/perl/bin
       	    $CRAIG_HOME/python/bin
 
-   #### j
-   The python library numpy needs to be installed as it is not part of
+  * The python library numpy needs to be installed as it is not part of
       the python standard library. The comand "yum install numpy" would do
       this if yum is used as install manager
 
-   #### k
-   Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
+  * Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
       variable. A command like this in the .bashrc or .bash_profile would
       do that:
       
@@ -143,13 +132,11 @@ CRf-based Automated Gene Curator and Annotator
       There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
 
 Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
-| Option | function |
-|-h | Print help |
+| Option |
 | --config-file CONFIG_FILE |
-                          | -v|
-                          |--out-dir OUT_DIR|
-                          |--pre-config-file PRE_CONFIG_FILE |
-			  | --model MODEL|
+|--out-dir OUT_DIR|
+|--pre-config-file PRE_CONFIG_FILE |
+| --model MODEL|
                           |--annot-fmt ANNOT_FMT|
 			  | --contig-fmt CONTIG_FMT|
 			  | --annot-tag ANNOT_TAG|
