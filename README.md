@@ -1,7 +1,9 @@
+# CraiG
+CRf-based Automated Gene Curator and Annotator
+
 1.  Introduction
     ============
 1.1 Summary
-    ~~~~~~~
     CRAIG is a suite of programs for discriminative learning and prediction of biological sequence structures. The structures can be genes and non-coding RNAs as of now and depending on the evidence source used to define the model features, the models can be ab initio, de novo or ensemble. The latter category in particular, uses features defined on external evidence sources which can be third-party genefinder program predictions, protein alignments and/or RNA-Seq coverage and junction information among others.
 
     CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
@@ -11,7 +13,6 @@
     For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in Section 5.
    
 1.2 Supporting Publications
-    ~~~~~~~~~~~~~~~~~~~~~~~
     CRAIG is a suite of tools that use an underlying semi markov CRF model for performing learning and prediction on structured biological sequences. For more information refer to:
  
    a. Global Discriminative Training for Higher-Accuracy Computational Gene
@@ -23,7 +24,6 @@
       Bioinformatics (2012) 28(12): 1571-1578
 
 1.3 Vendor Software 
-    ~~~~~~~~~~~~~~~
     The following is a list of third party software installed with the main distribution:
     google sparse hash and vector implementations
     boost regex libraries
@@ -32,8 +32,6 @@
 2.  Building and Installing
     =======================
 2.1 Main Software Requirements
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     python v2.7.3 or higher
     gcc version v4.4.2 20091027 (Red Hat 4.4.2-7) (GCC)
     libtools v2.2 or higher
@@ -45,8 +43,6 @@
     doxygen for generating the documentation
 
 2.2 Step-by-step Installation Instructions
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
    a. tar xvf craig-VERSION.tgz | gunzip 
 
    b. cd craig-VERSION
@@ -147,9 +143,7 @@
     ====================
 
 3.1 Preprocessing Stage
-    ~~~~~~~~~~~~~~~~~~~~~~
 3.1.1 The craigPreprocess.py Script
-      -----------------------------
       There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
 
 Usage: craigPreprocess.py [-h] [--config-file CONFIG_FILE] [-v]
@@ -213,13 +207,11 @@ Usage: craigPreprocess.py [-h] [--config-file CONFIG_FILE] [-v]
       An important requirement to learn gene models that integrate RNA-Seq information is that a suitable ab initio model for the target organism must be provided to obtain a good training data set out of the existing input annotations. This ab initio model is assumed to exist in path $CRAIG_HOME/models/SPECIES.params by default, where SPECIES is defined in the previous section. If the model does not exist, the program will check for $CRAIG_HOME/models/CLOSEST_SPECIES.params with CLOSEST_SPECIES is as defined in the previous section. The output from this ab initio model is used together with the set of input gene annotations and the existing RNA-Seq evidence to compute a training set for the final model
 
 3.2 Learning Gene Models
-    ~~~~~~~~~~~~~~~~~~~~
     The configuration file CONFIG_FILE, defined in the previous section, contains all the information needed to start the learning process. FASTA_FILE_FOR_VALIDATION_SET and  FASTA_FILE_FOR_TRAINING_SET are the file names of the input sequence files for training and validation respectively, they should be in fasta format. The files TAGS_FOR_VALIDATION_SET and TAGS_FOR_TRAINING_SET contain the Tag labelings which should be provided for each input sequence. These latter tag files can be computed from *gff3 or *gtf input annotation files by using a sequence of perl scripts provided in the $CRAIG_HOME/perl/bin. This sequence is performed automatically using the craigPreprocess.py script
 
    For more information related to this point one can refer to craigTrain's API obtained by executing craigTrain -h and/or section 4 in which a pipeline for improving annotation on whole genomes is described in detail.
 
 3.3 Predicting Gene Structures
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
     Executing craigPredict -h will display a detailed help on how to run the command. The main requirement is to have a trained gene model ready. 
 
     For predicting genes using ab initio models, having ready an ab initio model parameter file and the input DNA sequences to predict genes is sufficient.
@@ -227,8 +219,6 @@ Usage: craigPreprocess.py [-h] [--config-file CONFIG_FILE] [-v]
   
 
 3.4 Range Limits of Important Input Parameters
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     Maximum Number of Exons : = 2^8
     Maximum Number of Alternative Splices = 2^8
     Maximum Number of State Phases = 2^2
