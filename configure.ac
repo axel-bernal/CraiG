@@ -11,11 +11,11 @@ AC_ARG_ENABLE(opt, [  --enable-opt=[no/yes] turn on optimization
                        [default=$opt_default]],, enable_opt=$opt_default)
 
 if test "x$enable_opt" = "xyes"; then
-CXXFLAGS="$CXXFLAGS -DNDEBUG -O3"
+CXXFLAGS="$CXXFLAGS -DNDEBUG -O3 -std=c++11"
 AC_MSG_RESULT(yes)
 else
 
-CXXFLAGS="$CXXFLAGS -g -DDEBUG"
+CXXFLAGS="$CXXFLAGS -g -DDEBUG -std=c++11"
 AC_MSG_RESULT(no)
 fi
 
