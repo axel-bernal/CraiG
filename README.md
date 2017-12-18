@@ -17,7 +17,7 @@ For automated whole-genome improvement of gene annotations, we have provided a p
    
 
 ## Prerequisites
-    The following is a list of third party software installed with the main distribution:
+The following is a list of third party software installed with the main distribution:
     * google sparse hash and vector implementations
     * regtools (if using BAM input)
     * boost regex libraries 
