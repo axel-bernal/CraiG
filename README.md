@@ -36,163 +36,164 @@ The following is a list of third party software installed with the main distribu
  * gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq alignments
 
 ## Installing
-#### Setup the environment (the autoconf tools are needed for doing this)
+#### Setup the environment
+Make sure the autoconf tools are installed and in your path
 ```
 tar xvf craig-VERSION.tgz | gunzip
 cd craig-VERSION && ./autogen.sh 
 ```
-### Configure environment
+#### Configure environment
 ```
 ./configure --prefix=PREFIX_INSTALLATION [--enable-opt=yes|no] [--enable-mpi=yes|no]
 ```
-    By default configure does not turn on debug information. If you 
-    want to turn on this info, run 'configure' with command line 
-    option --enable-opt=no
-      
-    The --enable-opt option turns debug information ON and also
-    makes object files at least five times as large and the code 
-    three to five times slower, so unless you are thinking in 
-    debugging the program, just run configure with the default values.
+By default configure does not turn on debug information. If you 
+want to turn on this info, run 'configure' with command line 
+option --enable-opt=no
+  
+The --enable-opt option turns debug information ON and also
+makes object files at least five times as large and the code 
+three to five times slower, so unless you are thinking in 
+debugging the program, just run configure with the default values.
 
-    The installation script then will copy all the required data files and 
-    executables to PREFIX_INSTALLATION, which is the prefix installation 
-    directory.
-           
-    For the mpi version, the option --enable-mpi will install an mpi 
-    compliant version of CRAIG. This version should be used when the input
-    training data is large enough to take a few days for training (above .5
-    Gb will do that). 
+The installation script then will copy all the required data files and 
+executables to PREFIX_INSTALLATION, which is the prefix installation 
+directory.
+   
+For the mpi version, the option --enable-mpi will install an mpi 
+compliant version of CRAIG. This version should be used when the input
+training data is large enough to take a few days for training (above .5
+Gb will do that). 
 
-    In those cases, splitting the training data in subsets, train the 
-    subsets separatedly and merge the parameters computed at the end for
-    each subset will run a factor of N times faster, where N is the number
-    of subsets. See the craigTrain help to know what options are available
-    for spliting the training data and merging the resulting parameters in
-    each case. Performance of the mpi vertion will vary but will usually 
-    stay competitive when compared to the single processor version.
+In those cases, splitting the training data in subsets, train the 
+subsets separatedly and merge the parameters computed at the end for
+each subset will run a factor of N times faster, where N is the number
+of subsets. See the craigTrain help to know what options are available
+for spliting the training data and merging the resulting parameters in
+each case. Performance of the mpi vertion will vary but will usually 
+stay competitive when compared to the single processor version.
 
 ### The environment variable CRAIG_HOME needs to be set permanently 
-    to the root directory of the installation directory. To do this the
-    .bashrc or .bash_profile files located in the $HOME directory need
-    to be edited.
-      
-    To continue the installation this command (in bash only) may be run:  
+to the root directory of the installation directory. To do this the
+.bashrc or .bash_profile files located in the $HOME directory need
+to be edited.
+  
+To continue the installation this command (in bash only) may be run:  
 ```
 export CRAIG_HOME=$PREFIX_INSTALLATION
 ```
-    This is needed so that craigTrain and other applications know exactly 
-    where to look for model parameters for training and learned gene models
-    for predicting. See next section for more information on this issue. 
+This is needed so that craigTrain and other applications know exactly 
+where to look for model parameters for training and learned gene models
+for predicting. See next section for more information on this issue. 
 
 ### Run command:
 ```
-      make
-```      
-      This should build all objects files, libraries and executable binaries.
+  make
+```  
+  This should build all objects files, libraries and executable binaries.
 
 ### Skip this step if you don't have Doxygen installed in your system
-      Optionally the following command could be run 
-```      
-      make doc
+  Optionally the following command could be run 
+```  
+  make doc
 ```   
-      This command will generate documentation information and it will only 
-      work if doxygen has been installed. See section 5 for more details and
-      requirements.      
+  This command will generate documentation information and it will only 
+  work if doxygen has been installed. See section 5 for more details and
+  requirements.  
 
 ### For installation, run commands:
 ```
-      make install; make installcheck
-```      
-      Root access might be needed if the installation tree  permissions
-      require it. 
-      This step will copy all binary executables in the bin directory and 
-      liblless.so, the shared library containing all the lless library 
-      rountines, to the lib directory.
-      This step will also test the instalation to make sure the built 
-      programs have no errors.
+  make install; make installcheck
+```  
+  Root access might be needed if the installation tree  permissions
+  require it. 
+  This step will copy all binary executables in the bin directory and 
+  liblless.so, the shared library containing all the lless library 
+  rountines, to the lib directory.
+  This step will also test the instalation to make sure the built 
+  programs have no errors.
 
 ###   The following directories will also need to be added to the PATH variable:
-            $CRAIG_HOME/bin
-      	    $CRAIG_HOME/perl/bin
-      	    $CRAIG_HOME/python/bin
+$CRAIG_HOME/bin
+  	$CRAIG_HOME/perl/bin
+  	$CRAIG_HOME/python/bin
 
 ### The python library numpy needs to be installed as it is not part of
-      the python standard library. The comand "yum install numpy" would do
-      this if yum is used as install manager
+  the python standard library. The comand "yum install numpy" would do
+  this if yum is used as install manager
 
 ### Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
-      variable. A command like this in the .bashrc or .bash_profile would
-      do that:
-```      
-      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
+  variable. A command like this in the .bashrc or .bash_profile would
+  do that:
+```  
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
 ```
 
 ##  Using the program(s)
 
 ### Preprocessing Stage
 #### The craigPreprocess.py Script
-      There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
+  There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
 
 Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
-      If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
+  If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
 
-        ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
-        ValidationTags TAGS_FOR_VALIDATION_SET
-        Sequences FASTA_FILE_FOR_TRAINING_SET
-        Tags Parsing TAGS_FOR_TRAINING_SET
-        Path PATH_TO_WHERE_CONFIG_FILE_IS_LOCATED
-        Name MODEL_NAME_PREFIX
+ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
+ValidationTags TAGS_FOR_VALIDATION_SET
+Sequences FASTA_FILE_FOR_TRAINING_SET
+Tags Parsing TAGS_FOR_TRAINING_SET
+Path PATH_TO_WHERE_CONFIG_FILE_IS_LOCATED
+Name MODEL_NAME_PREFIX
 	PrefixFiles EVIDENCE_PREFIX_FOR_TRAINING_SET
 	PrefixGenomeFiles EVIDENCE_PREFIX_FOR_TESTING_SET
 
-      EVIDENCE_PREFIX_FOR_TESTING_SET typically prefixes the input evidence for the whole genome. 
-      The script craigPreprocess.py supports three different types of gene models -- specified using MODEL/MODEL_NAME_PREFIX above:
-      a) Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
-      b) Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
-      c) RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
+  EVIDENCE_PREFIX_FOR_TESTING_SET typically prefixes the input evidence for the whole genome. 
+  The script craigPreprocess.py supports three different types of gene models -- specified using MODEL/MODEL_NAME_PREFIX above:
+  a) Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
+  b) Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
+  c) RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
 	
-      Before learning a parameter model, the following files must be found in the $CRAIG_HOME/models directory: MODEL_NAME_PREFIX.resources, MODEL_NAME_PREFIX.filters, MODEL_NAME_PREFIX.features, MODEL_NAME_PREFIX.partial.top, MODEL_NAME_PREFIX.complete.top and any other external evidence file with prefix MODEL_NAME_PREFIX that the particular model requires as input. The latter files should be specified in file PRE_CONFIG_FILE, using option --pre-config-file PRE_CONFIG_FILE above.
+  Before learning a parameter model, the following files must be found in the $CRAIG_HOME/models directory: MODEL_NAME_PREFIX.resources, MODEL_NAME_PREFIX.filters, MODEL_NAME_PREFIX.features, MODEL_NAME_PREFIX.partial.top, MODEL_NAME_PREFIX.complete.top and any other external evidence file with prefix MODEL_NAME_PREFIX that the particular model requires as input. The latter files should be specified in file PRE_CONFIG_FILE, using option --pre-config-file PRE_CONFIG_FILE above.
 
-      If any of the above files MODEL_NAME_PREFIX.* is missing in $CRAIG_HOME/models then the script uses CLOSEST_SPECIES ("generic" by default) instead of SPECIES to look for the same files. CLOSEST_SPECIES is assumed to be closely related to the target. The "generic" species has been designed to work relatively well in most eukaryotic cases, more so if RNA-Seq evidence is provided in the input.
+  If any of the above files MODEL_NAME_PREFIX.* is missing in $CRAIG_HOME/models then the script uses CLOSEST_SPECIES ("generic" by default) instead of SPECIES to look for the same files. CLOSEST_SPECIES is assumed to be closely related to the target. The "generic" species has been designed to work relatively well in most eukaryotic cases, more so if RNA-Seq evidence is provided in the input.
 
-      The file PRE_CONFIG_FILE contains information about all the external evidence sources that are available to the model. Each line in this file refers to one evidence source and has the following fields (tab separated):
+  The file PRE_CONFIG_FILE contains information about all the external evidence sources that are available to the model. Each line in this file refers to one evidence source and has the following fields (tab separated):
 
-      a)  Evidence Type: 'rnaseq' for RNA-Seq evidence sources, 'genepred' for external gene predictions or 'alignment' for blast/protein or EST alignments. The first one corresponds to RNA-Seq library mappings, the second one corresponds to external gene predictions and the third one to alignments to databases of transcripts and proteins. The main difference between the second and third type of evidence is that the third one do not generally provide with translation information but it provides scores that are meaningful, such as percentage of identity or p-value. The final gene model integrates all these evidence sources in an ensemble-type framework for learning.
-      b) Evidence SubType: Available options are 'rum' and 'gsnap' for 'rnaseq' types of evidence and 'gtf', 'locs' and 'gff3' for the 'genepred' or 'alignment' type. This field clarifies what the source format is. 
-      c) Dataset Id: An identifier for the sequence/annotation dataset referred to by all the sources of evidence.
-      d) Sample Id: An identifier for the evidence source. Could be a compound name consisting of the author and stage(hour, day) in case of RNA-Seq or the program and running parameters for gene prediction/alignment.
-      e) Full Path to Evidence Source: The full path to the file or directory containing the evidence information. 
-      f) Qualifier: This field is either orientation for 'rnaseq' types of evidence (one of N|F|R|FR|RF|FF|RR) or the maximum confidence score for each prediction for 'genepred' types; a score of 0 means CRAIG should not use prediction confidence scores, only annotations.
+  a)  Evidence Type: 'rnaseq' for RNA-Seq evidence sources, 'genepred' for external gene predictions or 'alignment' for blast/protein or EST alignments. The first one corresponds to RNA-Seq library mappings, the second one corresponds to external gene predictions and the third one to alignments to databases of transcripts and proteins. The main difference between the second and third type of evidence is that the third one do not generally provide with translation information but it provides scores that are meaningful, such as percentage of identity or p-value. The final gene model integrates all these evidence sources in an ensemble-type framework for learning.
+  b) Evidence SubType: Available options are 'rum' and 'gsnap' for 'rnaseq' types of evidence and 'gtf', 'locs' and 'gff3' for the 'genepred' or 'alignment' type. This field clarifies what the source format is. 
+  c) Dataset Id: An identifier for the sequence/annotation dataset referred to by all the sources of evidence.
+  d) Sample Id: An identifier for the evidence source. Could be a compound name consisting of the author and stage(hour, day) in case of RNA-Seq or the program and running parameters for gene prediction/alignment.
+  e) Full Path to Evidence Source: The full path to the file or directory containing the evidence information. 
+  f) Qualifier: This field is either orientation for 'rnaseq' types of evidence (one of N|F|R|FR|RF|FF|RR) or the maximum confidence score for each prediction for 'genepred' types; a score of 0 means CRAIG should not use prediction confidence scores, only annotations.
 
-      An example of how to specify a RNA-Seq evidence source follows:
-      "rnaseq  gsnap   me49-9.0  brady_sibley.day0     /gpfs/fs121/h/abernal/GUS/project_home/DJob/gsnap_test/brad_sibley_input/master/mainresult      F"
+  An example of how to specify a RNA-Seq evidence source follows:
+  "rnaseq  gsnap   me49-9.0  brady_sibley.day0 /gpfs/fs121/h/abernal/GUS/project_home/DJob/gsnap_test/brad_sibley_input/master/mainresult  F"
 
 #### Additional Notes
-      There are a few available gene models that were included along the distribution. These models were carefully studied and their feature sets optimized to fit the genome organization in each case. These models are H. sapiens ab initio (human) and H. sapiens ensemble (human-evid), C. elegans ab initio (celegans) and C. elegans ensemble (celegans-evid), A. thaliana ab initio (athaliana) and A. thaliana ensemble (athaliana-evid), T. gondii ab initio(tgondii) and T. gondii RNA-Seq (tgondii-rna), and P. falciparum ab initio (pfalciparum). An automated method to select the closest SPECIES rather than having it as a parameter is feasible using mutual information measures, but it only makes sense when the pool of learned models is larger than what it is right now.
+  There are a few available gene models that were included along the distribution. These models were carefully studied and their feature sets optimized to fit the genome organization in each case. These models are H. sapiens ab initio (human) and H. sapiens ensemble (human-evid), C. elegans ab initio (celegans) and C. elegans ensemble (celegans-evid), A. thaliana ab initio (athaliana) and A. thaliana ensemble (athaliana-evid), T. gondii ab initio(tgondii) and T. gondii RNA-Seq (tgondii-rna), and P. falciparum ab initio (pfalciparum). An automated method to select the closest SPECIES rather than having it as a parameter is feasible using mutual information measures, but it only makes sense when the pool of learned models is larger than what it is right now.
 
-      There are also some restrictions on what types of evidence can be combined. For example, the RNA-Seq based models can freely combine RNA-Seq data with other types of evidence; however, each learnt model can only integrate a single RNA-Seq sample. The reason for this restriction is that the RNA-Seq evidence is stage-specific and different samples will contain contradictory transcriptional evidence about the same genomic locus. 
+  There are also some restrictions on what types of evidence can be combined. For example, the RNA-Seq based models can freely combine RNA-Seq data with other types of evidence; however, each learnt model can only integrate a single RNA-Seq sample. The reason for this restriction is that the RNA-Seq evidence is stage-specific and different samples will contain contradictory transcriptional evidence about the same genomic locus. 
 
-      An important requirement to learn gene models that integrate RNA-Seq information is that a suitable ab initio model for the target organism must be provided to obtain a good training data set out of the existing input annotations. This ab initio model is assumed to exist in path $CRAIG_HOME/models/SPECIES.params by default, where SPECIES is defined in the previous section. If the model does not exist, the program will check for $CRAIG_HOME/models/CLOSEST_SPECIES.params with CLOSEST_SPECIES is as defined in the previous section. The output from this ab initio model is used together with the set of input gene annotations and the existing RNA-Seq evidence to compute a training set for the final model
+  An important requirement to learn gene models that integrate RNA-Seq information is that a suitable ab initio model for the target organism must be provided to obtain a good training data set out of the existing input annotations. This ab initio model is assumed to exist in path $CRAIG_HOME/models/SPECIES.params by default, where SPECIES is defined in the previous section. If the model does not exist, the program will check for $CRAIG_HOME/models/CLOSEST_SPECIES.params with CLOSEST_SPECIES is as defined in the previous section. The output from this ab initio model is used together with the set of input gene annotations and the existing RNA-Seq evidence to compute a training set for the final model
 
 ### Learning Gene Models
-    The configuration file CONFIG_FILE, defined in the previous section, contains all the information needed to start the learning process. FASTA_FILE_FOR_VALIDATION_SET and  FASTA_FILE_FOR_TRAINING_SET are the file names of the input sequence files for training and validation respectively, they should be in fasta format. The files TAGS_FOR_VALIDATION_SET and TAGS_FOR_TRAINING_SET contain the Tag labelings which should be provided for each input sequence. These latter tag files can be computed from *gff3 or *gtf input annotation files by using a sequence of perl scripts provided in the $CRAIG_HOME/perl/bin. This sequence is performed automatically using the craigPreprocess.py script
+The configuration file CONFIG_FILE, defined in the previous section, contains all the information needed to start the learning process. FASTA_FILE_FOR_VALIDATION_SET and  FASTA_FILE_FOR_TRAINING_SET are the file names of the input sequence files for training and validation respectively, they should be in fasta format. The files TAGS_FOR_VALIDATION_SET and TAGS_FOR_TRAINING_SET contain the Tag labelings which should be provided for each input sequence. These latter tag files can be computed from *gff3 or *gtf input annotation files by using a sequence of perl scripts provided in the $CRAIG_HOME/perl/bin. This sequence is performed automatically using the craigPreprocess.py script
 
    For more information related to this point one can refer to craigTrain's API obtained by executing craigTrain -h and/or section 4 in which a pipeline for improving annotation on whole genomes is described in detail.
 
 ### Predicting Gene Structures
-    Executing craigPredict -h will display a detailed help on how to run the command. The main requirement is to have a trained gene model ready. 
+Executing craigPredict -h will display a detailed help on how to run the command. The main requirement is to have a trained gene model ready. 
 
-    For predicting genes using ab initio models, having ready an ab initio model parameter file and the input DNA sequences to predict genes is sufficient.
-    For predicting genes using models that integrate external evidence, all the transcriptional evidence for an input set of sequences need to be formatted and organised using craigPreprocess.py. The preprocessing step is explained in detail in 3.1. The option --prefix-evidence=PREFIX_EVIDENCE must be set with the appropiate value, typically specified in the configuration file as PrefixGenomeFiles when trying to re-annotate the whole genome (see Section 4).
+For predicting genes using ab initio models, having ready an ab initio model parameter file and the input DNA sequences to predict genes is sufficient.
+For predicting genes using models that integrate external evidence, all the transcriptional evidence for an input set of sequences need to be formatted and organised using craigPreprocess.py. The preprocessing step is explained in detail in 3.1. The option --prefix-evidence=PREFIX_EVIDENCE must be set with the appropiate value, typically specified in the configuration file as PrefixGenomeFiles when trying to re-annotate the whole genome (see Section 4).
   
 
 ### Range Limits of Important Input Parameters
-    Maximum Number of Exons : = 2^8
-    Maximum Number of Alternative Splices = 2^8
-    Maximum Number of State Phases = 2^2
-    Maximum Number of Strands = 2^1
-    Maximum Number of States = 2^6
-    Maximum Number of Transitions = 2^6
+Maximum Number of Exons : = 2^8
+Maximum Number of Alternative Splices = 2^8
+Maximum Number of State Phases = 2^2
+Maximum Number of Strands = 2^1
+Maximum Number of States = 2^6
+Maximum Number of Transitions = 2^6
 
 
 ## Using RNA-Seq to Improve Whole-Genome Annotation
@@ -258,5 +259,5 @@ Doxygen was used to generate documentation from the source, in the style of Java
 
 
 ## TODO
-    The integration of RNA-Seq and ensemble-type evidence sources has not been fully tested. It does not occur in practice too often.
+The integration of RNA-Seq and ensemble-type evidence sources has not been fully tested. It does not occur in practice too often.
    The human RNA-Seq model has not been fully tested either. The chance never came to be. This is something that is almost ready, but there needs to be some real testing data.
