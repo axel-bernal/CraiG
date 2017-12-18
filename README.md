@@ -13,7 +13,7 @@ CRAIG's core executables and libraries are written in C++ and are: craigPredict 
 
 There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located in subdirectory CRAIG_HOME/models, if an output directory is not provided (see Subsection 2.2.e below to see when/how to setup this shell variable).
 
-For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in Section 5.
+For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in the last section of this document
    
 
 ## Prerequisites
@@ -72,7 +72,7 @@ for spliting the training data and merging the resulting parameters in
 each case. Performance of the mpi vertion will vary but will usually 
 stay competitive when compared to the single processor version.
 
-### Set environment variables
+#### Set environment variables
 CRAIG_HOME needs to be set permanently to the root directory of the
 installation directory. To do this the .bashrc or .bash_profile files
 located in the $HOME directory need to be edited.
@@ -85,9 +85,11 @@ This is needed so that craigTrain and other applications know exactly
 where to look for model parameters for training and learned gene models
 for predicting. See next section for more information on this issue. 
 
-### Build executables
+#### Build executables
 ```
-make; make doc
+make
+make check
+make doc
 ```  
 This should build all objects files, libraries and executable binaries.
 The command make doc will generate documentation information and it will only 
@@ -95,10 +97,10 @@ work if doxygen has been installed.
 
 For installation, run commands:
 ```
-  make install; make installcheck
+make install
+make installcheck
 ```  
-Root access might be needed if the installation tree permissions
-require it. 
+Root access might be needed if writing in the installation tree prefix requires it. 
 This step will copy all binary executables in the bin directory and 
 liblless.so, the shared library containing all the lless library 
 rountines, to the lib directory.
@@ -124,30 +126,33 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
 pip install -r python/requirements.txt
 ```
 
-##  Using the program(s)
+## Usage
 
 ### Preprocessing Stage
 #### The craigPreprocess.py Script
   There are many types of transcription/translation evidence sources that can be integrated for learning/predicting gene models. This body of evidence needs to be formatted and organised before learning and predicting gene models. The pre-processing script craigPreprocess.py takes care of the formatting and organising in a transparent and user-friendly manner. 
 
-Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
-  If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
+Usage: 
+```
+craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
+```
+If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
 
-ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
-ValidationTags TAGS_FOR_VALIDATION_SET
-Sequences FASTA_FILE_FOR_TRAINING_SET
-Tags Parsing TAGS_FOR_TRAINING_SET
-Path PATH_TO_WHERE_CONFIG_FILE_IS_LOCATED
-Name MODEL_NAME_PREFIX
-	PrefixFiles EVIDENCE_PREFIX_FOR_TRAINING_SET
-	PrefixGenomeFiles EVIDENCE_PREFIX_FOR_TESTING_SET
+ * ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
+ * ValidationTags TAGS_FOR_VALIDATION_SET
+ * Sequences FASTA_FILE_FOR_TRAINING_SET
+ * Tags Parsing TAGS_FOR_TRAINING_SET
+ * Path PATH_TO_WHERE_CONFIG_FILE_IS_LOCATED
+ * Name MODEL_NAME_PREFIX
+ * PrefixFiles EVIDENCE_PREFIX_FOR_TRAINING_SET
+ * PrefixGenomeFiles EVIDENCE_PREFIX_FOR_TESTING_SET
 
   EVIDENCE_PREFIX_FOR_TESTING_SET typically prefixes the input evidence for the whole genome. 
   The script craigPreprocess.py supports three different types of gene models -- specified using MODEL/MODEL_NAME_PREFIX above:
-  a) Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
-  b) Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
-  c) RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
-	
+  i. Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
+  ii. Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
+  iii. RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
+
   Before learning a parameter model, the following files must be found in the $CRAIG_HOME/models directory: MODEL_NAME_PREFIX.resources, MODEL_NAME_PREFIX.filters, MODEL_NAME_PREFIX.features, MODEL_NAME_PREFIX.partial.top, MODEL_NAME_PREFIX.complete.top and any other external evidence file with prefix MODEL_NAME_PREFIX that the particular model requires as input. The latter files should be specified in file PRE_CONFIG_FILE, using option --pre-config-file PRE_CONFIG_FILE above.
 
   If any of the above files MODEL_NAME_PREFIX.* is missing in $CRAIG_HOME/models then the script uses CLOSEST_SPECIES ("generic" by default) instead of SPECIES to look for the same files. CLOSEST_SPECIES is assumed to be closely related to the target. The "generic" species has been designed to work relatively well in most eukaryotic cases, more so if RNA-Seq evidence is provided in the input.
@@ -180,7 +185,7 @@ The configuration file CONFIG_FILE, defined in the previous section, contains al
 Executing craigPredict -h will display a detailed help on how to run the command. The main requirement is to have a trained gene model ready. 
 
 For predicting genes using ab initio models, having ready an ab initio model parameter file and the input DNA sequences to predict genes is sufficient.
-For predicting genes using models that integrate external evidence, all the transcriptional evidence for an input set of sequences need to be formatted and organised using craigPreprocess.py. The preprocessing step is explained in detail in 3.1. The option --prefix-evidence=PREFIX_EVIDENCE must be set with the appropiate value, typically specified in the configuration file as PrefixGenomeFiles when trying to re-annotate the whole genome (see Section 4).
+For predicting genes using models that integrate external evidence, all the transcriptional evidence for an input set of sequences need to be formatted and organised using craigPreprocess.py. The option --prefix-evidence=PREFIX_EVIDENCE must be set with the appropiate value, typically specified in the configuration file as PrefixGenomeFiles when trying to re-annotate the whole genome.
   
 
 ### Range Limits of Important Input Parameters

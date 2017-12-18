@@ -4,4 +4,4 @@ EXTRA_DIST =  boost/assert.hpp  boost/checked_delete.hpp boost/config.hpp  boost
 libboost_regex_a_SOURCES = primary_transform.hpp c_regex_traits.cpp c_regex_traits_common.cpp c_regex_traits_common.cpp cpp_regex_traits.cpp cregex.cpp fileiter.cpp instances.cpp posix_api.cpp regex.cpp regex_debug.cpp regex_synch.cpp w32_regex_traits.cpp wide_posix_api.cpp winstances.cpp
 
 
-INCLUDES = -I@top_srcdir@/regex/
+AM_CPPFLAGS = -I@top_srcdir@/regex/
