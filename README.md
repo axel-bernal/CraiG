@@ -45,7 +45,7 @@ cd craig-VERSION && ./autogen.sh
 ```
 ./configure --prefix=PREFIX_INSTALLATION [--enable-opt=yes|no] [--enable-mpi=yes|no]
 ```
-      By default configure does not turn on debug information. If you 
+   By default configure does not turn on debug information. If you 
       want to turn on this info, run 'configure' with command line 
       option --enable-opt=no
       
