@@ -153,18 +153,26 @@ If specified, the option --config-file CONFIG_FILE makes the script to prepare a
   2. Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
   3. RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
 
-  Before learning a parameter model, the following files must be found in the $CRAIG_HOME/models directory: MODEL_NAME_PREFIX.resources, MODEL_NAME_PREFIX.filters, MODEL_NAME_PREFIX.features, MODEL_NAME_PREFIX.partial.top, MODEL_NAME_PREFIX.complete.top and any other external evidence file with prefix MODEL_NAME_PREFIX that the particular model requires as input. The latter files should be specified in file PRE_CONFIG_FILE, using option --pre-config-file PRE_CONFIG_FILE above.
+  Before learning a parameter model, the following files must be found in the $CRAIG_HOME/models directory:
+```
+MODEL_NAME_PREFIX.resources
+MODEL_NAME_PREFIX.filters
+MODEL_NAME_PREFIX.features
+MODEL_NAME_PREFIX.partial.top
+MODEL_NAME_PREFIX.complete.top
+```
+and any other external evidence file with prefix MODEL_NAME_PREFIX that the particular model requires as input. The latter files should be specified in file PRE_CONFIG_FILE, using option --pre-config-file PRE_CONFIG_FILE above.
 
   If any of the above files MODEL_NAME_PREFIX.* is missing in $CRAIG_HOME/models then the script uses CLOSEST_SPECIES ("generic" by default) instead of SPECIES to look for the same files. CLOSEST_SPECIES is assumed to be closely related to the target. The "generic" species has been designed to work relatively well in most eukaryotic cases, more so if RNA-Seq evidence is provided in the input.
 
   The file PRE_CONFIG_FILE contains information about all the external evidence sources that are available to the model. Each line in this file refers to one evidence source and has the following fields (tab separated):
 
-  a)  Evidence Type: 'rnaseq' for RNA-Seq evidence sources, 'genepred' for external gene predictions or 'alignment' for blast/protein or EST alignments. The first one corresponds to RNA-Seq library mappings, the second one corresponds to external gene predictions and the third one to alignments to databases of transcripts and proteins. The main difference between the second and third type of evidence is that the third one do not generally provide with translation information but it provides scores that are meaningful, such as percentage of identity or p-value. The final gene model integrates all these evidence sources in an ensemble-type framework for learning.
-  b) Evidence SubType: Available options are 'rum' and 'gsnap' for 'rnaseq' types of evidence and 'gtf', 'locs' and 'gff3' for the 'genepred' or 'alignment' type. This field clarifies what the source format is. 
-  c) Dataset Id: An identifier for the sequence/annotation dataset referred to by all the sources of evidence.
-  d) Sample Id: An identifier for the evidence source. Could be a compound name consisting of the author and stage(hour, day) in case of RNA-Seq or the program and running parameters for gene prediction/alignment.
-  e) Full Path to Evidence Source: The full path to the file or directory containing the evidence information. 
-  f) Qualifier: This field is either orientation for 'rnaseq' types of evidence (one of N|F|R|FR|RF|FF|RR) or the maximum confidence score for each prediction for 'genepred' types; a score of 0 means CRAIG should not use prediction confidence scores, only annotations.
+  a.  Evidence Type: 'rnaseq' for RNA-Seq evidence sources, 'genepred' for external gene predictions or 'alignment' for blast/protein or EST alignments. The first one corresponds to RNA-Seq library mappings, the second one corresponds to external gene predictions and the third one to alignments to databases of transcripts and proteins. The main difference between the second and third type of evidence is that the third one do not generally provide with translation information but it provides scores that are meaningful, such as percentage of identity or p-value. The final gene model integrates all these evidence sources in an ensemble-type framework for learning.
+  b. Evidence SubType: Available options are 'rum' and 'gsnap' for 'rnaseq' types of evidence and 'gtf', 'locs' and 'gff3' for the 'genepred' or 'alignment' type. This field clarifies what the source format is. 
+  c. Dataset Id: An identifier for the sequence/annotation dataset referred to by all the sources of evidence.
+  d. Sample Id: An identifier for the evidence source. Could be a compound name consisting of the author and stage(hour, day) in case of RNA-Seq or the program and running parameters for gene prediction/alignment.
+  e. Full Path to Evidence Source: The full path to the file or directory containing the evidence information. 
+  f. Qualifier: This field is either orientation for 'rnaseq' types of evidence (one of N|F|R|FR|RF|FF|RR) or the maximum confidence score for each prediction for 'genepred' types; a score of 0 means CRAIG should not use prediction confidence scores, only annotations.
 
   An example of how to specify a RNA-Seq evidence source follows:
   "rnaseq  gsnap   me49-9.0  brady_sibley.day0 /gpfs/fs121/h/abernal/GUS/project_home/DJob/gsnap_test/brad_sibley_input/master/mainresult  F"
