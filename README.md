@@ -137,16 +137,16 @@ Usage:
 craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
 ```
 If specified, the option --config-file CONFIG_FILE makes the script to prepare and all the input information necessary to train a new gene model. The input information is then summarized and written in CONFIG_FILE using the following format:
-
- * ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
- * ValidationTags TAGS_FOR_VALIDATION_SET
- * Sequences FASTA_FILE_FOR_TRAINING_SET
- * Tags Parsing TAGS_FOR_TRAINING_SET
- * Path PATH_TO_WHERE_CONFIG_FILE_IS_LOCATED
- * Name MODEL_NAME_PREFIX
- * PrefixFiles EVIDENCE_PREFIX_FOR_TRAINING_SET
- * PrefixGenomeFiles EVIDENCE_PREFIX_FOR_TESTING_SET
-
+```
+  ValidationSequences FASTA_FILE_FOR_VALIDATION_SET
+  ValidationTags TAGS_FOR_VALIDATION_SET
+  Sequences FASTA_FILE_FOR_TRAINING_SET
+  Tags Parsing TAGS_FOR_TRAINING_SET
+  Path PATH_TO_WHERE_CONFIG_FILE_IS_LOCATED
+  Name MODEL_NAME_PREFIX
+  PrefixFiles EVIDENCE_PREFIX_FOR_TRAINING_SET
+  PrefixGenomeFiles EVIDENCE_PREFIX_FOR_TESTING_SET
+```
   EVIDENCE_PREFIX_FOR_TESTING_SET typically prefixes the input evidence for the whole genome. 
   The script craigPreprocess.py supports three different types of gene models -- specified using MODEL/MODEL_NAME_PREFIX above:
   i. Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
