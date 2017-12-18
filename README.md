@@ -32,6 +32,7 @@ CRf-based Automated Gene Curator and Annotator
     autoconf 2.6 or higher
     gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq
     alignments
+    regtools (https://regtools.readthedocs.io/en/latest/) if using RNA-Seq BAMs in the input
     doxygen for generating the documentation
 
 ### Step-by-step Installation Instructions
@@ -204,17 +205,13 @@ Usage: craigPreprocess.py [OPTIONS] SPECIES ANNOT_FILE FASTA_FILE
 
    After computing gene models for different RNA-Seq libraries/stages, a merge procedure is necessary to report all available gene predictions in a sound manner. This procedure is called using craigPostprocess.py. This script reports stage-specific alternative splicing events and selects either the best scoring (Default) or the longest UTR call for gene predictions with identical CDS.
 
-## Class Documentation
-
-Documentation for the library classes and other programs is provided in the doc directory. There are two files: refman.html.tar.gz and latex/refman.pdf which contain the reference manual documentation for craig and its supporting library llessin html and pdf format.
-Doxygen was used to generate documentation from the source, in the style of Javadoc. The documentation is mostly complete, but it needs improvement. We plan to keep working on it in next versions of craig.
-  You can execute make doc from the top directory of the installation to generate the doxygen documentation on your own. You need to install doxygen, pdflatex, tar and gzip utilities in order to do this.
- There is a small User's manual with a brief explanation of the main classes of lless and craig and give an overview on the how to build a training environment for a new organism. For more detailed information refer to the files locatd in the doc subdirectory.
-
 ## Examples
 
-### Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
+### Example for reannotating me49 using Hehl day7 RNA-Seq dataset
+  * See examples/hehl_day7.preconf for an example of a preconfiguration file for Hehl's day7 dataset
+  * See examples/craig_pipeline.sh for all the commands needed to generate annotations for Hehl's day7 dataset using examples/hehl_day7.preconf as preconfiguration file. See comments inside for requirements
 
+### Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
   * Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
 For the example at hand the following command would suffice -- provided the RNA-Seq data has been aligned with rum (and not gsnap):
 
@@ -250,6 +247,14 @@ Comments:
 
   - The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
    The list of prefixes for each RNA-Seq library can be specified in a file if there are many libraries involved.
+
+## Class Documentation
+
+Documentation for the library classes and other programs is provided in the doc directory. There are two files: refman.html.tar.gz and latex/refman.pdf which contain the reference manual documentation for craig and its supporting library llessin html and pdf format.
+Doxygen was used to generate documentation from the source, in the style of Javadoc. The documentation is mostly complete, but it needs improvement. We plan to keep working on it in next versions of craig.
+  You can execute make doc from the top directory of the installation to generate the doxygen documentation on your own. You need to install doxygen, pdflatex, tar and gzip utilities in order to do this.
+ There is a small User's manual with a brief explanation of the main classes of lless and craig and give an overview on the how to build a training environment for a new organism. For more detailed information refer to the files locatd in the doc subdirectory.
+
 
 ## TODO
     The integration of RNA-Seq and ensemble-type evidence sources has not been fully tested. It does not occur in practice too often.
