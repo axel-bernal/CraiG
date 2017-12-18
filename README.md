@@ -238,41 +238,44 @@ craigPostprocess.py --out-dir postprocessing --list-prefixes hehl_day7.model/tgo
 ```
 
 ### Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
-  * Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
+  1. Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
 For the example at hand the following command would suffice -- provided the RNA-Seq data has been aligned with rum (and not gsnap):
-
+```
 buildDJobPropFiles4Craig.pl --rsq-type rum --species tgondii --rsq-inputdir RNASEQ-DIR --rsq-orientation N --dataset-id tqz_reid --sample-id day4 --prefix-propdir PROP_DIR --prefix-craig-output CRAIGOUTPUT_DIR --fasta-file FASTA_FILE --annot-file GFF3_FILE
+```
+  Comments: 
+    - All File Paths above should be absolute paths, not relative
+    - Make sure reads have been mapped and are present in directory RNASEQ-DIR
+    - Also make sure that the output directories for --prefix-propdir --prefix-craig-output exist. 
+    - The option rsq-orientation can have N,F,R, FR, RF values. The latter two values are for paired reads; R,F stand for the strand orientation, reverse or forward, and N stands for non-stranded samples.
+    - Directories CRAIGOUTPUT_DIR.preproc CRAIGOUTPUT_DIR.model CRAIGOUTPUT_DIR.test  will contain the processing data, learned models/predictions and temporary data respectively.
+    - If no model files exist for the target, the option --closet-species must be specified
 
-Comments: 
-  - All File Paths above should be absolute paths, not relative
-  - Make sure reads have been mapped and are present in directory RNASEQ-DIR
-  - Also make sure that the output directories for --prefix-propdir --prefix-craig-output exist. 
-  - The option rsq-orientation can have N,F,R, FR, RF values. The latter two values are for paired reads; R,F stand for the strand orientation, reverse or forward, and N stands for non-stranded samples.
-  - Directories CRAIGOUTPUT_DIR.preproc CRAIGOUTPUT_DIR.model CRAIGOUTPUT_DIR.test  will contain the processing data, learned models/predictions and temporary data respectively.
-  - If no model files exist for the target, the option --closet-species must be specified
-
-  * Run the distribjob command:
+  2. Run the distribjob command:
+```
 cd PROP_DIR_input && nohup distribjob --propFile controller.prop --numNodes 1 --memoryPerNode 20.0;
+```
+  Comments: 
+    - The memory requirements of 20Gb are only needed for the initialization node only. Please do not use  a smaller size as this could result in insufficient memory problems.
+    -  Make sure you are running this in the directory where controller.prop is located. 
+    -  Also, make sure to erase the master subdirectory if something seriously wrong happened in the last distribjob run and a run from scratch is needed.
 
-Comments: 
-  - The memory requirements of 20Gb are only needed for the initialization node only. Please do not use  a smaller size as this could result in insufficient memory problems.
-  -  Make sure you are running this in the directory where controller.prop is located. 
-  -  Also, make sure to erase the master subdirectory if something seriously wrong happened in the last distribjob run and a run from scratch is needed.
+  3. Obtaining the output predictions. The paths for the generated gff3 files with the CRAIG gene models are:
+```
+CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.denovo.chr.gff3
+CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.utr_only.chr.gff3
+``` 
+For full CDS and UTR denovo predictions and UTR only predictions, i.e. only UTR regions are predicted, while the input annotation's CDS is preserved, respectively
 
-  * Obtaining the output predictions.
-The paths for the generated gff3 files with the CRAIG gene models are 
- CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.denovo.chr.gff3 for full CDS and UTR denovo predictions.
-  * CRAIGOUTPUT_DIR.model/tgondii-rna.tqz_reid.day4.utr_only.chr.gff3 for UTR only prediction, i.e. only UTR regions are predicted, while the input annotation's CDS is preserved.
-
-  * Running a postprocessing step for Reid's day 3 and day4 libraries. 
-   Run post processing command
+  4. Running a postprocessing step for Reid's day 3 and day4 libraries. Run post processing command:
+```   
 craigPostprocess.py --use-model-scores --out-dir SUMMARY --list-prefixes CRAIGOUTPUT_DIR_FOR_DAY4.model/tgondii-rna.tqz_reid.day4,CRAIGOUTPUT_DIR_FOR_DAY3.model/tgondii-rna.tqz_reid.day3 CRAIGOUTPUT_DIR_FOR_DAY4.preproc/tgondii-rna.chr.locs CRAIGOUTPUT_DIR_FOR_DAY4..preproc/tgondii-rna.chr.fa
+```
+  Comments:
+    - The path for the final summarized(merged output) w/o alt splicing is SUMMARY/unionized.final.gff3. This file contains the best possible gene model predictions that use all RNA-Seq libraries to predict UTRs and the input gene annotations to predict CDS. This file has no stage-specific alternative splicing however. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the either UTR.
 
-Comments:
-  - The path for the final summarized(merged output) w/o alt splicing is SUMMARY/unionized.final.gff3. This file contains the best possible gene model predictions that use all RNA-Seq libraries to predict UTRs and the input gene annotations to predict CDS. This file has no stage-specific alternative splicing however. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the either UTR.
-
-  - The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
-   The list of prefixes for each RNA-Seq library can be specified in a file if there are many libraries involved.
+    - The path SUMMARY/denovo.final.gff3 contains the stage-specific alternative splicing denovo predictions. The last field in the gff3 for mRNA entries contains detail about the experiment/sample id used as support evidence to predict the gene model. Transcripts with UTR variations but otherwise identical CDS will be reported as one transcript only and the last gff3 field will also contain details about the UTR annotations for each sample-id involved.
+     - The list of prefixes for each RNA-Seq library can be specified in a file if there are many libraries involved.
 
 ## Class Documentation
 
