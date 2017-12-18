@@ -9,21 +9,22 @@ Related Publications
  * Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
 
 ##  Getting Started
-    CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
+CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
 
-    There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located subdirectory CRAIG_HOME/models (see Subsection 2.2.e below to see how to setup this shell variable).
+There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located subdirectory CRAIG_HOME/models (see Subsection 2.2.e below to see how to setup this shell variable).
 
-    For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in Section 5.
+For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in Section 5.
    
 
-### Vendor Software 
+## Prerequisites
     The following is a list of third party software installed with the main distribution:
-    google sparse hash and vector implementations
-    boost regex libraries
-    eval software package
+    * google sparse hash and vector implementations
+    * regtools (if using BAM input)
+    * boost regex libraries 
+    * eval software package (only for performance evaluations)
 
-##  Building and Installing
-### Main Software Requirements
+##  Installing
+### Software Requirements
     python v2.7.3 or higher
     gcc version v4.4.2 20091027 (Red Hat 4.4.2-7) (GCC)
     libtools v2.2 or higher
