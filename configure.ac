@@ -25,6 +25,7 @@ AC_PROG_CXX
 AC_PROG_INSTALL
 
 # Checks for libraries.
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 AC_PROG_LIBTOOL
 
 # Checks for header files.
@@ -52,7 +53,7 @@ AC_MSG_RESULT(no)
 fi
 
 # Building Makefile(s)
-AM_INIT_AUTOMAKE([1.9 tar-pax])
+AM_INIT_AUTOMAKE([-Wall foreign])
 
 # Set output files
 AC_CONFIG_FILES([Makefile src/Makefile lless/Makefile regex/Makefile sparsevec/Makefile models/Makefile python/bin/Makefile python/lib/Makefile perl/bin/Makefile perl/lib/Makefile tests/Makefile doc/Makefile tests/atlocal datasets/Makefile])
