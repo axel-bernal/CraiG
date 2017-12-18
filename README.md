@@ -1,20 +1,18 @@
 # CraiG
-CRf-based Automated Gene Curator and Annotator
+CRAIG is a suite of tools that use an underlying semi markov CRF model for performing gene model learning and prediction on structured biological sequences. 
+CRAIG stands for a CRf-based Ab-Initio Genefinder, however the suite integrates ensemble (output from other gene predictors, RNA-Seq features) into the prediction. The predicted structures as of now are genes, including UTRs, however the libraries are general enough to support any type of DNA structure. The underlying models can be ab initio, de novo or ensemble. The latter category in particular, uses features defined on external evidence sources which can be third-party genefinder program predictions, protein alignments and/or RNA-Seq coverage and junction information among others.
 
-##  Introduction
-### Summary
-    CRAIG is a suite of programs for discriminative learning and prediction of biological sequence structures. The structures can be genes and non-coding RNAs as of now and depending on the evidence source used to define the model features, the models can be ab initio, de novo or ensemble. The latter category in particular, uses features defined on external evidence sources which can be third-party genefinder program predictions, protein alignments and/or RNA-Seq coverage and junction information among others.
+Related Publications
+   #### Global Discriminative Training for Higher-Accuracy Computational Gene Prediction. Bernal A, Crammer K, Hatzigeorgiou A, Pereira F. PLoS Comput Biol 3(3):e54. 2007 
+   #### Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
 
+##  Getting Started
     CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
 
     There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located subdirectory CRAIG_HOME/models (see Subsection 2.2.e below to see how to setup this shell variable).
 
     For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in Section 5.
    
-### Supporting Publications
-    CRAIG is a suite of tools that use an underlying semi markov CRF model for performing learning and prediction on structured biological sequences. For more information refer to:
-   #### Global Discriminative Training for Higher-Accuracy Computational Gene Prediction. Bernal A, Crammer K, Hatzigeorgiou A, Pereira F. PLoS Comput Biol 3(3):e54. 2007 
-   #### Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
 
 ### Vendor Software 
     The following is a list of third party software installed with the main distribution:
