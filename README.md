@@ -36,71 +36,73 @@ The following is a list of third party software installed with the main distribu
  * gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq alignments
 
 ## Installing
- * Setup the environment (the autoconf tools are needed for doing this)
+### Setup the environment (the autoconf tools are needed for doing this)
 ```
 tar xvf craig-VERSION.tgz | gunzip
 cd craig-VERSION && ./autogen.sh 
 ```
- * Configure environment
+### Configure environment
 ```
 ./configure --prefix=PREFIX_INSTALLATION [--enable-opt=yes|no] [--enable-mpi=yes|no]
 ```
     By default configure does not turn on debug information. If you 
-      want to turn on this info, run 'configure' with command line 
-      option --enable-opt=no
+    want to turn on this info, run 'configure' with command line 
+    option --enable-opt=no
       
-      The --enable-opt option turns debug information ON and also
-      makes object files at least five times as large and the code 
-      three to five times slower, so unless you are thinking in 
-      debugging the program, just run configure with the default values.
+    The --enable-opt option turns debug information ON and also
+    makes object files at least five times as large and the code 
+    three to five times slower, so unless you are thinking in 
+    debugging the program, just run configure with the default values.
 
-      The installation script then will copy all the required data files and 
-      executables to PREFIX_INSTALLATION, which is the prefix installation 
-      directory.
+    The installation script then will copy all the required data files and 
+    executables to PREFIX_INSTALLATION, which is the prefix installation 
+    directory.
            
-      For the mpi version, the option --enable-mpi will install an mpi 
-      compliant version of CRAIG. This version should be used when the input
-      training data is large enough to take a few days for training (above .5
-      Gb will do that). 
+    For the mpi version, the option --enable-mpi will install an mpi 
+    compliant version of CRAIG. This version should be used when the input
+    training data is large enough to take a few days for training (above .5
+    Gb will do that). 
 
-      In those cases, splitting the training data in subsets, train the 
-      subsets separatedly and merge the parameters computed at the end for
-      each subset will run a factor of N times faster, where N is the number
-      of subsets. See the craigTrain help to know what options are available
-      for spliting the training data and merging the resulting parameters in
-      each case. Performance of the mpi vertion will vary but will usually 
-      stay competitive when compared to the single processor version.
+    In those cases, splitting the training data in subsets, train the 
+    subsets separatedly and merge the parameters computed at the end for
+    each subset will run a factor of N times faster, where N is the number
+    of subsets. See the craigTrain help to know what options are available
+    for spliting the training data and merging the resulting parameters in
+    each case. Performance of the mpi vertion will vary but will usually 
+    stay competitive when compared to the single processor version.
 
-  * The environment variable CRAIG_HOME needs to be set permanently 
-      to the root directory of the installation directory. To do this the
-      .bashrc or .bash_profile files located in the $HOME directory need
-       to be edited.
+### The environment variable CRAIG_HOME needs to be set permanently 
+    to the root directory of the installation directory. To do this the
+    .bashrc or .bash_profile files located in the $HOME directory need
+    to be edited.
       
-      To continue the installation this command (in bash only) may be run:
-      
-      export CRAIG_HOME=$PREFIX_INSTALLATION
+    To continue the installation this command (in bash only) may be run:  
+```
+export CRAIG_HOME=$PREFIX_INSTALLATION
+```
+    This is needed so that craigTrain and other applications know exactly 
+    where to look for model parameters for training and learned gene models
+    for predicting. See next section for more information on this issue. 
 
-      This is needed so that craigTrain and other applications know exactly 
-      where to look for model parameters for training and learned gene models
-       for predicting. See next section for more information on this issue. 
-  * Run command:
+### Run command:
+```
       make
-      
+```      
       This should build all objects files, libraries and executable binaries.
 
-  * Skip this step if you don't have Doxygen installed in your system
+### Skip this step if you don't have Doxygen installed in your system
       Optionally the following command could be run 
-      
+```      
       make doc
-      
+```   
       This command will generate documentation information and it will only 
       work if doxygen has been installed. See section 5 for more details and
       requirements.      
 
-  * For installation, run commands:
-
+### For installation, run commands:
+```
       make install; make installcheck
-      
+```      
       Root access might be needed if the installation tree  permissions
       require it. 
       This step will copy all binary executables in the bin directory and 
@@ -109,21 +111,21 @@ cd craig-VERSION && ./autogen.sh
       This step will also test the instalation to make sure the built 
       programs have no errors.
 
-  *   The following directories will also need to be added to the PATH variable:
+###   The following directories will also need to be added to the PATH variable:
             $CRAIG_HOME/bin
       	    $CRAIG_HOME/perl/bin
       	    $CRAIG_HOME/python/bin
 
-  * The python library numpy needs to be installed as it is not part of
+### The python library numpy needs to be installed as it is not part of
       the python standard library. The comand "yum install numpy" would do
       this if yum is used as install manager
 
-  * Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
+### Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
       variable. A command like this in the .bashrc or .bash_profile would
       do that:
-      
+```      
       export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
-
+```
 
 ##  Using the program(s)
 
