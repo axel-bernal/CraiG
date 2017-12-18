@@ -36,7 +36,7 @@ The following is a list of third party software installed with the main distribu
  * gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq alignments
 
 ## Installing
-### Setup the environment (the autoconf tools are needed for doing this)
+#### Setup the environment (the autoconf tools are needed for doing this)
 ```
 tar xvf craig-VERSION.tgz | gunzip
 cd craig-VERSION && ./autogen.sh 
