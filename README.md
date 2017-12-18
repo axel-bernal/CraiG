@@ -11,7 +11,7 @@ Related Publications
 ##  Getting Started
 CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
 
-There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located in subdirectory CRAIG_HOME/models, if an output directory is not provided (see Subsection 2.2.e below to see when/how to setup this shell variable).
+There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located in subdirectory CRAIG_HOME/models, if an output directory is not provided
 
 For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in the last section of this document
    
@@ -83,7 +83,7 @@ export CRAIG_HOME=$PREFIX_INSTALLATION
 ```
 This is needed so that craigTrain and other applications know exactly 
 where to look for model parameters for training and learned gene models
-for predicting. See next section for more information on this issue. 
+for predicting.
 
 #### Build executables
 ```
@@ -167,12 +167,12 @@ and any other external evidence file with prefix MODEL_NAME_PREFIX that the part
 
   The file PRE_CONFIG_FILE contains information about all the external evidence sources that are available to the model. Each line in this file refers to one evidence source and has the following fields (tab separated):
 
-  a.  Evidence Type: 'rnaseq' for RNA-Seq evidence sources, 'genepred' for external gene predictions or 'alignment' for blast/protein or EST alignments. The first one corresponds to RNA-Seq library mappings, the second one corresponds to external gene predictions and the third one to alignments to databases of transcripts and proteins. The main difference between the second and third type of evidence is that the third one do not generally provide with translation information but it provides scores that are meaningful, such as percentage of identity or p-value. The final gene model integrates all these evidence sources in an ensemble-type framework for learning.
-  b. Evidence SubType: Available options are 'rum' and 'gsnap' for 'rnaseq' types of evidence and 'gtf', 'locs' and 'gff3' for the 'genepred' or 'alignment' type. This field clarifies what the source format is. 
-  c. Dataset Id: An identifier for the sequence/annotation dataset referred to by all the sources of evidence.
-  d. Sample Id: An identifier for the evidence source. Could be a compound name consisting of the author and stage(hour, day) in case of RNA-Seq or the program and running parameters for gene prediction/alignment.
-  e. Full Path to Evidence Source: The full path to the file or directory containing the evidence information. 
-  f. Qualifier: This field is either orientation for 'rnaseq' types of evidence (one of N|F|R|FR|RF|FF|RR) or the maximum confidence score for each prediction for 'genepred' types; a score of 0 means CRAIG should not use prediction confidence scores, only annotations.
+  1.  Evidence Type: 'rnaseq' for RNA-Seq evidence sources, 'genepred' for external gene predictions or 'alignment' for blast/protein or EST alignments. The first one corresponds to RNA-Seq library mappings, the second one corresponds to external gene predictions and the third one to alignments to databases of transcripts and proteins. The main difference between the second and third type of evidence is that the third one do not generally provide with translation information but it provides scores that are meaningful, such as percentage of identity or p-value. The final gene model integrates all these evidence sources in an ensemble-type framework for learning.
+  2. Evidence SubType: Available options are 'rum' and 'gsnap' for 'rnaseq' types of evidence and 'gtf', 'locs' and 'gff3' for the 'genepred' or 'alignment' type. This field clarifies what the source format is. 
+  3. Dataset Id: An identifier for the sequence/annotation dataset referred to by all the sources of evidence.
+  4. Sample Id: An identifier for the evidence source. Could be a compound name consisting of the author and stage(hour, day) in case of RNA-Seq or the program and running parameters for gene prediction/alignment.
+  5. Full Path to Evidence Source: The full path to the file or directory containing the evidence information. 
+  6. Qualifier: This field is either orientation for 'rnaseq' types of evidence (one of N|F|R|FR|RF|FF|RR) or the maximum confidence score for each prediction for 'genepred' types; a score of 0 means CRAIG should not use prediction confidence scores, only annotations.
 
   An example of how to specify a RNA-Seq evidence source follows:
   "rnaseq  gsnap   me49-9.0  brady_sibley.day0 /gpfs/fs121/h/abernal/GUS/project_home/DJob/gsnap_test/brad_sibley_input/master/mainresult  F"
@@ -187,7 +187,7 @@ and any other external evidence file with prefix MODEL_NAME_PREFIX that the part
 ### Learning Gene Models
 The configuration file CONFIG_FILE, defined in the previous section, contains all the information needed to start the learning process. FASTA_FILE_FOR_VALIDATION_SET and  FASTA_FILE_FOR_TRAINING_SET are the file names of the input sequence files for training and validation respectively, they should be in fasta format. The files TAGS_FOR_VALIDATION_SET and TAGS_FOR_TRAINING_SET contain the Tag labelings which should be provided for each input sequence. These latter tag files can be computed from *gff3 or *gtf input annotation files by using a sequence of perl scripts provided in the $CRAIG_HOME/perl/bin. This sequence is performed automatically using the craigPreprocess.py script
 
-   For more information related to this point one can refer to craigTrain's API obtained by executing craigTrain -h and/or section 4 in which a pipeline for improving annotation on whole genomes is described in detail.
+   For more information related to this point one can refer to craigTrain's API obtained by executing craigTrain -h.
 
 ### Predicting Gene Structures
 Executing craigPredict -h will display a detailed help on how to run the command. The main requirement is to have a trained gene model ready. 
@@ -219,8 +219,23 @@ Maximum Number of Transitions = 2^6
 ## Examples
 
 ### Example for reannotating me49 using Hehl day7 RNA-Seq dataset
-  * See examples/hehl_day7.preconf for an example of a preconfiguration file for Hehl's day7 dataset
-  * See examples/craig_pipeline.sh for all the commands needed to generate annotations for Hehl's day7 dataset using examples/hehl_day7.preconf as preconfiguration file. See comments inside for requirements
+  * This is an actual example of a preconfiguration file for Hehl's day7 dataset, found in examples/hehl_day7.preconf:
+```
+#evid_type(rnaseq, gpred)  type(bam|rum|gsnap|epdb*) dataset_id sample_id filename orientation(NN|N|F|R|FR|RF|FF|RR) wrapper_in
+rnaseq	bam	hehl	day7	/Users/abernal/Documents/Miscelanous/roos8core/Hehl/analyze_day7/results_sorted.bam	FR	cat
+```
+  * This is an actual example of all the commands needed to generate annotations for Hehl's day7 dataset using examples/hehl_day7.preconf as preconfiguration file. See examples/craig_pipeline.sh for additional comments
+```
+# Preprocessing the input. Need regtools in PATH
+craigPreprocess.py --pre-config hehl_day7.preconf --out-dir /Users/abernal/Documents/Miscelanous/roos8core/New/hehl_day7.preproc --annot-fmt gtf --transcript-tag exon --cds-tag CDS tgondii tgonME49.gtf topLevelGenomicSeqs.fa --gc-classes=100 --model ngscraig --config config
+
+# You can run craigReannotated directly. This will generate *.model directory
+craigReannotate.py --force-train --output-model-scores --utr-only-model --prefix-output-dir hehl_day7 --model-utrs --pre-config hehl_day7.preconf  --annot-fmt gtf --transcript-tag exon --cds-tag CDS tgondii tgonME49.gtf topLevelGenomicSeqs.fa --gc-classes=100 --model ngscraig
+
+# Run postprocessing, i.e., merging annotations made from different datasets. Run this program 
+# after generating predictions from multiple datasets
+craigPostprocess.py --out-dir postprocessing --list-prefixes hehl_day7.model/tgondii-rna.hehl.day7,hehl_day5.model/tgondii-rna.hehl.day5 --use-model-scores
+```
 
 ### Example for reannotating a genome using Reid's day4 RNA-Seq data in a cluster where distribjob is available
   * Generate task.prop, controller.prop and distribjob directories. Run command buildDJobPropFiles4Craig.pl. The usage for this command is as follows:
