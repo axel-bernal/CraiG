@@ -149,9 +149,9 @@ If specified, the option --config-file CONFIG_FILE makes the script to prepare a
 ```
   EVIDENCE_PREFIX_FOR_TESTING_SET typically prefixes the input evidence for the whole genome. 
   The script craigPreprocess.py supports three different types of gene models -- specified using MODEL/MODEL_NAME_PREFIX above:
-  i. Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
-  ii. Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
-  iii. RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
+  1. Ab initio for models that use only intrinsic features (MODEL = craig, MODEL_NAME_PREFIX = SPECIES), 
+  2. Ensemble or Evidence integration models that use alignments to external evidence of transcription/translation that is not RNA-Seq data (MODEL = ecraig, MODEL_NAME_PREFIX = SPECIES-evid)
+  3. RNA-seq based models which require at least one evidence source to be of RNA-Seq type (MODEL = ngscraig, MODEL_NAME_PREFIX = SPECIES-rna). 
 
   Before learning a parameter model, the following files must be found in the $CRAIG_HOME/models directory: MODEL_NAME_PREFIX.resources, MODEL_NAME_PREFIX.filters, MODEL_NAME_PREFIX.features, MODEL_NAME_PREFIX.partial.top, MODEL_NAME_PREFIX.complete.top and any other external evidence file with prefix MODEL_NAME_PREFIX that the particular model requires as input. The latter files should be specified in file PRE_CONFIG_FILE, using option --pre-config-file PRE_CONFIG_FILE above.
 
