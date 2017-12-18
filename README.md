@@ -1,6 +1,6 @@
 # CraiG
 CRAIG is a suite of tools that use an underlying semi markov CRF model for performing gene model learning and prediction on structured biological sequences. 
-CRAIG stands for a CRf-based Ab-Initio Genefinder, however the suite integrates ensemble (output from other gene predictors, RNA-Seq features) into the prediction. The predicted structures as of now are genes, including UTRs, however the libraries are general enough to support any type of DNA structure. The underlying models can be ab initio, de novo or ensemble. The latter category in particular, uses features defined on external evidence sources which can be third-party genefinder program predictions, protein alignments and/or RNA-Seq coverage and junction information among others.
+CRAIG stands for a CRf-based Ab-Initio Genefinder, however the suite can integrate output from third-party gene predictors, protein alignments, RNA-Seq features and denovo features into the predictive model. The predicted structures are genes, including UTRs, however the libraries are general enough to support any type of structure. The underlying models can be ab initio, de novo or ensemble.
 
 Related Publications
 
@@ -11,7 +11,7 @@ Related Publications
 ##  Getting Started
 CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
 
-There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located subdirectory CRAIG_HOME/models (see Subsection 2.2.e below to see how to setup this shell variable).
+There is a preprocessing script, craigPreprocess.py, that needs to be performed prior to train or predict structures in all cases. This script prepares  model parameters and organises and formats all evidence sources associated with the input sequences to facilitate training and/or prediction. Model parameters and learned gene models will be located in subdirectory CRAIG_HOME/models, if an output directory is not provided (see Subsection 2.2.e below to see when/how to setup this shell variable).
 
 For automated whole-genome improvement of gene annotations, we have provided a processing pipeline  to conveniently preprocess, train and predict gene models given a genome and a set of existing  gene annotations (if any). This pipeline is described in detail in Section 5.
    
@@ -19,45 +19,42 @@ For automated whole-genome improvement of gene annotations, we have provided a p
 ## Prerequisites
 The following is a list of third party software installed with the main distribution:
 
+### OS/Development level
+ * python v2.7.3 or higher
+ * gcc version v4.4.2 20091027 (Red Hat 4.4.2-7) (GCC)
+ * libtools v2.2 or higher
+ * perl v5.1 or higher
+ * automake 1.9 or higher
+ * autoconf 2.6 or higher
+ * doxygen for generating the documentation
+
+### Applications
  * google sparse hash and vector implementations
- * regtools (if using BAM input)
+ * regtools (https://regtools.readthedocs.io/en/latest/) if using RNA-Seq BAMs in the input
  * boost regex libraries 
  * eval software package (only for performance evaluations)
+ * gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq alignments
 
-##  Installing
-### Software Requirements
-    python v2.7.3 or higher
-    gcc version v4.4.2 20091027 (Red Hat 4.4.2-7) (GCC)
-    libtools v2.2 or higher
-    perl v5.1 or higher
-    automake 1.9 or higher
-    autoconf 2.6 or higher
-    gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq
-    alignments
-    regtools (https://regtools.readthedocs.io/en/latest/) if using RNA-Seq BAMs in the input
-    doxygen for generating the documentation
-
-### Step-by-step Installation Instructions
-  * tar xvf craig-VERSION.tgz | gunzip
-  * cd craig-VERSION
-  * Run ./autogen.sh to setup the environment (the autoconf
-      tools are needed for doing this)
-  * Run ./configure 
+## Installing
+ * Setup the environment (the autoconf tools are needed for doing this)
+```
+tar xvf craig-VERSION.tgz | gunzip
+cd craig-VERSION && ./autogen.sh 
+```
+ * Configure environment
+```
+./configure --prefix=PREFIX_INSTALLATION [--enable-opt=yes|no] [--enable-mpi=yes|no]
+```
       By default configure does not turn on debug information. If you 
       want to turn on this info, run 'configure' with command line 
       option --enable-opt=no
       
-      The --enable-opt=no option turns debug information ON and also
+      The --enable-opt option turns debug information ON and also
       makes object files at least five times as large and the code 
       three to five times slower, so unless you are thinking in 
       debugging the program, just run configure with the default values.
 
-      The installation command is (this command must be executed from
-       the root of the build tree)
-
-      ./configure --prefix=PREFIX_INSTALLATION --enable-opt=yes
-
-      the installation script then will copy all the required data files and 
+      The installation script then will copy all the required data files and 
       executables to PREFIX_INSTALLATION, which is the prefix installation 
       directory.
            
