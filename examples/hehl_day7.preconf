@@ -1,2 +1,0 @@
-#evid_type(rnaseq, gpred)  type(bam|rum|gsnap|epdb*) dataset_id sample_id filename orientation(NN|N|F|R|FR|RF|FF|RR) wrapper_in
-rnaseq	bam	hehl	day7	/Users/abernal/Documents/Miscelanous/roos8core/Hehl/analyze_day7/results_sorted.bam	FR	cat
