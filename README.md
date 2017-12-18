@@ -72,10 +72,10 @@ for spliting the training data and merging the resulting parameters in
 each case. Performance of the mpi vertion will vary but will usually 
 stay competitive when compared to the single processor version.
 
-### The environment variable CRAIG_HOME needs to be set permanently 
-to the root directory of the installation directory. To do this the
-.bashrc or .bash_profile files located in the $HOME directory need
-to be edited.
+### Set environment variables
+CRAIG_HOME needs to be set permanently to the root directory of the
+installation directory. To do this the .bashrc or .bash_profile files
+located in the $HOME directory need to be edited.
   
 To continue the installation this command (in bash only) may be run:  
 ```
@@ -85,47 +85,43 @@ This is needed so that craigTrain and other applications know exactly
 where to look for model parameters for training and learned gene models
 for predicting. See next section for more information on this issue. 
 
-### Run command:
+### Build executables
 ```
-  make
+make; make doc
 ```  
-  This should build all objects files, libraries and executable binaries.
+This should build all objects files, libraries and executable binaries.
+The command make doc will generate documentation information and it will only 
+work if doxygen has been installed. 
 
-### Skip this step if you don't have Doxygen installed in your system
-  Optionally the following command could be run 
-```  
-  make doc
-```   
-  This command will generate documentation information and it will only 
-  work if doxygen has been installed. See section 5 for more details and
-  requirements.  
-
-### For installation, run commands:
+For installation, run commands:
 ```
   make install; make installcheck
 ```  
-  Root access might be needed if the installation tree  permissions
-  require it. 
-  This step will copy all binary executables in the bin directory and 
-  liblless.so, the shared library containing all the lless library 
-  rountines, to the lib directory.
-  This step will also test the instalation to make sure the built 
-  programs have no errors.
+Root access might be needed if the installation tree permissions
+require it. 
+This step will copy all binary executables in the bin directory and 
+liblless.so, the shared library containing all the lless library 
+rountines, to the lib directory.
+This step will also test the instalation to make sure the built 
+programs have no errors.
 
-###   The following directories will also need to be added to the PATH variable:
+#### Modify PATH, LIBRARY_PATH
+Add the following filepaths to the PATH variable
+```
 $CRAIG_HOME/bin
-  	$CRAIG_HOME/perl/bin
-  	$CRAIG_HOME/python/bin
-
-### The python library numpy needs to be installed as it is not part of
-  the python standard library. The comand "yum install numpy" would do
-  this if yum is used as install manager
-
-### Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
-  variable. A command like this in the .bashrc or .bash_profile would
-  do that:
+$CRAIG_HOME/perl/bin
+$CRAIG_HOME/python/bin
+```
+Add the directory $CRAIG_HOME/lib to the LD_LIBRARY_PATH environment
+variable. A command like this in the .bashrc or .bash_profile would
+do that:
 ```  
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CRAIG_HOME/lib
+```
+
+#### Install Python dependencies
+```
+pip install -r python/requirements.txt
 ```
 
 ##  Using the program(s)
