@@ -4,9 +4,9 @@ CRAIG stands for a CRf-based Ab-Initio Genefinder, however the suite integrates 
 
 Related Publications
 
- *Global Discriminative Training for Higher-Accuracy Computational Gene Prediction. Bernal A, Crammer K, Hatzigeorgiou A, Pereira F. PLoS Comput Biol 3(3):e54. 2007
+ * Global Discriminative Training for Higher-Accuracy Computational Gene Prediction. Bernal A, Crammer K, Hatzigeorgiou A, Pereira F. PLoS Comput Biol 3(3):e54. 2007
 
- *Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
+ * Automated Gene-Model Curation using Global Discriminative Learning. Bioinformatics (2012) 28(12): 1571-1578
 
 ##  Getting Started
     CRAIG's core executables and libraries are written in C++ and are: craigPredict and craigTrain, for predicting and learning models from input structures respectively.
