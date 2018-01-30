@@ -31,6 +31,7 @@ The following is a list of third party software installed with the main distribu
 ### Applications
  * google sparse hash and vector implementations
  * regtools (https://regtools.readthedocs.io/en/latest/) if using RNA-Seq BAMs in the input
+ * samtools 1.2 or higher
  * boost regex libraries 
  * eval software package (only for performance evaluations)
  * gmap 2013-08-19 or later if gsnap is to be used for computing the RNA-Seq alignments
