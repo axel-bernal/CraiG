@@ -86,8 +86,7 @@ try:
 
         inpfiles[0] = (tempfile.NamedTemporaryFile(delete=False)).name
         if args.orientation == 'FR':
-            #            inpfiles.append((tempfile.NamedTemporaryFile(delete=False)).name)
-            inpfiles.append("/var/folders/y5/stcd75fn2c145kx77lncnstsrq79jm/T/tmpkTJm6q")
+            inpfiles.append((tempfile.NamedTemporaryFile(delete=False)).name)
             f2reads = 'samtools view -u -f 128 -F 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
                       format(args.INPUT_FILE)
             r1reads = 'samtools view -u -f 80 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
