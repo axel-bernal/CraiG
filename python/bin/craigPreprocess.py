@@ -289,7 +289,7 @@ try:
 
                 if not os.path.exists(rsqfn2+".locs") or os.stat(rsqfn2+".locs").st_size == 0 :
                     if tokens[1] == 'bam':
-                        raise ioutils.CraigUndefined("Problem generating junction information. Did you install regtools?")
+                        raise ioutils.CraigUndefined("Problem generating junction information.\nCheck '{}' to ensure regtools ran successfully.\nRemove '{}' and '{}', if present, before trying again.".format(log_file.name, rsqfn2+".locs", rsqfn1+".chr.rnaseq_is_done"))
                     shell_cmd = "cut -f1,2 "+rsqfn2+".orig.locs | filterNonCannonSS.pl -canon-pairs "+chrss_fn+" -truncated -ctg "+ chrfasta_fn+" -filter gene | grep -s \">\" | biointers.py "+rsqfn2+".orig.locs - > "+rsqfn2+".orig.fwd.locs"
                     ioutils.log_and_exec(shell_cmd, my_env, log_file)
                     shell_cmd = "cut -f1,2 "+rsqfn2+".orig.locs | reverseExons.pl | filterNonCannonSS.pl -canon-pairs "+chrss_fn+" -truncated -ctg "+chrfasta_fn+" -filter gene | grep -s \">\" | biointers.py "+rsqfn2+".orig.locs - | reverseExons.pl > "+rsqfn2+".orig.comp.locs"
