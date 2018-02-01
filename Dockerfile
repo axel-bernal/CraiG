@@ -47,7 +47,7 @@ RUN cd "${REGTOOLS_HOME}" && \
 RUN git clone https://github.com/axl-bernal/CraiG.git
 RUN cd CraiG  && pwd && ls -l && \
   ./autogen.sh  && \
-  ./configure --prefix="${PREFIX_INSTALLATION}" CXXFLAGS="${CXXFLAGS} -std=c++11" --enable-opt=no --enable-mpi=no && \
+  ./configure --prefix="${PREFIX_INSTALLATION}" CXXFLAGS="${CXXFLAGS} -std=c++11" --enable-opt=yes --enable-mpi=no && \
   make && make install && make installcheck && \
   if [[ -f python/requirements.txt ]]; then pip install -r python/requirements.txt; fi
 
