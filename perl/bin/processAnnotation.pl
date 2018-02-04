@@ -96,6 +96,6 @@ my $gcClass;
 while(($gcClass, undef) = each (%gcClasses)) {
     system("$ENV{CRAIG_HOME}/perl/bin/locs2GTF.pl $contigs.fa < $fasta.locs.$gcClass > $gtf.$gcClass");
     system("cat $gtf.$gcClass >> $gtf.modcoord");
-    system("cd ~/Applications/Contrib/eval; ./get_general_stats.pl -g -q $gtf.$gcClass > $fasta.stats.$gcClass");
+    system("$ENV{CRAIG_HOME}/perl/bin/get_general_stats.pl -g -q $gtf.$gcClass > $fasta.stats.$gcClass");
 }
-system("cd ~/Applications/Contrib/eval; ./get_general_stats.pl -g -q $gtf.modcoord > $fasta.stats");
+system("$ENV{CRAIG_HOME}/perl/bin/get_general_stats.pl -g -q $gtf.modcoord > $fasta.stats");

@@ -99,7 +99,7 @@ my $gcClass;
 while(($gcClass, undef) = each (%gcClasses)) {
     system("$ENV{CRAIG_HOME}/perl/bin/locs2GTF.pl $contigs < $arg.locs.$gcClass > $arg.gtf.$gcClass");    
     system("cat $arg.gtf.$gcClass >> $arg.gtf");
-    system("cd ~/Applications/Contrib/eval; ./evaluate_gtf.pl -g -q $gtf.$gcClass  $arg.gtf.$gcClass > $arg.eval.$gcClass");
+    system("$ENV{CRAIG_HOME}/perl/bin/evaluate_gtf.pl -g -q $gtf.$gcClass  $arg.gtf.$gcClass > $arg.eval.$gcClass");
 }
 
-system("cd ~/Applications/Contrib/eval; ./evaluate_gtf.pl -g -q $gtf.modcoord  $arg.gtf > $arg.eval");
+system("$ENV{CRAIG_HOME}/perl/bin/evaluate_gtf.pl -g -q $gtf.modcoord  $arg.gtf > $arg.eval");
