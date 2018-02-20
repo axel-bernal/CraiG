@@ -1,0 +1,23 @@
+NAME = craig
+TAG = 2.0
+REGID = 205134639408
+NS = 205134639408.dkr.ecr.us-west-2.amazonaws.com/sandbox/abernal/mv-other
+
+all: test
+
+build:
+	docker build -t $(NS)/$(NAME) .
+	docker tag $(NS)/$(NAME) $(NS)/$(NAME):$(TAG)
+
+push: build
+	python ../../server/DockerECRServices.py --registry-id $(REGID)
+	docker push $(NS)/$(NAME)
+	docker push $(NS)/$(NAME):$(TAG)
+
+shell:
+	docker run --rm -ti \
+		--net=host \
+		-v /Users/abernal/Data/craig:/home/brunkb/CRAIG/preproc \
+		-v /Users/abernal/Data/roos8core:/home/brunkb/CRAIG/toxo_data \
+		$(NS)/$(NAME):$(TAG) \
+		bash || true
