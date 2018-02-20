@@ -106,7 +106,7 @@ try:
             subprocess.check_call(shell_cmd, shell=True)
         elif args.orientation == 'F':
             inpfiles.append((tempfile.NamedTemporaryFile(delete=False)).name)
-            f1reads = 'samtools view -F 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
+            f1reads = 'samtools view -u -F 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
                       format(args.INPUT_FILE)
             merge_script = "%s/merge_samtools_depths.py --len-file %s" % \
                            (script_dir, args.len_file.name)
@@ -114,7 +114,7 @@ try:
                         (f1reads, merge_script, inpfiles[0]) 
             sys.stderr.write("Running " + shell_cmd + "\n")
             subprocess.check_call(shell_cmd, shell=True)
-            r1reads = 'samtools view -f 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
+            r1reads = 'samtools view -u -f 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
                       format(args.INPUT_FILE)
             merge_script = "%s/merge_samtools_depths.py --len-file %s" % \
                            (script_dir, args.len_file.name)
@@ -124,7 +124,7 @@ try:
             subprocess.check_call(shell_cmd, shell=True)
         elif args.orientation == 'R':
             inpfiles.append((tempfile.NamedTemporaryFile(delete=False)).name)
-            f1reads = 'samtools view -f 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
+            f1reads = 'samtools view -u -f 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
                       format(args.INPUT_FILE)
             merge_script = "%s/merge_samtools_depths.py --len-file %s" % \
                            (script_dir, args.len_file.name)
@@ -132,7 +132,7 @@ try:
                         (f1reads, merge_script, inpfiles[0]) 
             sys.stderr.write("Running " + shell_cmd + "\n")
             subprocess.check_call(shell_cmd, shell=True)
-            r1reads = 'samtools view -F 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
+            r1reads = 'samtools view -u -F 16 {} | samtools depth /dev/stdin | grep -v "\\t0$"'.\
                       format(args.INPUT_FILE)
             merge_script = "%s/merge_samtools_depths.py --len-file %s" % \
                            (script_dir, args.len_file.name)
